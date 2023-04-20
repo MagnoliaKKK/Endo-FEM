@@ -1,0 +1,1257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ObjectD">
+    <Position X="8.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAwAIAAggNAYAyAYgogCAAAIBARoSACihAASEBQUAAE=</HashCode>
+      <FileName>ObjectD.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ParticleD" Collapsed="true">
+    <Position X="43.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EG0QwAgkAAOLOgAACgABEqAQAAKooAwACKQyAAIQIgE=</HashCode>
+      <FileName>ParticleD.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetraElementD" Collapsed="true">
+    <Position X="45.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>qUoABADAEIAEIhAChQiwASAAAJACQBAAqAAgCAAIAAA=</HashCode>
+      <FileName>TetraElementD.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TetraGroupD" Collapsed="true">
+    <Position X="42" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>bJYSwmkIa0zz071e9H9HtL8wbTHj4FJrb6WSR12JS8k=</HashCode>
+      <FileName>TetraGroupD.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TriangleD" Collapsed="true">
+    <Position X="43.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAhABAAiAAQAAAAAAARACAAAAAAAAgAA=</HashCode>
+      <FileName>TriangleD.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UseBlockObjectDouble" Collapsed="true">
+    <Position X="14.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQAAAAABAAAAAQAAIAAAAAAAAAAgQAEgBACAAAAAAA=</HashCode>
+      <FileName>UseBlockObjectDouble.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UseGroupOneTetraObjectDouble">
+    <Position X="3" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAQAAIAAAAAAAAAAgQAFgBAKAAAAAAA=</HashCode>
+      <FileName>UseGroupOneTetraObjectDouble.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UseGroupTriprismObjectDouble">
+    <Position X="5.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAQAAIAAAAAAAAIAwwAEgBACAAAAAAA=</HashCode>
+      <FileName>UseGroupTriprismObjectDouble.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UseGroupTwoTetraObjectDouble" Collapsed="true">
+    <Position X="6.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAQAQAAIAAEAAAAAAAgQAEgBACAAAAAAA=</HashCode>
+      <FileName>UseGroupTwoTetraObjectDouble.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UseLinearFEMDouble" Collapsed="true">
+    <Position X="10.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAYAAIAAAAAAAAAQAQAEgBACAAAAAAA=</HashCode>
+      <FileName>UseLinearFEMDouble.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UseOldFEMDouble" Collapsed="true">
+    <Position X="12.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAQABIAgAAAAAAAAAQAEgBACAAAAAAA=</HashCode>
+      <FileName>UseOldFEMDouble.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Eigen::GMRES&lt;_MatrixType, _Preconditioner&gt;" Collapsed="true">
+    <Position X="42" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAABgAAAAAAAABAAAAAAAAQAAAAAAAAAEAAAAQAA=</HashCode>
+      <FileName>Eigen\src\IterativeLinearSolvers\GMRES.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Circle" Collapsed="true">
+    <Position X="42" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="CircleD" Collapsed="true">
+    <Position X="43.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ObjectSize" Collapsed="true">
+    <Position X="45.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAIQAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ObjectData" Collapsed="true">
+    <Position X="43.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAAAAQAAACEAAAAAAAA=</HashCode>
+      <FileName>Base.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="RGBCOLOR" Collapsed="true">
+    <Position X="42" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgAAAAAAAAAAAAAAABAAAAAAABAAAAA=</HashCode>
+      <FileName>DXLib\DxDataType.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="tWAVEFORMATEX" Collapsed="true">
+    <Position X="3.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAACAgAABAAAAAAAAAAIAAAQAAAAAQAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="waveformat_tag" Collapsed="true">
+    <Position X="11.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAgAABAAAAAAAAAAIAAAQAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="EdgeD" Collapsed="true">
+    <Position X="45.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIEAAAAAAAAAAAAAAAAIAAAgAAQAAAAAACAAAAAA=</HashCode>
+      <FileName>EdgeD.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="MicroSecondTimer" Collapsed="true">
+    <Position X="42" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAgAAAAgICIgAAAIAABAAAIAEUAAAAAAAFERMEA=</HashCode>
+      <FileName>StopwatchTimer.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::RGBCOLOR" Collapsed="true">
+    <Position X="43.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgAAAAAAAAAAAAAAABAAAAAAABAAAAA=</HashCode>
+      <FileName>DXLib\DxDataType.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagIMEINPUTCLAUSEDATA" Collapsed="true">
+    <Position X="28.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagIMEINPUTDATA" Collapsed="true">
+    <Position X="27.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAggAAAAAAAAAAAAAAIBAAAJAAAAAAIAAAAAAAAAICA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagDRAWCHARINFO" Collapsed="true">
+    <Position X="22.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAKAAAgAIABAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagDISPLAYMODEDATA" Collapsed="true">
+    <Position X="26.5" Y="19.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAgCAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagDATEDATA" Collapsed="true">
+    <Position X="18.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAJAAABAAAEAAAAAAAAAQAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagFILEINFO" Collapsed="true">
+    <Position X="26.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAIAAAgAAAAAAAAAQAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagFILEINFOW" Collapsed="true">
+    <Position X="7.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAIAAAgAAAAAAAAAQAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMATRIX" Collapsed="true">
+    <Position X="3.5" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMATRIX_D" Collapsed="true">
+    <Position X="24.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVECTOR" Collapsed="true">
+    <Position X="6.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAQAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVECTOR_D" Collapsed="true">
+    <Position X="3.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAQAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagFLOAT2" Collapsed="true">
+    <Position X="15.5" Y="38.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagCOLOR_F" Collapsed="true">
+    <Position X="11.5" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQABAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagCOLOR_U8" Collapsed="true">
+    <Position X="39.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQABAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagFLOAT4" Collapsed="true">
+    <Position X="23.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhgAQAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagDOUBLE4" Collapsed="true">
+    <Position X="22.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhgAQAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagINT4" Collapsed="true">
+    <Position X="38.5" Y="33.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhgAQAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVERTEX2D" Collapsed="true">
+    <Position X="18.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAIAAAAAAAAABABIAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVERTEX2DSHADER" Collapsed="true">
+    <Position X="21.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAAAAAAAAAAAIAAAAAAAAABABIAgAAIAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVERTEX" Collapsed="true">
+    <Position X="30.5" Y="37.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoARJhAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVERTEX_3D" Collapsed="true">
+    <Position X="7.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAoARIBAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVERTEX3D" Collapsed="true">
+    <Position X="19.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAACAAAAAAAAAAAIAAAAAAAAAAABIAgAAIAAE=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagVERTEX3DSHADER" Collapsed="true">
+    <Position X="11.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABCAAAGAAAAAAAAAAAIAAAAAAAAAAABIAgABIAAE=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagLIGHTPARAM" Collapsed="true">
+    <Position X="38.5" Y="28.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAIAAAAACAAgAyAAAAAAAAABAAAAAABAAUAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMATERIALPARAM" Collapsed="true">
+    <Position X="38.5" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAgAAAAAAgAAAAAAAAAAAAABAAAAAEAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagHITRESULT_LINE" Collapsed="true">
+    <Position X="37.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagHITRESULT_LINE_D" Collapsed="true">
+    <Position X="11.5" Y="36.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSEGMENT_SEGMENT_RESULT" Collapsed="true">
+    <Position X="37.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAACAAAgAAAAAEAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSEGMENT_SEGMENT_RESULT_D" Collapsed="true">
+    <Position X="34.5" Y="35.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAACAAAgAAAAAEAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSEGMENT_POINT_RESULT" Collapsed="true">
+    <Position X="19.5" Y="35.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAgBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSEGMENT_POINT_RESULT_D" Collapsed="true">
+    <Position X="15.5" Y="35.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAgBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSEGMENT_TRIANGLE_RESULT" Collapsed="true">
+    <Position X="7.5" Y="35.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgBAAAAAABgAAAAAABwAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSEGMENT_TRIANGLE_RESULT_D" Collapsed="true">
+    <Position X="36.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgBAAAAAABgAAAAAABwAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagTRIANGLE_POINT_RESULT" Collapsed="true">
+    <Position X="35.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAABwAAAAAAAAAAAE=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagTRIANGLE_POINT_RESULT_D" Collapsed="true">
+    <Position X="3.5" Y="34.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAABwAAAAAAAAAAAE=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagPLANE_POINT_RESULT" Collapsed="true">
+    <Position X="34.5" Y="30.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAABAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagPLANE_POINT_RESULT_D" Collapsed="true">
+    <Position X="26.5" Y="33.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAABAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMV1_COLL_RESULT_POLY" Collapsed="true">
+    <Position X="34.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAgAAAAAEIAAQAICAAAAAAAAAAAAAE=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMV1_COLL_RESULT_POLY_DIM" Collapsed="true">
+    <Position X="11.5" Y="33.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMV1_REF_VERTEX" Collapsed="true">
+    <Position X="30.5" Y="32.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAIAAAAAAAAIAACAAAAAAAAAgAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMV1_REF_POLYGON" Collapsed="true">
+    <Position X="33.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAICEAAAQgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagMV1_REF_POLYGONLIST" Collapsed="true">
+    <Position X="33.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAABAAIAAAgAAgAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSOUND3D_REVERB_PARAM" Collapsed="true">
+    <Position X="33.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBAAkAAAAAQACABACBAIAghRABAAAAAAAAAQAAUACAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSTREAMDATASHREDTYPE2" Collapsed="true">
+    <Position X="22.5" Y="30.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAACgAAIAAACAAAAAAgBAAAAAAACAAAQACgFAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSTREAMDATASHREDTYPE2W" Collapsed="true">
+    <Position X="18.5" Y="30.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAACgAAIAAACAAAAAAgBAAAAAAACAAAQACgFAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSTREAMDATASHRED" Collapsed="true">
+    <Position X="3.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAACAAAAAAgBAAAAAAACAAAAACAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagSTREAMDATA" Collapsed="true">
+    <Position X="31.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagCOLORPALETTEDATA" Collapsed="true">
+    <Position X="7.5" Y="30.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAgAAAAAAAAAAAAAAABAAAAAAABAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagCOLORDATA" Collapsed="true">
+    <Position X="18.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAoAAAQAAAGQgIAAiABIA4AIgABAAQAAAAAEAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagBASEIMAGE" Collapsed="true">
+    <Position X="13.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEBAAAAAAAAAAAAEAAAAAAAAAQAABAAABAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagLINEDATA" Collapsed="true">
+    <Position X="17.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAwAAAACAAQAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagPOINTDATA" Collapsed="true">
+    <Position X="7.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAAAAAAAAAAAAAAAACAAABgAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagIMAGEFORMATDESC" Collapsed="true">
+    <Position X="30.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAAAAEAAAEACACAoAEAAAAIABAAAAgAIAACCAACEg=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagDINPUT_JOYSTATE" Collapsed="true">
+    <Position X="30.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABACCgAAAAAAAAAAAAAAAAAAAAAAAAAAAAZAE=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagXINPUT_STATE" Collapsed="true">
+    <Position X="3.5" Y="29.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAABAAgAAAAAAAAAACAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagTOUCHINPUTPOINT" Collapsed="true">
+    <Position X="26.5" Y="28.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAggAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagTOUCHINPUTDATA" Collapsed="true">
+    <Position X="29.5" Y="24.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAgAQA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagIPDATA" Collapsed="true">
+    <Position X="15.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAACACAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="DxLib::tagIPDATA_IPv6" Collapsed="true">
+    <Position X="14.5" Y="28.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Eigen::internal::traits&lt;GMRES&lt;_MatrixType, _Preconditioner&gt;&gt;" Collapsed="true">
+    <Position X="45.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Eigen\src\IterativeLinearSolvers\GMRES.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="WAVEFORMATEX" Collapsed="true">
+    <Position X="0.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="PWAVEFORMATEX" Collapsed="true">
+    <Position X="0.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="NPWAVEFORMATEX" Collapsed="true">
+    <Position X="1.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="LPWAVEFORMATEX" Collapsed="true">
+    <Position X="3.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="WAVEFORMAT" Collapsed="true">
+    <Position X="8.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="PWAVEFORMAT" Collapsed="true">
+    <Position X="14.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="NPWAVEFORMAT" Collapsed="true">
+    <Position X="13.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="LPWAVEFORMAT" Collapsed="true">
+    <Position X="11.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::IMEINPUTCLAUSEDATA" Collapsed="true">
+    <Position X="29.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPIMEINPUTCLAUSEDATA" Collapsed="true">
+    <Position X="28.5" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::IMEINPUTDATA" Collapsed="true">
+    <Position X="29.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPIMEINPUTDATA" Collapsed="true">
+    <Position X="27.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::DRAWCHARINFO" Collapsed="true">
+    <Position X="25.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPDRAWCHARINFO" Collapsed="true">
+    <Position X="22.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::DISPLAYMODEDATA" Collapsed="true">
+    <Position X="27.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPDISPLAYMODEDATA" Collapsed="true">
+    <Position X="26.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::DATEDATA" Collapsed="true">
+    <Position X="15.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPDATEDATA" Collapsed="true">
+    <Position X="18.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::FILEINFO" Collapsed="true">
+    <Position X="26.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPFILEINFO" Collapsed="true">
+    <Position X="26.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::FILEINFOW" Collapsed="true">
+    <Position X="10.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPFILEINFOW" Collapsed="true">
+    <Position X="7.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MATRIX" Collapsed="true">
+    <Position X="1.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPMATRIX" Collapsed="true">
+    <Position X="3.5" Y="26.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MATRIX_D" Collapsed="true">
+    <Position X="24.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPMATRIX_D" Collapsed="true">
+    <Position X="24.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VECTOR" Collapsed="true">
+    <Position X="4.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPVECTOR" Collapsed="true">
+    <Position X="10.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::FLOAT3" Collapsed="true">
+    <Position X="9.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPFLOAT3" Collapsed="true">
+    <Position X="7.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VECTOR_D" Collapsed="true">
+    <Position X="1.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPVECTOR_D" Collapsed="true">
+    <Position X="6.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::DOUBLE3" Collapsed="true">
+    <Position X="1" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPDOUBLE3" Collapsed="true">
+    <Position X="3.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::FLOAT2" Collapsed="true">
+    <Position X="15.5" Y="40.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::COLOR_F" Collapsed="true">
+    <Position X="14.5" Y="23.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPCOLOR_F" Collapsed="true">
+    <Position X="11.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::COLOR_U8" Collapsed="true">
+    <Position X="39.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::FLOAT4" Collapsed="true">
+    <Position X="23.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPFLOAT4" Collapsed="true">
+    <Position X="23.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::DOUBLE4" Collapsed="true">
+    <Position X="22.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPDOUBLE4" Collapsed="true">
+    <Position X="22.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::INT4" Collapsed="true">
+    <Position X="38.5" Y="35.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VERTEX2D" Collapsed="true">
+    <Position X="15.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPVERTEX2D" Collapsed="true">
+    <Position X="18.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VERTEX2DSHADER" Collapsed="true">
+    <Position X="22.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPVERTEX2DSHADER" Collapsed="true">
+    <Position X="21.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VERTEX" Collapsed="true">
+    <Position X="30.5" Y="39.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VERTEX_3D" Collapsed="true">
+    <Position X="4.5" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPVERTEX_3D" Collapsed="true">
+    <Position X="7.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VERTEX3D" Collapsed="true">
+    <Position X="20.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPVERTEX3D" Collapsed="true">
+    <Position X="19.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::VERTEX3DSHADER" Collapsed="true">
+    <Position X="14.5" Y="18.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPVERTEX3DSHADER" Collapsed="true">
+    <Position X="11.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LIGHTPARAM" Collapsed="true">
+    <Position X="38.5" Y="30.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MATERIALPARAM" Collapsed="true">
+    <Position X="38.5" Y="25.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::HITRESULT_LINE" Collapsed="true">
+    <Position X="37.5" Y="20.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::HITRESULT_LINE_D" Collapsed="true">
+    <Position X="11.5" Y="38.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::SEGMENT_SEGMENT_RESULT" Collapsed="true">
+    <Position X="37.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::SEGMENT_SEGMENT_RESULT_D" Collapsed="true">
+    <Position X="34.5" Y="37.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::SEGMENT_POINT_RESULT" Collapsed="true">
+    <Position X="19.5" Y="37.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::SEGMENT_POINT_RESULT_D" Collapsed="true">
+    <Position X="15.5" Y="33.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::SEGMENT_TRIANGLE_RESULT" Collapsed="true">
+    <Position X="7.5" Y="37.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::SEGMENT_TRIANGLE_RESULT_D" Collapsed="true">
+    <Position X="36.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::TRIANGLE_POINT_RESULT" Collapsed="true">
+    <Position X="35.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::TRIANGLE_POINT_RESULT_D" Collapsed="true">
+    <Position X="3.5" Y="36.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::PLANE_POINT_RESULT" Collapsed="true">
+    <Position X="34.5" Y="32.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::PLANE_POINT_RESULT_D" Collapsed="true">
+    <Position X="26.5" Y="35.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MV1_COLL_RESULT_POLY" Collapsed="true">
+    <Position X="34.5" Y="27.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MV1_COLL_RESULT_POLY_DIM" Collapsed="true">
+    <Position X="11.5" Y="31.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MV1_REF_VERTEX" Collapsed="true">
+    <Position X="30.5" Y="34.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MV1_REF_POLYGON" Collapsed="true">
+    <Position X="33.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::MV1_REF_POLYGONLIST" Collapsed="true">
+    <Position X="33.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::SOUND3D_REVERB_PARAM" Collapsed="true">
+    <Position X="33.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::STREAMDATASHREDTYPE2" Collapsed="true">
+    <Position X="22.5" Y="32.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::STREAMDATASHREDTYPE2W" Collapsed="true">
+    <Position X="18.5" Y="32.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::STREAMDATASHRED" Collapsed="true">
+    <Position X="0.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPSTREAMDATASHRED" Collapsed="true">
+    <Position X="3.5" Y="19.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::STREAMDATA" Collapsed="true">
+    <Position X="31.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::COLORPALETTEDATA" Collapsed="true">
+    <Position X="7.5" Y="32.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::COLORDATA" Collapsed="true">
+    <Position X="19.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPCOLORDATA" Collapsed="true">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::BASEIMAGE" Collapsed="true">
+    <Position X="11.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::GRAPHIMAGE" Collapsed="true">
+    <Position X="16.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPGRAPHIMAGE" Collapsed="true">
+    <Position X="13.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LINEDATA" Collapsed="true">
+    <Position X="19.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPLINEDATA" Collapsed="true">
+    <Position X="17.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::POINTDATA" Collapsed="true">
+    <Position X="10.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPPOINTDATA" Collapsed="true">
+    <Position X="7.5" Y="17.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::IMAGEFORMATDESC" Collapsed="true">
+    <Position X="30.5" Y="29.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::DINPUT_JOYSTATE" Collapsed="true">
+    <Position X="32.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::XINPUT_STATE" Collapsed="true">
+    <Position X="3.5" Y="31.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::TOUCHINPUTPOINT" Collapsed="true">
+    <Position X="26.5" Y="30.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::TOUCHINPUTDATA" Collapsed="true">
+    <Position X="29.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::IPDATA" Collapsed="true">
+    <Position X="17.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::LPIPDATA" Collapsed="true">
+    <Position X="15.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="DxLib::IPDATA_IPv6" Collapsed="true">
+    <Position X="14.5" Y="30.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DXLib\DxLib.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="Microsoft YaHei UI" Size="9" />
+</ClassDiagram>
