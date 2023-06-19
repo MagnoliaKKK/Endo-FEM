@@ -166,8 +166,8 @@ void TetraGroupD::Create_SUM_M_Matrix() {
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		SUM_M_Matrix.block(3 * pi, 0, 3, 3 * particle_num) = SUMsub_M_Matrix;
 	}
-	std::cout << "SUM_M_Matrix" << std::endl;
-	std::cout << SUM_M_Matrix << std::endl;
+	/*std::cout << "SUM_M_Matrix" << std::endl;
+	std::cout << SUM_M_Matrix << std::endl;*/
 	std::cout << "Create SUM_M_Matrix Of Group " << tetra_group_id<< std::endl;
 }
 //グループの減衰行列を作成する
@@ -1705,7 +1705,7 @@ void TetraGroupD::Calc_GMRES_FEM() {
 			//Deltax_Bind = gmresFEM_Pre2.solveWithGuess(bind_force_iterative, iterativeVector);
 			//Deltax_In_Group = gmresFEM_Pre2.solveWithGuess(Constant_term_iteration + bind_force_iterative, iterativeVector);
 			Deltax_In_Group = Deltax_CoFEM + Deltax_Bind;
-			std::cout << "Deltax in group" << std::endl << Deltax_In_Group << std::endl;
+			//std::cout << "Deltax in group" << std::endl << Deltax_In_Group << std::endl;
 			mtGMRESReal.endMyTimer();
 		}
 	}
