@@ -161,13 +161,13 @@ void TetraGroupD::Create_SUM_M_Matrix() {
 		//SUMsub_M_Matrix.block(0 , 3 * pi, 3, 3) = (M_Matrix_C(3 * pi,3 * pi)/Group_Mass) * Eigen::Matrix3d::Identity();
 		SUMsub_M_Matrix.block(0, 3 * pi, 3, 3) = (m_In_Group[pi] / mass) * Eigen::Matrix3d::Identity();
 	}
-	std::cout << "SUMsub_M_Matrix" << std::endl;
-	std::cout << SUMsub_M_Matrix << std::endl;
+	//std::cout << "SUMsub_M_Matrix" << std::endl;
+	//std::cout << SUMsub_M_Matrix << std::endl;
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		SUM_M_Matrix.block(3 * pi, 0, 3, 3 * particle_num) = SUMsub_M_Matrix;
 	}
-	//std::cout << "SUM_M_Matrix" << std::endl;
-	//std::cout << SUM_M_Matrix << std::endl;
+	std::cout << "SUM_M_Matrix" << std::endl;
+	std::cout << SUM_M_Matrix << std::endl;
 	std::cout << "Create SUM_M_Matrix Of Group " << tetra_group_id<< std::endl;
 }
 //グループの減衰行列を作成する
@@ -790,8 +790,8 @@ void TetraGroupD::Create_Rotate_Matrix() {
 		center_grid = Eigen::Vector3d::Zero();
 		for (unsigned int pi = 0; pi < particle_num; pi++) {
 			center_grid[0] += SUM_M_Matrix(0, 3 * pi) * PrimeVector[3 * pi];
-			center_grid[1] += SUM_M_Matrix(0, 3 * pi) * PrimeVector[3 * pi + 1];
-			center_grid[2] += SUM_M_Matrix(0, 3 * pi) * PrimeVector[3 * pi + 2];
+			center_grid[1] += SUM_M_Matrix(1, 3 * pi) * PrimeVector[3 * pi + 1];
+			center_grid[2] += SUM_M_Matrix(2, 3 * pi) * PrimeVector[3 * pi + 2];
 		}
 
 		//Apqの計算
@@ -799,8 +799,13 @@ void TetraGroupD::Create_Rotate_Matrix() {
 			tempA = (PrimeVector.block(3 * pi, 0, 3, 1) - center_grid) * origin_center_distance[pi].transpose();
 			//Apq += tempA;
 			Apq += M_Matrix_C(3 * pi, 3 * pi) * tempA;
+			//std::cout << "origin_center_distance" << std::endl << origin_center_distance[pi] << std::endl;
+
 			//Apq += m_In_Group[pi] * tempA;
 		}
+		//std::cout << "Apq" << std::endl << Apq << std::endl;
+		//std::cout << "PrimeVector" << std::endl << PrimeVector << std::endl;
+		
 	}
 	else {
 		//現在の重心の計算(x_cm^j)
@@ -1688,6 +1693,7 @@ void TetraGroupD::Calc_GMRES_FEM() {
 			Deltax_Bind = gmresFEM_Pre.solve(bind_force_iterative);
 			//Deltax_In_Group = gmresFEM_Pre.solveWithGuess(Constant_term_iteration + bind_force_iterative, iterativeVector);
 			Deltax_In_Group = Deltax_CoFEM + Deltax_Bind;
+			
 			mtGMRESReal.endMyTimer();
 		}
 		else {
@@ -1699,6 +1705,7 @@ void TetraGroupD::Calc_GMRES_FEM() {
 			//Deltax_Bind = gmresFEM_Pre2.solveWithGuess(bind_force_iterative, iterativeVector);
 			//Deltax_In_Group = gmresFEM_Pre2.solveWithGuess(Constant_term_iteration + bind_force_iterative, iterativeVector);
 			Deltax_In_Group = Deltax_CoFEM + Deltax_Bind;
+			std::cout << "Deltax in group" << std::endl << Deltax_In_Group << std::endl;
 			mtGMRESReal.endMyTimer();
 		}
 	}
