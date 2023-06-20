@@ -74,6 +74,7 @@ protected:
 	void Solve_Constraints11(unsigned int loop);  //debug用(予測位置がグループごとに異なる)
 	void Solve_Constraints12(unsigned int loop); 
 	void Solve_Constraints13(unsigned int loop);//new method
+
 	void Volume_consevation(unsigned int loop);
 
 	Eigen::Vector3d Calc_New_Exp_Pos(ParticleD* p);//位置修正(差を考える)

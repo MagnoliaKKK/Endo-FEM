@@ -447,53 +447,53 @@ void UseBlockObjectDouble::Update() {
 	double JacobiTime = 0.0;
 	double PrecompTime = 0.0;
 	double FbinditeraTime = 0.0;
-	//Solve_Constraints13(PBD_LOOP);
+	Solve_Constraints13(PBD_LOOP);
 	//差分法かLUかを選択する
-	if (whichmethodused) {
-		for (auto _g : groups) {
-			mtCP_3.startMyTimer();
-			mtUpadateJacobi.startMyTimer();
-			//初期化してもしなくてもいい
-			_g->iterativeVector = Eigen::VectorXd::Zero(3 * _g->particles.size());
-			if (useSparse) {
-				_g->Calc_Jacobi_Matrix_iteration_Sparse();
-				_g->Calc_Constant_term_iteration_Sparse();
-			}
-			else {
-				_g->Calc_Jacobi_Matrix_iteration();
-				_g->Calc_Constant_term_iteration2();
-			}
-			mtUpadateJacobi.endMyTimer();
-			JacobiTime += mtUpadateJacobi.getDt();
-			//Jacobi行列の前処理
-			mtPrecomp.startMyTimer();
-			_g->Calc_GMRES_Pre();
-			mtPrecomp.endMyTimer();
-			PrecompTime += mtPrecomp.getDt();
-			mtCP_3.endMyTimer();
-		}
-		//std::cout << "Jacobi time is " << JacobiTime << std::endl;
-		//std::cout << "Precomp time is " << PrecompTime << std::endl;
-		//反復法
-		//std::cout << "OK" << std::endl;
-		mtFbinditera.startMyTimer();
-		Solve_Constraints12(PBD_LOOP);
-		mtFbinditera.endMyTimer();
-		FbinditeraTime = mtFbinditera.getDt();
+	//if (whichmethodused) {
+	//	for (auto _g : groups) {
+	//		mtCP_3.startMyTimer();
+	//		mtUpadateJacobi.startMyTimer();
+	//		//初期化してもしなくてもいい
+	//		_g->iterativeVector = Eigen::VectorXd::Zero(3 * _g->particles.size());
+	//		if (useSparse) {
+	//			_g->Calc_Jacobi_Matrix_iteration_Sparse();
+	//			_g->Calc_Constant_term_iteration_Sparse();
+	//		}
+	//		else {
+	//			_g->Calc_Jacobi_Matrix_iteration();
+	//			_g->Calc_Constant_term_iteration2();
+	//		}
+	//		mtUpadateJacobi.endMyTimer();
+	//		JacobiTime += mtUpadateJacobi.getDt();
+	//		//Jacobi行列の前処理
+	//		mtPrecomp.startMyTimer();
+	//		_g->Calc_GMRES_Pre();
+	//		mtPrecomp.endMyTimer();
+	//		PrecompTime += mtPrecomp.getDt();
+	//		mtCP_3.endMyTimer();
+	//	}
+	//	//std::cout << "Jacobi time is " << JacobiTime << std::endl;
+	//	//std::cout << "Precomp time is " << PrecompTime << std::endl;
+	//	//反復法
+	//	//std::cout << "OK" << std::endl;
+	//	mtFbinditera.startMyTimer();
+	//	Solve_Constraints12(PBD_LOOP);
+	//	mtFbinditera.endMyTimer();
+	//	FbinditeraTime = mtFbinditera.getDt();
 		//std::cout << "Fbinditera time is " << FbinditeraTime << std::endl;
-	}
-	else {
-		for (auto _g : groups) {
-			mtCP_3.startMyTimer();
-			//初期化してもしなくてもいい
-			//_g->iterativeVector = Eigen::VectorXd::Zero(3 * _g->particles.size());
-			_g->Calc_Jacobi_Matrix_iteration();
-			_g->Calc_Constant_term_iteration2();
-			mtCP_3.endMyTimer();
-		}
-		//反復法
-		Solve_Constraints10_LU(PBD_LOOP);
-	}
+	//}
+	//else {
+	//	for (auto _g : groups) {
+	//		mtCP_3.startMyTimer();
+	//		//初期化してもしなくてもいい
+	//		//_g->iterativeVector = Eigen::VectorXd::Zero(3 * _g->particles.size());
+	//		_g->Calc_Jacobi_Matrix_iteration();
+	//		_g->Calc_Constant_term_iteration2();
+	//		mtCP_3.endMyTimer();
+	//	}
+	//	//反復法
+	//	Solve_Constraints10_LU(PBD_LOOP);
+	//}
 	mtCconstr.endMyTimer();
 	std::ostringstream sstr;
 	std::ostringstream sstr2;

@@ -768,14 +768,16 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (int i = 0; i < loop; i++)
 	{
 		for (auto _g : groups) {
-			/*_g->LHS();
-			_g->RHS();*/
+			_g->LHS();
+			_g->RHS();
 
 			Eigen::GMRES<Eigen::SparseMatrix<double>> solver;
-			solver.setMaxIterations(1000);
-			solver.setTolerance(1e-10);
-			solver.compute(_g->LHS());
-			_g->DeltaxNew = solver.solve(_g->RHS());		
+			//solver.preconditioner().setF
+			solver.setMaxIterations(outerGMRES);
+			solver.set_restart(innerGMRES);
+			//solver.setTolerance(1e-10);
+			solver.compute(_g->Jacobi_Matrix_Sparse);
+			_g->DeltaxNew = solver.solve(_g->Constant_term_iteration);
 		}
 		for (auto _p : particles) {
 			if (!(_p->Is_Fixed())) {

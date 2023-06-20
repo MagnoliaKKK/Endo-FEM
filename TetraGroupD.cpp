@@ -2168,22 +2168,28 @@ void TetraGroupD::Calc_Jacobi_Matrix_iteration() {
 	//その他もろもろの出力がみたいとき
 	//OP_OtherMatrix(rotate_matrix3N);
 }
-Eigen::SparseMatrix<double> TetraGroupD::LHS() {
+void TetraGroupD::LHS() {
 	Jacobi_Matrix_Sparse.setZero();
 	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
-	Eigen::MatrixXd MCInv = MassDamInv_Matrix.inverse();//(mass+damping)^-1
-	Eigen::SparseMatrix<double> MCInv_Sparse = MCInv.sparseView();//sparse 化
-	Jacobi_Matrix_Sparse = Rn_MatrixTR_Sparse + StiffnessTT_Matrix_Sparse * MCInv_Sparse * Rn_MatrixTR_Sparse * (Ident - MassCondi_Sparse);
-	return Jacobi_Matrix_Sparse;
+
+	//Jacobi_Matrix = Damm_Matrix_Sparse + Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse * MassCondi_Sparse;
+
+	//Sparse化
+	//Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
+
+
+	//現公
+	Jacobi_Matrix_Sparse = Damm_Matrix_Sparse + Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse * MassCondi_Sparse;
+	
 }
 
-Eigen::VectorXd TetraGroupD::RHS(){
+void TetraGroupD::RHS(){
 	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
-	Eigen::MatrixXd MCInv = MassDamInv_Matrix.inverse();//(mass+damping)^-1
-	Eigen::SparseMatrix<double> MCInv_Sparse = MCInv.sparseView();//sparse 化
+
+	//計算
+	//MassCondi = Eigen::MatrixXd::Identity(3 * particles.size(), 3 * particles.size()) - SUM_M_Matrix;//(I-Mj,cm)
+	Constant_term_iteration = Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * (OrigineVector - Rn_MatrixTR_Sparse * MassCondi_Sparse * PrimeVector) + bind_force_iterative;
 	
-	Constant_term_iteration = StiffnessTT_Matrix_Sparse * (OrigineVector - Rn_MatrixTR_Sparse * MassCondi_Sparse * PrimeVector) + TIME_STEP * TIME_STEP * MCInv * Rn_MatrixTR_Sparse * bind_force_iterative;
-	return Constant_term_iteration;
 }
 void TetraGroupD::Calc_Jacobi_Matrix_iteration_Sparse() {
 	//初期化
