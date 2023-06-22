@@ -185,6 +185,8 @@ public:
 	void Calc_Constant_term_iteration_Sparse();//反復法、ヤコビで使う定数ベクトルの更新(1ステップで一回)(差分の値)(Sparse)
 	void LHS();
 	void RHS();
+	void LHS0();
+	void RHS0();
 	void Calc_Jacobi_Matrix_iteration_Old();//OldFEMの係数行列作成
 	void Calc_Constant_term_iteration_Old ();//OldFEMの定数値作成
 

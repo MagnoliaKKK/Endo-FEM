@@ -480,7 +480,7 @@ void UseBlockObjectDouble::Update() {
 	//	Solve_Constraints12(PBD_LOOP);
 	//	mtFbinditera.endMyTimer();
 	//	FbinditeraTime = mtFbinditera.getDt();
-		//std::cout << "Fbinditera time is " << FbinditeraTime << std::endl;
+	//	std::cout << "Fbinditera time is " << FbinditeraTime << std::endl;
 	//}
 	//else {
 	//	for (auto _g : groups) {

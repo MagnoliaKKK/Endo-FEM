@@ -2129,6 +2129,9 @@ void TetraGroupD::Calc_Jacobi_Matrix_iteration() {
 
 
 	Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose()*(Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
+
+	//Jacobi_Matrix = Ident + MassDamInv_Matrix * stiffness_matrix * TIME_STEP * TIME_STEP - MassDamInv_Matrix * stiffness_matrix * TIME_STEP * TIME_STEP * SUM_M_Matrix;
+
 	
 	//Sparse化
 	Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
@@ -2170,7 +2173,9 @@ void TetraGroupD::Calc_Jacobi_Matrix_iteration() {
 }
 void TetraGroupD::LHS() {
 	Jacobi_Matrix_Sparse.setZero();
-	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
+	Eigen::SparseMatrix<double> sparse_identity(3 * particle_num, 3 * particle_num);
+	sparse_identity.setIdentity();
+	
 
 	//Jacobi_Matrix = Damm_Matrix_Sparse + Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse * MassCondi_Sparse;
 
@@ -2180,6 +2185,8 @@ void TetraGroupD::LHS() {
 
 	//現公
 	Jacobi_Matrix_Sparse = Damm_Matrix_Sparse + Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse * MassCondi_Sparse;
+	//Jacobi_Matrix_Sparse = sparse_identity + (MassDamInv_Matrix).sparseView() * StiffnessTT_Matrix_Sparse - (MassDamInv_Matrix).sparseView() * StiffnessTT_Matrix_Sparse * SUM_M_Matrix.sparseView();
+	
 	
 }
 
@@ -2189,8 +2196,50 @@ void TetraGroupD::RHS(){
 	//計算
 	//MassCondi = Eigen::MatrixXd::Identity(3 * particles.size(), 3 * particles.size()) - SUM_M_Matrix;//(I-Mj,cm)
 	Constant_term_iteration = Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * (OrigineVector - Rn_MatrixTR_Sparse * MassCondi_Sparse * PrimeVector) + bind_force_iterative;
-	
+
+	//Constant_term_iteration = StiffnessTT_Matrix_Sparse * (OrigineVector - Rn_MatrixTR_Sparse * MassCondi_Sparse * PrimeVector) + Rn_MatrixTR_Sparse * bind_force_iterative * TIME_STEP * TIME_STEP;
+
 }
+void TetraGroupD::LHS0() {
+	//初期化
+	Jacobi_Matrix = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Jacobi_Matrix_Sparse.setZero();
+
+	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
+
+	//回転行列を3Nにする
+	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	// Calc rotate_matrix3N
+	for (unsigned int pi = 0; pi < particle_num; pi++) {
+		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
+	}
+
+	//Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose() * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
+	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix) * rotate_matrix3N.transpose();
+	//Jacobi_Matrix = Ident + MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
+
+	//Sparse化
+	Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
+}
+
+void TetraGroupD::RHS0() {
+	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
+	
+	Eigen::MatrixXd Ident2 = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
+
+	
+
+	//回転行列を3Nにする
+	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	// Calc rotate_matrix3N
+	for (unsigned int pi = 0; pi < particle_num; pi++) {
+		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
+	}
+
+	//計算
+	Constant_term_iteration = TIME_STEP * TIME_STEP * MassDamInv_Matrix * (stiffness_matrix * (OrigineVector - rotate_matrix3N.transpose() * PrimeVector + rotate_matrix3N.transpose() * SUM_M_Matrix) + rotate_matrix3N.transpose() * bind_force_iterative);
+}
+
 void TetraGroupD::Calc_Jacobi_Matrix_iteration_Sparse() {
 	//初期化
 	Jacobi_Matrix_Sparse.setZero();
@@ -2355,7 +2404,7 @@ void TetraGroupD::Calc_Constant_term_iteration2() {
 
 	//計算
 	Constant_term_iteration = TIME_STEP * TIME_STEP * rotate_matrix3N * stiffness_matrix * ( (rotate_matrix3N.transpose() * ((SUM_M_Matrix -  Ident2) * PrimeVector)) + OrigineVector);
-
+	//Constant_term_iteration = TIME_STEP * TIME_STEP * stiffness_matrix * ((rotate_matrix3N.transpose() * ((SUM_M_Matrix - Ident2) * PrimeVector)) + OrigineVector);
 	//debug
 	/*for (unsigned int pi = 0; pi < particle_num; pi++) {
 		//節点のidを確認

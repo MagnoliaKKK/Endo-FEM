@@ -49,7 +49,7 @@ outerGMRES = 100
 #GMRESなどの反復法で前処理をするか(1)しないか(0)
 usePreIte = 1
 #行列をSparseで計算するか(1)しないか(0)
-useSparse = 1
+useSparse = 0
 #回転行列を更新するか(1)しないか(0)
 useUpRotate = 1
 #回転行列をAPD更新するか(1)SVDで更新するか(0)
