@@ -45,6 +45,7 @@ public:
 	Eigen::MatrixXd SUM_M_Matrix;	  // グループの帯状質量行列
 
 	Eigen::MatrixXd Jacobi_Matrix; // 反復法の係数行列
+	Eigen::MatrixXd Jacobi_Matrix_Inv;
 	Eigen::SparseMatrix<double> Jacobi_Matrix_Sparse; // 反復法の係数行列(Sparse)
 	Eigen::MatrixXd DiagFEM_Matrix_iteration; // 反復法のガウスザイデル用の対角化行列
 	Eigen::MatrixXd F_FEM_Matrix_iteration;   // 反復法のガウスザイデル用の対角化じゃないところの行列

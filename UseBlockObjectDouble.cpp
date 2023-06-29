@@ -415,7 +415,7 @@ void UseBlockObjectDouble::Update() {
 	}
 	//std::cout << "Exp Time is " << Exptime << std::endl;
 	//std::cout << "Rotate Time is " << Rotatetime << std::endl;
-	//予測位置の平均を節点が保持しておく(Objectがvectorとしてもっていてもいい)
+	//予測位置の平均を節点が保持しておく(Objectがvectorとしてもっていてもいい)-----------------
 	for (auto _p : particles) {
 		if (!(_p->Is_Fixed())) {
 			_p->Set_Exp_Pos(Calc_New_Exp_Pos_Mean(_p));
@@ -428,7 +428,7 @@ void UseBlockObjectDouble::Update() {
 			std::cout << "FE_INVALID PBD 263" << std::endl;
 		}
 		feclearexcept(FE_ALL_EXCEPT);
-	}
+	}//----------------------------------------------------------
 	//EXPがちゃんと計算できているか確認
 	/*
 	std::cout << "Initial" << std::endl;

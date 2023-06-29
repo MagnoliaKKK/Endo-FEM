@@ -763,31 +763,29 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (auto _g : groups)
 	{
 		_g->ReSet_Fbind_Pos();
+		_g->LHS0();
 	}
 
 	for (int i = 0; i < loop; i++)
 	{
 		for (auto _g : groups) {
-			_g->LHS0();
+			
 			_g->RHS0();
-			/*if (useSparse) {
-				_g->LHS();
-				_g->RHS();
-			}
-			else {
-				_g->LHS0();
-				_g->RHS0();
 
+			//Eigen::GMRES<Eigen::SparseMatrix<double>> solver;
+			////solver.preconditioner().setF
+			//solver.setMaxIterations(outerGMRES);
+			//solver.set_restart(innerGMRES);
+			////solver.setTolerance(1e-10);
+			//solver.compute(_g->Jacobi_Matrix_Sparse);
+			//_g->DeltaxNew = solver.solve(_g->Constant_term_iteration);
+			Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * _g->particle_num, 3 * _g->particle_num);
+			// Calc rotate_matrix3N
+			for (unsigned int pi = 0; pi < _g->particle_num; pi++) {
+				rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = _g->rotate_matrix;
 			}
-		*/
-			Eigen::GMRES<Eigen::SparseMatrix<double>> solver;
-			//solver.preconditioner().setF
-			solver.setMaxIterations(outerGMRES);
-			solver.set_restart(innerGMRES);
-			//solver.setTolerance(1e-10);
-			solver.compute(_g->Jacobi_Matrix_Sparse);
-			_g->DeltaxNew = solver.solve(_g->Constant_term_iteration);
-			//_g->DeltaxNew = _g->Rn_Matrix_Sparse * _g->DeltaxNew;
+			_g->DeltaxNew = _g->Jacobi_Matrix_Inv * _g->Constant_term_iteration;
+			_g->DeltaxNew = rotate_matrix3N * _g->DeltaxNew;
 		}
 		for (auto _p : particles) {
 			if (!(_p->Is_Fixed())) {

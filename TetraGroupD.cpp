@@ -320,6 +320,7 @@ void TetraGroupD::Create_Local_Stiffness_Matrix() {
 	StiffnessTT_Matrix_Sparse = (stiffness_matrix * TIME_STEP * TIME_STEP).sparseView();
 
 	std::cout << "Create Object K Matrix Of Group" << tetra_group_id << std::endl;
+	std::cout << StiffnessTT_Matrix_Sparse << std::endl;
 }
 //節点情報などを付加する
 void TetraGroupD::Create_Information() {
@@ -645,6 +646,7 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 	else {
 		PrimeVector = x_Local + MassDamInv_Matrix * M_Matrix_C * v_Local * TIME_STEP;
 	}
+	std::cout << "Prime Vector" << std::endl << PrimeVector;
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Calc_Exp" << std::endl;
 	}
@@ -2203,6 +2205,7 @@ void TetraGroupD::RHS(){
 void TetraGroupD::LHS0() {
 	//初期化
 	Jacobi_Matrix = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Jacobi_Matrix_Inv = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
 	Jacobi_Matrix_Sparse.setZero();
 
 	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
@@ -2215,11 +2218,13 @@ void TetraGroupD::LHS0() {
 	}
 
 	//Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose() * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
-	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix) * rotate_matrix3N.transpose();
+	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
+	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse();
+	
 	//Jacobi_Matrix = Ident + MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
 
 	//Sparse化
-	Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
+	//Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
 }
 
 void TetraGroupD::RHS0() {
