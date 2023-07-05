@@ -613,10 +613,13 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 	f_Local = Eigen::VectorXd::Zero(3 * particles.size());
 	x_Local = Eigen::VectorXd::Zero(3 * particles.size());
 	v_Local = Eigen::VectorXd::Zero(3 * particles.size());
+	
+	feclearexcept(FE_ALL_EXCEPT);
 
 	//現時刻での位置や力、速度のベクトル化
 	//vectorization of position, force, and velocity at current time
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
+
 		f_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Force();
 		x_Local.block(3 * pi, 0, 3, 1) = GroupGridVector.block(3 * pi, 0, 3, 1);
 		v_Local.block(3 * pi, 0, 3, 1) = GroupVelVector.block(3 * pi, 0, 3, 1);
@@ -628,13 +631,53 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 				f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0, 1.0e+4, 0);
 			}
 		}
+
+		/*feclearexcept(FE_ALL_EXCEPT);
+		if (fetestexcept(FE_ALL_EXCEPT)) {
+			std::cout << "P0, exception" << std::endl;
+		}*/
 	}
 	//重力を加え速度を更新する
 	//Apply gravity and update velocity
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + (f_Local.block(3 * pi, 0, 3, 1) / M_Matrix_C(3 * pi, 3 * pi)) * TIME_STEP + gravity.block(3 * pi, 0, 3, 1) * TIME_STEP;
-	}
+		Eigen::VectorXd tempA = Eigen::VectorXd::Zero(3 * particles.size());
+		Eigen::VectorXd tempB = Eigen::VectorXd::Zero(3 * particles.size());
+		Eigen::VectorXd tempC = Eigen::VectorXd::Zero(3 * particles.size());
+		
 
+		//tempA.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1);
+		//if (fetestexcept(FE_INVALID)) {
+		//	std::cout << "FE_INVALID Calc_Exp2" << std::endl;
+		//}
+		//feclearexcept(FE_ALL_EXCEPT);
+		//tempB.block(3 * pi, 0, 3, 1) = (f_Local.block(3 * pi, 0, 3, 1) / M_Matrix_C(3 * pi, 3 * pi)) * TIME_STEP;
+		//if (fetestexcept(FE_INVALID)) {
+		//	std::cout << "FE_INVALID Calc_Exp3" << std::endl;
+		//}
+		//feclearexcept(FE_ALL_EXCEPT);
+		//tempC.block(3 * pi, 0, 3, 1) = gravity.block(3 * pi, 0, 3, 1) * TIME_STEP;
+		//if (fetestexcept(FE_INVALID)) {
+		//	std::cout << "FE_INVALID Calc_Exp5" << std::endl;
+		//}
+		//feclearexcept(FE_ALL_EXCEPT);
+
+		//v_Local.block(3 * pi, 0, 3, 1) = tempA + tempB + tempC;
+		//if (fetestexcept(FE_INVALID)) {
+		//	std::cout << "FE_INVALID Calc_Exp4" << std::endl;
+		//}
+		//feclearexcept(FE_ALL_EXCEPT);
+
+		/*feclearexcept(FE_ALL_EXCEPT);
+		if (fetestexcept(FE_ALL_EXCEPT)) {
+			std::cout << "P1, exception" << std::endl;
+		}*/
+
+	}
+	/*if (fetestexcept(FE_INVALID)) {
+		std::cout << "FE_INVALID Calc_Exp000" << std::endl;
+	}
+	feclearexcept(FE_ALL_EXCEPT);*/
 	//弾性力を除いた時の位置の更新(予測位置)
 	//Update position when elastic forces are excluded (predicted position)
 	//Constの計算や回転行列の推定で使うベクトルの生成
@@ -645,12 +688,16 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 	}
 	else {
 		PrimeVector = x_Local + MassDamInv_Matrix * M_Matrix_C * v_Local * TIME_STEP;
+		if (fetestexcept(FE_INVALID)) {
+			std::cout << "FE_INVALID Calc_Exp111" << std::endl;
+		}
+		feclearexcept(FE_ALL_EXCEPT);
 	}
-	std::cout << "Prime Vector" << std::endl << PrimeVector;
-	if (fetestexcept(FE_INVALID)) {
+	//std::cout << "Prime Vector" << std::endl << PrimeVector;
+	/*if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Calc_Exp" << std::endl;
 	}
-	feclearexcept(FE_ALL_EXCEPT);
+	feclearexcept(FE_ALL_EXCEPT);*/
 
 	//固定点の扱い方はいまだによくわかっていない
 	//I still don't really understand how to handle fixed points.
@@ -2002,6 +2049,10 @@ void TetraGroupD::Update_Fbind_Pos8() {
 				//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
 				Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() * (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
+				if (fetestexcept(FE_INVALID)) {
+					std::cout << "FE_INVALID bindF" << std::endl;
+				}
+				feclearexcept(FE_ALL_EXCEPT);
 				//std::cout << "Bind" << particles[pi]->p_id << "of " << tetra_group_id << " is " << std::endl;
 				//std::cout<< bind_force_iterative.block(3 * pi, 0, 3, 1) << std::endl;
 			}
@@ -2013,6 +2064,10 @@ void TetraGroupD::Update_Fbind_Pos8() {
 			//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
 			Conv = Conv - (particles[pi]->Get_Exp_Pos());
 			bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
+			if (fetestexcept(FE_INVALID)) {
+				std::cout << "FE_INVALID BindF1" << std::endl;
+			}
+			feclearexcept(FE_ALL_EXCEPT);
 			//std::cout << "Bind" << particles[pi]->p_id << "of " << tetra_group_id << " is " << std::endl;
 			//std::cout << bind_force_iterative.block(3 * pi, 0, 3, 1) << std::endl;
 		}

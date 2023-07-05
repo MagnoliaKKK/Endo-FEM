@@ -786,6 +786,10 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			}
 			_g->DeltaxNew = _g->Jacobi_Matrix_Inv * _g->Constant_term_iteration;
 			_g->DeltaxNew = rotate_matrix3N * _g->DeltaxNew;
+			if (fetestexcept(FE_INVALID)) {
+				std::cout << "FE_INVALID Deltax" << std::endl;
+			}
+			feclearexcept(FE_ALL_EXCEPT);
 		}
 		for (auto _p : particles) {
 			if (!(_p->Is_Fixed())) {
@@ -809,6 +813,10 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 		for (unsigned int pi = 0; pi < _g->particle_num; pi++) {
 			//速度をいれてみた
 			_g->GroupVelVector.block(3 * pi, 0, 3, 1) = (_g->PrimeVector.block(3 * pi, 0, 3, 1) + _g->DeltaxNew.block(3 * pi, 0, 3, 1) - _g->GroupGridVector.block(3 * pi, 0, 3, 1)) / TIME_STEP;
+			if (fetestexcept(FE_INVALID)) {
+				std::cout << "FE_INVALID Calc_Exp6" << std::endl;
+			}
+			feclearexcept(FE_ALL_EXCEPT);
 			_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->PrimeVector.block(3 * pi, 0, 3, 1) + _g->DeltaxNew.block(3 * pi, 0, 3, 1);
 			if (_g->particles[pi]->Is_Fixed()) {
 				_g->GroupVelVector.block(3 * pi, 0, 3, 1) = Eigen::Vector3d::Zero();
@@ -819,6 +827,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;
 	}
+	feclearexcept(FE_ALL_EXCEPT);
 }
 double ObjectD::Get_V() {
 	double v = 0;
