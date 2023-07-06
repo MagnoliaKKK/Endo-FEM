@@ -396,6 +396,8 @@ void UseBlockObjectDouble::Update() {
 		mtUpRotate.startMyTimer();
 		if (useUpRotate) {
 			_g->Update_Rotate();
+		
+
 			//_g->Update_Rotate2();
 		}
 		else {
@@ -409,6 +411,7 @@ void UseBlockObjectDouble::Update() {
 			_g->Rn_Matrix_Sparse = rotate_matrix3N.sparseView();
 			_g->Rn_MatrixTR_Sparse = (rotate_matrix3N.transpose()).sparseView();
 		}
+		
 		mtUpRotate.endMyTimer();
 		Rotatetime += mtUpRotate.getDt();
 		//std::cout << "create Rotate" << std::endl;

@@ -751,6 +751,10 @@ void ObjectD::Solve_Constraints12(unsigned int loop) {
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);
 			}
 		}
+		std::ofstream outputfile("Deltax_In_Group.txt", std::ios_base::app);
+		outputfile << "Deltax_In_Group" << _g->tetra_group_id << " is " << std::endl;
+		outputfile << std::setprecision(3) << _g->Deltax_In_Group << std::endl;
+		outputfile.close();
 	}
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;
@@ -779,13 +783,12 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			////solver.setTolerance(1e-10);
 			//solver.compute(_g->Jacobi_Matrix_Sparse);
 			//_g->DeltaxNew = solver.solve(_g->Constant_term_iteration);
-			Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * _g->particle_num, 3 * _g->particle_num);
-			// Calc rotate_matrix3N
-			for (unsigned int pi = 0; pi < _g->particle_num; pi++) {
-				rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = _g->rotate_matrix;
-			}
-			_g->DeltaxNew = _g->Jacobi_Matrix_Inv * _g->Constant_term_iteration;
-			_g->DeltaxNew = rotate_matrix3N * _g->DeltaxNew;
+			
+
+			_g->DeltaxNew = (_g->Jacobi_Matrix_Inv) * (_g->Constant_term_iteration);
+			_g->DeltaxNew = _g->rotate_matrix3N * _g->DeltaxNew;
+			
+
 			if (fetestexcept(FE_INVALID)) {
 				std::cout << "FE_INVALID Deltax" << std::endl;
 			}
@@ -812,7 +815,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (auto _g : groups) {
 		for (unsigned int pi = 0; pi < _g->particle_num; pi++) {
 			//速度をいれてみた
-			_g->GroupVelVector.block(3 * pi, 0, 3, 1) = (_g->PrimeVector.block(3 * pi, 0, 3, 1) + _g->DeltaxNew.block(3 * pi, 0, 3, 1) - _g->GroupGridVector.block(3 * pi, 0, 3, 1)) / TIME_STEP;
+			_g->GroupVelVector.block(3 * pi, 0, 3, 1) = (_g->PrimeVector.block(3 * pi, 0, 3, 1) - _g->GroupGridVector.block(3 * pi, 0, 3, 1)) / TIME_STEP;
 			if (fetestexcept(FE_INVALID)) {
 				std::cout << "FE_INVALID Calc_Exp6" << std::endl;
 			}
@@ -823,6 +826,10 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);
 			}
 		}
+		std::ofstream outputfile("Deltax.txt", std::ios_base::app);
+		outputfile << "Deltax" << _g->tetra_group_id << " is " << std::endl;
+		outputfile << std::setprecision(3) << _g->DeltaxNew << std::endl;
+		outputfile.close();
 	}
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;

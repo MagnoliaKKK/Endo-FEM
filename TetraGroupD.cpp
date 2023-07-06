@@ -6,6 +6,8 @@
 #include "TetraGroupD.h"
 #include <typeinfo>
 #include "UTClapack.h"
+#include <iostream>
+#include <fstream>
 
 
 
@@ -166,8 +168,8 @@ void TetraGroupD::Create_SUM_M_Matrix() {
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		SUM_M_Matrix.block(3 * pi, 0, 3, 3 * particle_num) = SUMsub_M_Matrix;
 	}
-	/*std::cout << "SUM_M_Matrix" << std::endl;
-	std::cout << SUM_M_Matrix << std::endl;*/
+	//std::cout << "SUM_M_Matrix" << std::endl;
+	//std::cout << SUM_M_Matrix << std::endl;
 	std::cout << "Create SUM_M_Matrix Of Group " << tetra_group_id<< std::endl;
 }
 //グループの減衰行列を作成する
@@ -319,8 +321,8 @@ void TetraGroupD::Create_Local_Stiffness_Matrix() {
 	StiffnessTT_Matrix_Sparse.setZero();
 	StiffnessTT_Matrix_Sparse = (stiffness_matrix * TIME_STEP * TIME_STEP).sparseView();
 
-	std::cout << "Create Object K Matrix Of Group" << tetra_group_id << std::endl;
-	std::cout << StiffnessTT_Matrix_Sparse << std::endl;
+	/*std::cout << "Create Object K Matrix Of Group" << tetra_group_id << std::endl;
+	std::cout << StiffnessTT_Matrix_Sparse << std::endl;*/
 }
 //節点情報などを付加する
 void TetraGroupD::Create_Information() {
@@ -854,7 +856,7 @@ void TetraGroupD::Create_Rotate_Matrix() {
 		}
 		//std::cout << "Apq" << std::endl << Apq << std::endl;
 		//std::cout << "PrimeVector" << std::endl << PrimeVector << std::endl;
-		
+
 	}
 	else {
 		//現在の重心の計算(x_cm^j)
@@ -886,16 +888,50 @@ void TetraGroupD::Create_Rotate_Matrix() {
 	}
 	feclearexcept(FE_ALL_EXCEPT);
 
-	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particles.size(), 3 * particles.size());
+	rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particles.size(), 3 * particles.size());
+	Eigen::MatrixXd rotate_matrix3NTR = Eigen::MatrixXd::Zero(3 * particles.size(), 3 * particles.size());
+	Eigen::MatrixXd res = Eigen::MatrixXd::Zero(3 * particles.size(), 3 * particles.size());
 	//Rn_Matrix_Sparse.setZero();
 	//Rn_MatrixTR_Sparse.setZero();
 	// Calc rotate_matrix3N
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
 	}
+	rotate_matrix3NTR = rotate_matrix3N.transpose();
 	Rn_Matrix_Sparse = rotate_matrix3N.sparseView();
 	Rn_MatrixTR_Sparse = (rotate_matrix3N.transpose()).sparseView();
 	mtRotationSparse.endMyTimer();
+	res = rotate_matrix3N * rotate_matrix3NTR;
+
+
+	//std::ofstream file("rotate.txt");
+	//if (file.is_open()) {
+	//	// 输出矩阵的每个元素到文件
+	//	for (int i = 0; i < rotate_matrix3N.rows(); ++i) {
+	//		for (int j = 0; j < rotate_matrix3N.cols(); ++j) {
+	//			file << rotate_matrix3N(i, j) << " ";
+	//		}
+	//		file << std::endl;
+	//	}
+	//	// 关闭文件流
+	//	file.close();
+	//}
+	//std::ofstream file("res.txt");
+
+	//if (file.is_open()) {
+	//	// 输出矩阵的每个元素到文件
+	//	for (int i = 0; i < res.rows(); ++i) {
+	//		for (int j = 0; j < res.cols(); ++j) {
+	//			file << res(i, j) << " ";
+	//		}
+	//		file << std::endl;
+	//	}
+	//	// 关闭文件流
+	//	file.close();
+	//}
+
+
+
 
 	//Debug
 	//かかる時間を計測する
@@ -2266,15 +2302,24 @@ void TetraGroupD::LHS0() {
 	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
 
 	//回転行列を3Nにする
-	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	// Calc rotate_matrix3N
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
-	}
 
 	//Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose() * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
-	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
+	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix - TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * SUM_M_Matrix;
 	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse();
+	std::ofstream file("Jacobi_Matrix.txt");
+
+	if (file.is_open()) {
+		// 输出矩阵的每个元素到文件
+		for (int i = 0; i < Jacobi_Matrix.rows(); ++i) {
+			for (int j = 0; j < Jacobi_Matrix.cols(); ++j) {
+				file << Jacobi_Matrix(i, j) << " ";
+			}
+			file << std::endl;
+		}
+		// 关闭文件流
+		file.close();
+	}
+
 	
 	//Jacobi_Matrix = Ident + MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
 
@@ -2285,19 +2330,31 @@ void TetraGroupD::LHS0() {
 void TetraGroupD::RHS0() {
 	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
 	
-	Eigen::MatrixXd Ident2 = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
+	//Eigen::MatrixXd Ident2 = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
+	Eigen::MatrixXd tempA = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Eigen::MatrixXd tempB = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Eigen::MatrixXd tempC = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Eigen::MatrixXd tempD = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
 
 	
 
-	//回転行列を3Nにする
-	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	// Calc rotate_matrix3N
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
-	}
-
 	//計算
-	Constant_term_iteration = TIME_STEP * TIME_STEP * MassDamInv_Matrix * (stiffness_matrix * (OrigineVector - rotate_matrix3N.transpose() * PrimeVector + rotate_matrix3N.transpose() * SUM_M_Matrix) + rotate_matrix3N.transpose() * bind_force_iterative);
+	//Constant_term_iteration = TIME_STEP * TIME_STEP * MassDamInv_Matrix * (stiffness_matrix * (OrigineVector - rotate_matrix3N.transpose() * PrimeVector + rotate_matrix3N.transpose() * SUM_M_Matrix) + rotate_matrix3N.transpose() * bind_force_iterative);
+	//Constant_term_iteration = TIME_STEP * TIME_STEP * (M_Matrix_C + Damping_Matrix).inverse() * stiffness_matrix * OrigineVector - TIME_STEP * TIME_STEP * (M_Matrix_C + Damping_Matrix).inverse() * stiffness_matrix * rotate_matrix3N.transpose() * PrimeVector + TIME_STEP * TIME_STEP * (M_Matrix_C + Damping_Matrix).inverse() * stiffness_matrix * rotate_matrix3N.transpose() * SUM_M_Matrix * PrimeVector + TIME_STEP * TIME_STEP * (M_Matrix_C + Damping_Matrix).inverse() * rotate_matrix3N.inverse() * bind_force_iterative;
+
+	tempA = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * OrigineVector;
+	
+
+
+	tempB = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * rotate_matrix3N.transpose() * PrimeVector;
+	tempC = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * rotate_matrix3N.transpose() * SUM_M_Matrix * PrimeVector;
+	tempD = TIME_STEP * TIME_STEP * MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
+	Constant_term_iteration = tempA - tempB + tempC + tempD;
+	std::ofstream outputfile("Constant_term_iteration.txt", std::ios_base::app);
+	outputfile << "Constant_term_iteration" << tetra_group_id << " is " << std::endl;
+	outputfile << std::setprecision(3) << Constant_term_iteration << std::endl;
+	outputfile.close();
+
 }
 
 void TetraGroupD::Calc_Jacobi_Matrix_iteration_Sparse() {

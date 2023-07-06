@@ -147,7 +147,8 @@ public:
 	Eigen::Quaterniond Cay(Eigen::Vector3d a);
 	Eigen::Quaterniond Exp(Eigen::Vector3d a);
 	Eigen::Quaterniond Exp2(Eigen::Vector3d a);
-	Eigen::Matrix3d rotate_matrix;			//回転行列
+	Eigen::Matrix3d rotate_matrix;	//回転行列3*3
+	Eigen::MatrixXd rotate_matrix3N;//回転行列3n*3n
 	Eigen::Quaterniond quaternion;			//回転行列のクォータニオン
 	Eigen::Matrix3d rotate_matrix_trans;	//回転行列の逆行列
 	std::vector<Eigen::Vector3d*> local_xs; //ローカル座標における変位ベクトル
