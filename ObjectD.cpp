@@ -767,13 +767,13 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (auto _g : groups)
 	{
 		_g->ReSet_Fbind_Pos();
-		_g->LHS0();
+		
 	}
 
 	for (int i = 0; i < loop; i++)
 	{
 		for (auto _g : groups) {
-			
+			_g->LHS0();
 			_g->RHS0();
 
 			//Eigen::GMRES<Eigen::SparseMatrix<double>> solver;
@@ -785,8 +785,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			//_g->DeltaxNew = solver.solve(_g->Constant_term_iteration);
 			
 
-			_g->DeltaxNew = (_g->Jacobi_Matrix_Inv) * (_g->Constant_term_iteration);
-			_g->DeltaxNew = _g->rotate_matrix3N * _g->DeltaxNew;
+			_g->CalcDeltax();
 			
 
 			if (fetestexcept(FE_INVALID)) {
@@ -815,7 +814,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (auto _g : groups) {
 		for (unsigned int pi = 0; pi < _g->particle_num; pi++) {
 			//速度をいれてみた
-			_g->GroupVelVector.block(3 * pi, 0, 3, 1) = (_g->PrimeVector.block(3 * pi, 0, 3, 1) - _g->GroupGridVector.block(3 * pi, 0, 3, 1)) / TIME_STEP;
+			_g->GroupVelVector.block(3 * pi, 0, 3, 1) = (_g->PrimeVector.block(3 * pi, 0, 3, 1) + _g->DeltaxNew.block(3 * pi, 0, 3, 1) -_g->GroupGridVector.block(3 * pi, 0, 3, 1)) / TIME_STEP;
 			if (fetestexcept(FE_INVALID)) {
 				std::cout << "FE_INVALID Calc_Exp6" << std::endl;
 			}
@@ -826,10 +825,10 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);
 			}
 		}
-		std::ofstream outputfile("Deltax.txt", std::ios_base::app);
+		/*std::ofstream outputfile("Deltax.txt", std::ios_base::app);
 		outputfile << "Deltax" << _g->tetra_group_id << " is " << std::endl;
 		outputfile << std::setprecision(3) << _g->DeltaxNew << std::endl;
-		outputfile.close();
+		outputfile.close();*/
 	}
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;

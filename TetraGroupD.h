@@ -179,6 +179,7 @@ public:
 	void Calc_iterative_LocalFEM();	//debug用,反復法のFEM部分の計算(差分,LUとGMRES)
 	void Calc_GMRES_Pre();//debug用(前処理)
 	void Calc_GMRES_FEM();//debug用(前処理済)
+	void CalcDeltax();
 
 	void Calc_Jacobi_Matrix_iteration();//反復法、ヤコビで使う行列の更新(1ステップで一回)
 	void Calc_Jacobi_Matrix_iteration_Sparse();//反復法、ヤコビで使う行列の更新(1ステップで一回)(Sparse)

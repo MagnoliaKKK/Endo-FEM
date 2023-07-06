@@ -1758,6 +1758,11 @@ void TetraGroupD::Calc_GMRES_Pre() {
 		}
 	}
 }
+void TetraGroupD::CalcDeltax()
+{
+	DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration;
+	DeltaxNew = rotate_matrix3N * DeltaxNew;
+}
 //implicitの計算
 //CRS形式を使わずに計算する
 //反復におけるLocal制約の計算
@@ -2083,7 +2088,8 @@ void TetraGroupD::Update_Fbind_Pos8() {
 				//(n)(Exp + Deltax)
 				Conv = particles[pi]->p_belong_TetraGroup_ids.size() * (PrimeVector.block(3 * pi, 0, 3, 1) + DeltaxNew.block(3 * pi, 0, 3, 1));
 				//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
-				Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() * (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
+				//Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() * (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
+				Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
 				if (fetestexcept(FE_INVALID)) {
 					std::cout << "FE_INVALID bindF" << std::endl;
@@ -2096,7 +2102,7 @@ void TetraGroupD::Update_Fbind_Pos8() {
 		//固定点の場合
 		if ((particles[pi]->Is_Fixed())) {
 			//(Exp + Deltax)
-			Conv = (PrimeVector.block(3 * pi, 0, 3, 1) + Deltax_In_Group.block(3 * pi, 0, 3, 1));
+			Conv = (PrimeVector.block(3 * pi, 0, 3, 1) + DeltaxNew.block(3 * pi, 0, 3, 1));
 			//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
 			Conv = Conv - (particles[pi]->Get_Exp_Pos());
 			bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
@@ -2306,19 +2312,19 @@ void TetraGroupD::LHS0() {
 	//Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose() * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
 	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix - TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * SUM_M_Matrix;
 	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse();
-	std::ofstream file("Jacobi_Matrix.txt");
+	//std::ofstream file("Jacobi_Matrix.txt");
 
-	if (file.is_open()) {
-		// 输出矩阵的每个元素到文件
-		for (int i = 0; i < Jacobi_Matrix.rows(); ++i) {
-			for (int j = 0; j < Jacobi_Matrix.cols(); ++j) {
-				file << Jacobi_Matrix(i, j) << " ";
-			}
-			file << std::endl;
-		}
-		// 关闭文件流
-		file.close();
-	}
+	//if (file.is_open()) {
+	//	// 输出矩阵的每个元素到文件
+	//	for (int i = 0; i < Jacobi_Matrix.rows(); ++i) {
+	//		for (int j = 0; j < Jacobi_Matrix.cols(); ++j) {
+	//			file << Jacobi_Matrix(i, j) << " ";
+	//		}
+	//		file << std::endl;
+	//	}
+	//	// 关闭文件流
+	//	file.close();
+	//}
 
 	
 	//Jacobi_Matrix = Ident + MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
