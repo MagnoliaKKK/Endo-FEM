@@ -2082,11 +2082,13 @@ void TetraGroupD::Update_Fbind_Pos8() {
 		Eigen::Vector3d Conv = Eigen::Vector3d::Zero();
 		//共有節点かどうか
 		//本当は分離しないといけない
-		if ((particles[pi]->p_belong_TetraGroup_ids.size()) > 1) {
+		if ((particles[pi]->p_belong_TetraGroup_ids.size()) > 1)  // 如果是共同点（点所属组数大于1
+		{
 			//固定されていない点
 			if (!(particles[pi]->Is_Fixed())) {
 				//(n)(Exp + Deltax)
 				Conv = particles[pi]->p_belong_TetraGroup_ids.size() * (PrimeVector.block(3 * pi, 0, 3, 1) + DeltaxNew.block(3 * pi, 0, 3, 1));
+				//std::cout << DeltaxNew.block(3 * pi, 0, 3, 1) << std::endl;
 				//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
 				//Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() * (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());

@@ -786,6 +786,10 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			
 
 			_g->CalcDeltax();
+			//std::ofstream outputfile("Deltax.txt", std::ios_base::app);
+		    //outputfile << "Deltax" << _g->tetra_group_id << " is " << std::endl;
+			//outputfile << std::setprecision(3) << _g->DeltaxNew << std::endl;
+			//outputfile.close();
 			
 
 			if (fetestexcept(FE_INVALID)) {
@@ -825,10 +829,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);
 			}
 		}
-		/*std::ofstream outputfile("Deltax.txt", std::ios_base::app);
-		outputfile << "Deltax" << _g->tetra_group_id << " is " << std::endl;
-		outputfile << std::setprecision(3) << _g->DeltaxNew << std::endl;
-		outputfile.close();*/
+		
 	}
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;

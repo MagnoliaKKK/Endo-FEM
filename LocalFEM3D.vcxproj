@@ -95,7 +95,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>.\DXLib;%(AdditionalIncludeDirectories);.\subsorce\dependency\lib;.\subsorce\dependency\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\DC\Endo-FEM\subsorce\dependency\src\boost\preprocessor\debug;.\DXLib;%(AdditionalIncludeDirectories);.\subsorce\dependency\lib;.\subsorce\dependency\src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
