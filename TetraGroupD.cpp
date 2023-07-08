@@ -1760,8 +1760,17 @@ void TetraGroupD::Calc_GMRES_Pre() {
 }
 void TetraGroupD::CalcDeltax()
 {
-	DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration;
+	DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration; //constant_... is right hand side
 	DeltaxNew = rotate_matrix3N * DeltaxNew;
+	
+	//for (int i = 0; i < DeltaxNew.size(); i++) {
+	//	if (std::abs(DeltaxNew[i]) < 1e-2) {
+	//		DeltaxNew[i] = 0;
+	//	}
+	//}
+	//DeltaxNew = DeltaxNew.unaryExpr([](double v) { return std::abs(v) < 1e-2 ? 0 : v; });
+	//int aaaaa = 1;
+	//std::cout << DeltaxNew << std::endl;
 }
 //implicitの計算
 //CRS形式を使わずに計算する
@@ -2090,8 +2099,8 @@ void TetraGroupD::Update_Fbind_Pos8() {
 				Conv = particles[pi]->p_belong_TetraGroup_ids.size() * (PrimeVector.block(3 * pi, 0, 3, 1) + DeltaxNew.block(3 * pi, 0, 3, 1));
 				//std::cout << DeltaxNew.block(3 * pi, 0, 3, 1) << std::endl;
 				//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
-				//Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() * (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
-				Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
+				Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() * (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
+				//Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
 				if (fetestexcept(FE_INVALID)) {
 					std::cout << "FE_INVALID bindF" << std::endl;
@@ -2117,8 +2126,10 @@ void TetraGroupD::Update_Fbind_Pos8() {
 		}
 		if (((particles[pi]->p_belong_TetraGroup_ids.size()) > 1)) {
 			if (Conv.squaredNorm() < 10e-3) {
-				//std::cout << "Converce " << particles[pi]->p_id << std::endl;
+				std::cout << "Converce " << particles[pi]->p_id << std::endl;
 			}
+			else
+				std::cout << "NotConvergence " << std::endl;
 		}
 	}
 }
@@ -2339,10 +2350,10 @@ void TetraGroupD::RHS0() {
 	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
 	
 	//Eigen::MatrixXd Ident2 = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
-	Eigen::MatrixXd tempA = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	Eigen::MatrixXd tempB = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	Eigen::MatrixXd tempC = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	Eigen::MatrixXd tempD = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Eigen::VectorXd tempA = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::VectorXd tempB = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::VectorXd tempC = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::VectorXd tempD = Eigen::VectorXd::Zero(3 * particle_num);
 
 	
 
@@ -2358,10 +2369,22 @@ void TetraGroupD::RHS0() {
 	tempC = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * rotate_matrix3N.transpose() * SUM_M_Matrix * PrimeVector;
 	tempD = TIME_STEP * TIME_STEP * MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
 	Constant_term_iteration = tempA - tempB + tempC + tempD;
-	std::ofstream outputfile("Constant_term_iteration.txt", std::ios_base::app);
-	outputfile << "Constant_term_iteration" << tetra_group_id << " is " << std::endl;
-	outputfile << std::setprecision(3) << Constant_term_iteration << std::endl;
-	outputfile.close();
+
+	Eigen::VectorXd test0 = Eigen::VectorXd::Zero(3 * particle_num);
+	test0 = tempA - tempB + tempC;
+	Eigen::VectorXd test = Eigen::VectorXd::Zero(3 * particle_num);
+	test = OrigineVector - rotate_matrix3N.transpose() * PrimeVector + rotate_matrix3N.transpose() * SUM_M_Matrix * PrimeVector;
+	Eigen::VectorXd test2 = Eigen::VectorXd::Zero(3 * particle_num);
+	test2 = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix;
+	Eigen::VectorXd test3 = Eigen::VectorXd::Zero(3 * particle_num);
+	test3 = test * test2;
+	//test = 
+	int aaaa = 0;
+	//std::cout <<"afdsf" << tetra_group_id << "bindff" << bind_force_iterative << std::endl;
+	//std::ofstream outputfile("Constant_term_iteration.txt", std::ios_base::app);
+	//outputfile << "Constant_term_iteration" << tetra_group_id << " is " << std::endl;
+	//outputfile << std::setprecision(3) << Constant_term_iteration << std::endl;
+	//outputfile.close();
 
 }
 

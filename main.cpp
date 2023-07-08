@@ -549,6 +549,9 @@ std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize siz
 		p[i] = new ParticleD(phys[i]);
 		p[i]->p_id = i;
 		particles.push_back(p[i]);
+		//if (i >= size_data.x_vertex_num * size_data.y_vertex_num * size_data.z_vertex_num - size_data.y_vertex_num * size_data.z_vertex_num) {
+		//	p[i]->Set_Fixed(fixedion);// 一番端の頂点を固定する
+		//}
 		if (i < size_data.y_vertex_num * size_data.z_vertex_num) {
 			p[i]->Set_Fixed(fixedion);// 一番端の頂点を固定する
 		}

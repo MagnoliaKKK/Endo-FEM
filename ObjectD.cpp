@@ -786,8 +786,8 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			
 
 			_g->CalcDeltax();
-			//std::ofstream outputfile("Deltax.txt", std::ios_base::app);
-		    //outputfile << "Deltax" << _g->tetra_group_id << " is " << std::endl;
+			//std::ofstream outputfile("deltaxx.txt", std::ios_base::app);
+		    //outputfile << "deltax" << _g->tetra_group_id << " is " << std::endl;
 			//outputfile << std::setprecision(3) << _g->DeltaxNew << std::endl;
 			//outputfile.close();
 			
