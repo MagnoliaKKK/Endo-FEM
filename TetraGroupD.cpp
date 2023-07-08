@@ -2367,7 +2367,7 @@ void TetraGroupD::RHS0() {
 
 	tempB = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * rotate_matrix3N.transpose() * PrimeVector;
 	tempC = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * rotate_matrix3N.transpose() * SUM_M_Matrix * PrimeVector;
-	tempD = TIME_STEP * TIME_STEP * MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
+	tempD =  MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
 	Constant_term_iteration = tempA - tempB + tempC + tempD;
 
 	Eigen::VectorXd test0 = Eigen::VectorXd::Zero(3 * particle_num);
