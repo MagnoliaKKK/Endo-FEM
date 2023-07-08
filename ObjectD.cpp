@@ -767,13 +767,13 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (auto _g : groups)
 	{
 		_g->ReSet_Fbind_Pos();
-		
+		_g->LHS0();
 	}
 
 	for (int i = 0; i < loop; i++)
 	{
 		for (auto _g : groups) {
-			_g->LHS0();
+			
 			_g->RHS0();
 
 			//Eigen::GMRES<Eigen::SparseMatrix<double>> solver;
