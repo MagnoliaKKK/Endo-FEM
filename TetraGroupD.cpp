@@ -168,6 +168,8 @@ void TetraGroupD::Create_SUM_M_Matrix() {
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		SUM_M_Matrix.block(3 * pi, 0, 3, 3 * particle_num) = SUMsub_M_Matrix;
 	}
+	SUM_M.setZero();
+	SUM_M = SUM_M_Matrix.sparseView();
 	//std::cout << "SUM_M_Matrix" << std::endl;
 	//std::cout << SUM_M_Matrix << std::endl;
 	std::cout << "Create SUM_M_Matrix Of Group " << tetra_group_id<< std::endl;
@@ -190,7 +192,7 @@ void TetraGroupD::Create_Damping_Matrix(){
 	MassDamInvMassT = MassDamInv_Matrix * M_Matrix_C * TIME_STEP;
 	DammingT_Matrix_Sparse.setZero();
 	DammingT_Matrix_Sparse = MassDamInvMassT.sparseView();
-	Eigen::MatrixXd MassDamInvSparse = Eigen::MatrixXd::Zero(3 * particles.size(), 3 * particles.size());
+	
 
 	//質量中心行列のSparse作成(JacobiやConstの計算で使用)
 	Eigen::MatrixXd MassCondi = Eigen::MatrixXd::Zero(3 * particles.size(), 3 * particles.size());
@@ -198,6 +200,7 @@ void TetraGroupD::Create_Damping_Matrix(){
 	Eigen::MatrixXd Damm_Matrix = M_Matrix_C + Damping_Matrix;//(Mj+Cj')
 	MassCondi_Sparse.setZero();
 	Damm_Matrix_Sparse.setZero();
+	MassDamInvSparse.setZero();
 	MassCondi_Sparse = MassCondi.sparseView();
 	Damm_Matrix_Sparse = Damm_Matrix.sparseView();
 	MassDamInvSparse = MassDamInv_Matrix.sparseView();//Mass + damping inverse sparse
@@ -322,6 +325,8 @@ void TetraGroupD::Create_Local_Stiffness_Matrix() {
 
 	StiffnessTT_Matrix_Sparse.setZero();
 	StiffnessTT_Matrix_Sparse = (stiffness_matrix * TIME_STEP * TIME_STEP).sparseView();
+	StiffnessSparse.setZero();
+	StiffnessSparse = stiffness_matrix.sparseView();
 
 	/*std::cout << "Create Object K Matrix Of Group" << tetra_group_id << std::endl;
 	std::cout << StiffnessTT_Matrix_Sparse << std::endl;*/
@@ -1762,8 +1767,13 @@ void TetraGroupD::Calc_GMRES_Pre() {
 }
 void TetraGroupD::CalcDeltax()
 {
-	DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration; //constant_... is right hand side
-	DeltaxNew = rotate_matrix3N * DeltaxNew;
+	//DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration; //constant_... is right hand side
+	//DeltaxNew = rotate_matrix3N * DeltaxNew;
+	Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
+
+	solver.compute(Jacobi_Matrix_Sparse);
+	DeltaxNew = solver.solve(Constant_term_iteration);
+	DeltaxNew = Rn_MatrixTR_Sparse * DeltaxNew;
 	
 	//for (int i = 0; i < DeltaxNew.size(); i++) {
 	//	if (std::abs(DeltaxNew[i]) < 1e-2) {
@@ -2326,8 +2336,10 @@ void TetraGroupD::LHS0() {
 
 	//Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose() * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
 	//Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix - TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * SUM_M_Matrix;
-	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
-	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse();
+	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse * MassCondi_Sparse;
+	Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
+	/*Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
+	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse();*/
 	//std::ofstream file("Jacobi_Matrix.txt");
 
 	//if (file.is_open()) {
@@ -2351,11 +2363,31 @@ void TetraGroupD::LHS0() {
 
 void TetraGroupD::RHS0() {
 	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
+	Eigen::MatrixXd tempA = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Eigen::VectorXd tempB = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::VectorXd tempC = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::VectorXd tempE = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::VectorXd tempF = Eigen::VectorXd::Zero(3 * particle_num);
+	Eigen::SparseMatrix<double> tempD;
+	tempD.setZero();
+
+	//tempA = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix;
+	tempD = TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse;
+	//tempB = (OrigineVector - rotate_matrix3N.transpose() * (PrimeVector - SUM_M_Matrix * PrimeVector));
+	tempE = (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector));
+	//tempC = MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
+	tempF = MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;
+	Constant_term_iteration = tempD * tempE + tempF;
+
+	//Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix) *
+		//(OrigineVector - rotate_matrix3N.transpose() * (PrimeVector - SUM_M_Matrix * PrimeVector)) + MassDamInv_Matrix
+		//* rotate_matrix3N.inverse() * bind_force_iterative;
 
 	//計算
-	Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix) * 
-		(OrigineVector - rotate_matrix3N.transpose() * (PrimeVector - SUM_M_Matrix * PrimeVector)) + MassDamInv_Matrix 
-		* rotate_matrix3N.inverse() * bind_force_iterative;
+	/*Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse) * 
+		(OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector * (SUM_M - Ident))) + MassDamInvSparse
+		* Rn_MatrixTR_Sparse * bind_force_iterative;*/
 
 
 }

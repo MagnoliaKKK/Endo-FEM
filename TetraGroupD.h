@@ -33,6 +33,8 @@ public:
 	Eigen::MatrixXd stiffness_matrix; // グループの剛性行列
 	Eigen::MatrixXd Damping_Matrix;	  // グループの減衰行列(*Timestep)
 	Eigen::MatrixXd MassDamInv_Matrix;// グループの質量行列+減衰行列の逆行列
+	Eigen::SparseMatrix<double> MassDamInvSparse;//(M+C')^-1 sparse
+	Eigen::SparseMatrix<double> StiffnessSparse;//stiffness sparse 
 	Eigen::SparseMatrix<double> DammingT_Matrix_Sparse; // 予測位置計算用行列((mass+damping)^-1 * mass * timestep)(Sparse)
 
 	Eigen::SparseMatrix<double> Damm_Matrix_Sparse;//Jacobi計算用(mass+damping)
@@ -43,7 +45,7 @@ public:
 
 	Eigen::MatrixXd Diag_M_Matrix;	  // グループの対角質量行列
 	Eigen::MatrixXd SUM_M_Matrix;	  // グループの帯状質量行列
-
+	Eigen::SparseMatrix<double> SUM_M;//SUM_M sparse
 	Eigen::MatrixXd Jacobi_Matrix; // 反復法の係数行列
 	Eigen::MatrixXd Jacobi_Matrix_Inv;
 	Eigen::SparseMatrix<double> Jacobi_Matrix_Sparse; // 反復法の係数行列(Sparse)
