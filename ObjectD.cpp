@@ -776,15 +776,6 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			
 			_g->RHS0();
 
-			//Eigen::GMRES<Eigen::SparseMatrix<double>> solver;
-			////solver.preconditioner().setF
-			//solver.setMaxIterations(outerGMRES);
-			//solver.set_restart(innerGMRES);
-			////solver.setTolerance(1e-10);
-			//solver.compute(_g->Jacobi_Matrix_Sparse);
-			//_g->DeltaxNew = solver.solve(_g->Constant_term_iteration);
-			
-
 			_g->CalcDeltax();
 			//std::ofstream outputfile("deltaxx.txt", std::ios_base::app);
 		    //outputfile << "deltax" << _g->tetra_group_id << " is " << std::endl;

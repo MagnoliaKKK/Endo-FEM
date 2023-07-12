@@ -5,7 +5,7 @@ TIME_STEP = 1.0e-2
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)
-PBD_LOOP = 15
+PBD_LOOP = 10
 #修正値和による閾値の設定(double)
 config = 1.0e-03
 
@@ -15,7 +15,7 @@ PI = 3.14159265358979265358979
 #重力加速度(m/s2)
 Gravity = 20.0
 #最初に力をかけるか(1)いなか(0)
-UseIniForce = 1
+UseIniForce = 0
 #ヤコビ(1)かLU(0)か
 useCRS = 0
 #質量行列が対角(1)か否か(0)
@@ -33,7 +33,7 @@ howmanytetras = 6
 #バネダンパ係数(質量比例減衰)
 M_damping = 0.5
 #バネダンパ係数(剛性比例減衰)
-K_damping = 0.5
+K_damping = 0.0
 #拘束力の係数
 F_bind_coeff = -1.0e+03
 #拘束力のダンパー係数
@@ -59,11 +59,11 @@ useUpBind = 1
 
 #objectsize
 #x方向のサイズ(int)
-xsize = 7
+xsize =7
 #y方向のサイズ(int)
-ysize = 3
+ysize = 4
 #z方向のサイズ(int) 
-zsize = 3
+zsize = 4
 #一辺の長さ	(double)
 sidelength = 4
 
