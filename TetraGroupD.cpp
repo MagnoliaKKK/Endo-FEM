@@ -1768,7 +1768,7 @@ void TetraGroupD::Calc_GMRES_Pre() {
 void TetraGroupD::CalcDeltax()
 {
 	//DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration; //constant_... is right hand side
-	//DeltaxNew = rotate_matrix3N * DeltaxNew;
+	//DeltaxNew = Rn_MatrixTR_Sparse * DeltaxNew;
 	Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
 	solver.compute(Jacobi_Matrix_Sparse);
@@ -2373,12 +2373,13 @@ void TetraGroupD::RHS0() {
 	tempD.setZero();
 
 	//tempA = TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix;
-	tempD = TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse;
+	//tempD = TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse;
 	//tempB = (OrigineVector - rotate_matrix3N.transpose() * (PrimeVector - SUM_M_Matrix * PrimeVector));
-	tempE = (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector));
+	//tempE = (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector));
 	//tempC = MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
-	tempF = MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;
-	Constant_term_iteration = tempD * tempE + tempF;
+	//tempF = MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;
+	//Constant_term_iteration = tempD * tempE + tempF;
+	Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse) * (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector)) + MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;;
 
 	//Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix) *
 		//(OrigineVector - rotate_matrix3N.transpose() * (PrimeVector - SUM_M_Matrix * PrimeVector)) + MassDamInv_Matrix

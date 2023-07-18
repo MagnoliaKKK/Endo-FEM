@@ -13,7 +13,7 @@ config = 1.0e-03
 #物理量定数
 PI = 3.14159265358979265358979
 #重力加速度(m/s2)
-Gravity = 20.0
+Gravity = 10.0
 #最初に力をかけるか(1)いなか(0)
 UseIniForce = 0
 #ヤコビ(1)かLU(0)か
@@ -33,7 +33,7 @@ howmanytetras = 6
 #バネダンパ係数(質量比例減衰)
 M_damping = 0.5
 #バネダンパ係数(剛性比例減衰)
-K_damping = 0.0
+K_damping = 0.5
 #拘束力の係数
 F_bind_coeff = -1.0e+03
 #拘束力のダンパー係数
@@ -61,9 +61,9 @@ useUpBind = 1
 #x方向のサイズ(int)
 xsize =7
 #y方向のサイズ(int)
-ysize = 4
+ysize = 3
 #z方向のサイズ(int) 
-zsize = 4
+zsize = 3
 #一辺の長さ	(double)
 sidelength = 4
 
