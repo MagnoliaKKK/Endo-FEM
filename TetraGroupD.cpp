@@ -1109,21 +1109,9 @@ void TetraGroupD::ReSet_Fbind_Pos() {
 std::vector<ParticleD*> TetraGroupD::Get_Particle()const {
 	return particles;
 }
-//各particleにおける初めの重心からの距離を取得
-std::vector<Eigen::Vector3d> TetraGroupD::Get_origin_center_distance() {
-	return origin_center_distance;
-}
-//各particleのローカル座標初期位置を取得
-std::vector<Eigen::Vector3d> TetraGroupD::Get_origin_local_grid() {
-	return origin_local_grid;
-}
-//各particleのローカル座標初期位置を取得
-Eigen::VectorXd TetraGroupD::Get_bind_force() {
-	return bind_force_iterative;
-}
-void TetraGroupD::Write_bind_force() {
-	std::cout << bind_force_iterative << std::endl;
-}
+
+
+
 //==========================================================================//
 
 //各変数の要素数を決定する(exp_pos,origin_center_distance,center_distance,origin_local_grid)
@@ -1202,29 +1190,7 @@ Eigen::Vector3d TetraGroupD::clamp2(Eigen::Vector3d x, double y, double z) {
 		return x;
 	}
 }
-Eigen::Quaterniond TetraGroupD::Cay2(Eigen::Vector3d a) {
-	double s = 0.25*a.transpose()*a;
-	double x = (1.0 / (1.0 + s))*a.x();
-	double y = (1.0 / (1.0 + s))*a.y();
-	double z = (1.0 / (1.0 + s))*a.z();
-	Eigen::Quaterniond qq = Eigen::Quaterniond((1.0 - s)/(1.0 + s), x, y, z);
-	return  qq;
-}
-Eigen::Quaterniond TetraGroupD::Cay(Eigen::Vector3d a) {
-	double x = (2 / (1 + a.transpose()*a))*a.x();
-	double y = (2 / (1 + a.transpose()*a))*a.y();
-	double z = (2 / (1 + a.transpose()*a))*a.z();
-	Eigen::Quaterniond qq = Eigen::Quaterniond((1 - a.transpose()*a), x, y, z);
-	return  qq;
-}
-Eigen::Quaterniond TetraGroupD::Exp(Eigen::Vector3d a) {
-	double s = sin(a.norm());
-	double x = s * a.x();
-	double y = s * a.y();
-	double z = s * a.z();
-	Eigen::Quaterniond qq = Eigen::Quaterniond(cos(a.norm()), x, y, z);
-	return  qq;
-}
+
 Eigen::Quaterniond TetraGroupD::Exp2(Eigen::Vector3d a) {
 	double s = sin((a * 0.5).norm());
 	double x = s * a.x() / a.norm();
@@ -1239,122 +1205,10 @@ Eigen::Quaterniond TetraGroupD::Exp2(Eigen::Vector3d a) {
 //fulpivotで連立方程式を解き反復する
 //弾性力以外の力による位置を引いてから計算する
 //解いた解は位置
-void TetraGroupD::Calc_iterative_FEM_Fbind_pivot() {
-	//k回目の変位ベクトルの生成
-	Eigen::VectorXd  vector_u = Eigen::VectorXd::Zero(3 * particle_num);
 
-	//FEM計算
-	Eigen::FullPivLU<Eigen::MatrixXd> lu(Jacobi_Matrix);
-	vector_u = lu.solve(Constant_term_iteration + bind_force_iterative);
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		x_In_Group.block(3 * pi, 0, 3, 1) = vector_u.block(3 * pi, 0, 3, 1);
-	}
-
-	//中身の確認debug
-	//OP_debug_iterative1(vector_u);
-}
-//implicitの計算
-//CRS形式を使わずに計算する
-//省略法の反復におけるLocal制約の計算
-//fulpivotで連立方程式を解き反復する
-//弾性力以外の力による位置を引いてから計算する
-//解いた解は変位
-void TetraGroupD::Calc_iterative_FEM_Fbind_pivot2() {
-	//k回目の変位ベクトルの生成
-	Eigen::VectorXd  vector_u = Eigen::VectorXd::Zero(3 * particle_num);
-
-	//FEM計算
-	//GMRESなどの反復法を用いて反復法(Local)を解く
-	if (useGMRES) {
-		//GMRES
-
-		//前処理なし
-		
-		Eigen::GMRES< Eigen::SparseMatrix<double>> gmresFEM;
-		gmresFEM.setMaxIterations(1);//外部反復の設定
-		gmresFEM.set_restart(1);//内部反復の設定
-		gmresFEM.compute(Jacobi_Matrix_Sparse);// Compute 
-
-		//初期値0
-		//vector_u = gmresFEM.solve(Constant_term_iteration + bind_force_iterative);
-		//初期値は一つ前の値から計算したものをいれる
-		vector_u = gmresFEM.solveWithGuess(Constant_term_iteration + bind_force_iterative, iterativeVector);
-		//std::cout << "GMRES前なし：#iterations：" << gmresFEM.iterations() << "、推定エラー：" << gmresFEM.error() << std::endl;
-		
-
-		//前処理あり
-		/*
-		Eigen::GMRES< Eigen::SparseMatrix<double>, Eigen::IncompleteLUT<double> > gmresFEM2;
-		gmresFEM2.preconditioner().setFillfactor(7);  //Get the reference of the preconditioner and set properties
-		//gmresFEM2.setTolerance(10e-3);//許容値の設定
-		gmresFEM2.setMaxIterations(1);//外部反復の設定
-		gmresFEM2.set_restart(1);//内部反復の設定
-		gmresFEM2.compute(Jacobi_Matrix_Sparse);// Compute the ILUT factorization
-
-		//初期値0
-		//vector_u = gmresFEM2.solve(Constant_term_iteration + bind_force_iterative);
-		//初期値は一つ前の値から計算したものをいれる
-		vector_u = gmresFEM2.solveWithGuess(Constant_term_iteration + bind_force_iterative, iterativeVector);
-		//std::cout << "GMRES前あり：#iterations：" << gmresFEM2.iterations() << "、推定エラー：" << gmresFEM2.error() << std::endl;
-		*/
-	}
-	//LU分解を用いて反復法(Local)を解く
-	else {
-		Eigen::FullPivLU<Eigen::MatrixXd> lu(Jacobi_Matrix);
-		vector_u = lu.solve(Constant_term_iteration + bind_force_iterative);
-		//計算上はタイムステップをかける必要はない
-		//vector_u = lu.solve(Constant_term_iteration + bind_force_iterative * TIME_STEP * TIME_STEP);
-	}
-	
-
-
-	//std::cout << "オブジェクトの変位ベクトル is " << std::endl;
-	//std::cout << x_In_Group << std::endl;
-
-	//変位ベクトルを足す
-	//本当はvectoruとDeltax_IN_Groupを同じにしてもよい
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		x_In_Group.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Prime_Pos() + vector_u.block(3 * pi, 0, 3, 1);
-		Deltax_In_Group.block(3 * pi, 0, 3, 1) = vector_u.block(3 * pi, 0, 3, 1);
-	}
-	
-	//中身の確認debug
-	//OP_debug_iterative1(vector_u);
-}
-//implicitの計算
-//CRS形式を使わずに計算する
-//反復におけるLocal制約の計算
-//fulpivotとGMRESで連立方程式を解き反復する
-//弾性力以外の力による位置を引いてから計算する
-//解いた解は変位
 
 //GMRESの前処理を行う
-void TetraGroupD::Calc_GMRES_Pre() {
-	Deltax_CoFEM = Eigen::VectorXd::Zero(3 * particle_num);
-	//FEM計算
-	//GMRESなどの反復法を用いて反復法(Local)を解く
-	if (useGMRES) {
-		//GMRES
-		//前処理なし
-		if (!usePreIte) {
-			gmresFEM_Pre.setMaxIterations(outerGMRES);//外部反復の設定
-			gmresFEM_Pre.set_restart(innerGMRES);//内部反復の設定
-			gmresFEM_Pre.compute(Jacobi_Matrix_Sparse);// Compute
-			Deltax_CoFEM = gmresFEM_Pre.solve(Constant_term_iteration);
-		}
-		else {
-			//前処理あり
-			gmresFEM_Pre2.preconditioner().setFillfactor(7);  //Get the reference of the preconditioner and set properties
-			//gmresFEM.setTolerance(10e-3);//許容値の設定
-			gmresFEM_Pre2.setMaxIterations(outerGMRES);//外部反復の設定
-			gmresFEM_Pre2.set_restart(innerGMRES);//内部反復の設定
-			gmresFEM_Pre2.compute(Jacobi_Matrix_Sparse);// Compute the ILUT factorization
-			Deltax_CoFEM = gmresFEM_Pre2.solve(Constant_term_iteration);
-		}
-	}
-}
+
 void TetraGroupD::CalcDeltax()
 {
 	//DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration; //constant_... is right hand side
@@ -1380,37 +1234,7 @@ void TetraGroupD::CalcDeltax()
 //弾性力以外の力による位置を引いてから計算する
 //解いた解は変位
 //前処理済
-void TetraGroupD::Calc_GMRES_FEM() {
-	//解ベクトル
-	Deltax_In_Group = Eigen::VectorXd::Zero(3 * particle_num);
-	Deltax_Bind = Eigen::VectorXd::Zero(3 * particle_num);
-	if (useGMRES) {
-		//GMRES
-		//前処理なし
-		if (!usePreIte) {
-			MicroSecondTimer mtGMRESReal;
-			mtGMRESReal.setid(32);
-			mtGMRESReal.startMyTimer();
-			Deltax_Bind = gmresFEM_Pre.solve(bind_force_iterative);
-			//Deltax_In_Group = gmresFEM_Pre.solveWithGuess(Constant_term_iteration + bind_force_iterative, iterativeVector);
-			Deltax_In_Group = Deltax_CoFEM + Deltax_Bind;
-			
-			mtGMRESReal.endMyTimer();
-		}
-		else {
-			//前処理あり
-			MicroSecondTimer mtGMRESReal;
-			mtGMRESReal.setid(32);
-			mtGMRESReal.startMyTimer();
-			Deltax_Bind = gmresFEM_Pre2.solve(bind_force_iterative);
-			//Deltax_Bind = gmresFEM_Pre2.solveWithGuess(bind_force_iterative, iterativeVector);
-			//Deltax_In_Group = gmresFEM_Pre2.solveWithGuess(Constant_term_iteration + bind_force_iterative, iterativeVector);
-			Deltax_In_Group = Deltax_CoFEM + Deltax_Bind;
-			//std::cout << "Deltax in group" << std::endl << Deltax_In_Group << std::endl;
-			mtGMRESReal.endMyTimer();
-		}
-	}
-}
+
 //implicitの計算
 //CRS形式を使わずに計算する
 //省略法の反復におけるLocal制約の計算
@@ -1467,101 +1291,10 @@ void TetraGroupD::Update_Fbind_Pos8() {
 		//}
 	}
 }
-Eigen::Vector3d TetraGroupD::Calc_Distance() {
-	Eigen::Vector3d Conv = Eigen::Vector3d::Zero();
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		if (particles[pi]->p_id == 19) {
-			Conv = particles[pi]->p_belong_TetraGroup_ids.size() * (PrimeVector.block(3 * pi, 0, 3, 1) + Deltax_In_Group.block(3 * pi, 0, 3, 1));
-			Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() *  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
-		}
-	}
-	return Conv;
-}
 //Debug用
 //節点は別処理
 
 
-//一つ前の予測位置と現在の予測位置でどれだけ反復で更新するのか記憶
-//節点で計算するようにしたからこの関数は使わない
-double TetraGroupD::Add_convergence_iteration(double convite) {
-	ParticleD* pit;
-	Eigen::VectorXd ExpVector = Eigen::VectorXd::Zero(3 * particle_num);
-	Eigen::VectorXd ExpAgoVector = Eigen::VectorXd::Zero(3 * particle_num);
-
-	//expベクトルの生成
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		pit = particles[pi];
-		ExpVector.block(3 * pi, 0, 3, 1) = pit->Get_Exp_Pos();
-		ExpAgoVector.block(3 * pi, 0, 3, 1) = pit->Get_ExpAgo_Pos();
-	}
-	return convite + (ExpVector - ExpAgoVector).squaredNorm();
-}
-void TetraGroupD::Calc_Jacobi_Matrix_iteration() {
-	//初期化
-	Jacobi_Matrix = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	Jacobi_Matrix_Sparse.setZero();
-
-	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
-
-	//回転行列を3Nにする
-	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	// Calc rotate_matrix3N
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
-	}
-
-	//python用の出力
-	//OP_python_M();
-	//OP_python_MC();
-	//OP_python_R(rotate_matrix3N);
-	//OP_python_SumM();
-	//OP_python_I(Ident);
-	//OP_python_Stiff();
-
-
-	Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose()*(Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
-
-	//Jacobi_Matrix = Ident + MassDamInv_Matrix * stiffness_matrix * TIME_STEP * TIME_STEP - MassDamInv_Matrix * stiffness_matrix * TIME_STEP * TIME_STEP * SUM_M_Matrix;
-
-	
-	//Sparse化
-	Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
-	//std::cout << "Jacobi_Matrix_Sparse" << Jacobi_Matrix_Sparse << std::endl;
-
-	//python用の出力
-	//OP_python_Jacobi1(rotate_matrix3N);
-	//OP_python_Jacobi();
-
-	//固有値の確認
-	//OP_eigenvalue(Jacobi_Matrix);
-	
-	
-	//対角優位かチェック
-	//OP_diag_advantage();
-
-	//対称行列かチェック!!
-	//OP_Symetric(rotate_matrix3N);
-
-	//可換かチェック
-	//OP_CommutativeSR(rotate_matrix3N);
-	//やはり可換ではない
-
-	/*
-	//対角行列の生成
-	for (unsigned int pii = 0; pii < 3 * particle_num; pii++) {
-		DiagFEM_Matrix_iteration.block(pii,pii , 1, 1) = Jacobi_Matrix.block(pii, pii, 1, 1);
-	}
-	//対角以外の行列の生成
-	F_FEM_Matrix_iteration = Jacobi_Matrix - DiagFEM_Matrix_iteration ;
-	//2020/12/14現在使ってはいない
-	*/
-
-	//対角優位かチェック
-	//OP_diag_advantage2()
-
-	//その他もろもろの出力がみたいとき
-	//OP_OtherMatrix(rotate_matrix3N);
-}
 void TetraGroupD::LHS0() {
 	//初期化
 	Jacobi_Matrix = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
@@ -1629,161 +1362,6 @@ void TetraGroupD::RHS0() {
 		* Rn_MatrixTR_Sparse * bind_force_iterative;*/
 
 
-}
-
-void TetraGroupD::Calc_Jacobi_Matrix_iteration_Sparse() {
-	//初期化
-	Jacobi_Matrix_Sparse.setZero();
-	Eigen::MatrixXd Ident = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
-
-	//Jacobi_Matrix = Damm_Matrix_Sparse + Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse * MassCondi_Sparse;
-
-	//Sparse化
-	//Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
-
-
-	//現公
-	Jacobi_Matrix_Sparse = Damm_Matrix_Sparse + Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse * MassCondi_Sparse;
-
-	//Eigen::MatrixXd MCInv = MassDamInv_Matrix.inverse();//(mass+damping)^-1
-	//Eigen::SparseMatrix<double> MCInv_Sparse = MCInv.sparseView();//sparse 化
-	//Jacobi_Matrix_Sparse = Rn_MatrixTR_Sparse + StiffnessTT_Matrix_Sparse * MCInv_Sparse * Rn_MatrixTR_Sparse * (Ident - MassCondi_Sparse);
-
-	//Updated A 
-	//Jacobi_Matrix_Sparse = Ident + Damm_Matrix_Sparse.inverse() * StiffnessTT_Matrix_Sparse - Damm_Matrix_Sparse.inverse() * StiffnessTT_Matrix_Sparse * SUM_M_Matrix
-	
-	//重心じゃないやつ用
-	//Jacobi_Matrix_Sparse = Damm_Matrix_Sparse + Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse;
-	
-	
-	//Old用
-	//Jacobi_Matrix_Sparse = Damm_Matrix_Sparse + StiffnessTT_Matrix_Sparse * MassCondi_Sparse;
-	
-
-
-	//Jacobi_Matrix_Sparse = Damm_Matrix_Sparse + F_bind_damping*Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Rn_MatrixTR_Sparse * MassCondi_Sparse;
-	/*
-	Jacobi_Matrix_Sparse = Rn_MatrixTR_Sparse * MassCondi_Sparse;
-	Jacobi_Matrix_Sparse = StiffnessTT_Matrix_Sparse * Jacobi_Matrix_Sparse;
-	Jacobi_Matrix_Sparse = Rn_Matrix_Sparse * Jacobi_Matrix_Sparse;
-	Jacobi_Matrix_Sparse += Damm_Matrix_Sparse;
-	*/
-	//std::cout << "Jacobi_Matrix_Sparse" << Jacobi_Matrix_Sparse << std::endl;
-}
-
-void TetraGroupD::Calc_Constant_term_iteration(){
-	ParticleD* pit;
-	//初期化
-	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
-	Eigen::VectorXd ExpVector = Eigen::VectorXd::Zero(3 * particle_num);
-	Eigen::VectorXd LocalVector = Eigen::VectorXd::Zero(3 * particle_num);
-
-	//expベクトルの生成
-	//本来は1ステップごとにやる意味はない
-	//事前計算でやるべき
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		pit = particles[pi];
-		ExpVector.block(3 * pi, 0, 3, 1) = pit->p_mass * pit->Get_Prime_Pos();
-		LocalVector.block(3 * pi, 0, 3, 1) = origin_local_grid[pi];
-	}
-
-	//回転行列を3Nにする
-	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-
-	// Calc rotate_matrix3N
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
-	}
-
-	//計算
-	Constant_term_iteration = ExpVector + rotate_matrix3N * stiffness_matrix * LocalVector * TIME_STEP * TIME_STEP;
-	
-	//debug
-	/*for (unsigned int pi = 0; pi < particle_num; pi++) {
-		//節点のidを確認
-		std::cout << "particle is" << std::endl;
-		std::cout << particles[pi]->p_id << std::endl;
-		//値
-		std::cout << "Constant value C is" << std::endl;
-		std::cout << Constant_term_iteration.block(3 * pi, 0, 3, 1) << std::endl;
-	}*/
-}
-void TetraGroupD::Calc_Constant_term_iteration2() {
-	//初期化
-	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
-	//Eigen::VectorXd ExpPreVector = Eigen::VectorXd::Zero(3 * particle_num);
-	//Eigen::VectorXd LocalVector = Eigen::VectorXd::Zero(3 * particle_num);
-	Eigen::MatrixXd Ident2 = Eigen::MatrixXd::Identity(3 * particle_num, 3 * particle_num);
-
-	//expベクトルの生成
-	//本来は1ステップごとにやる意味はない
-	//事前計算でやるべき
-	/*
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		ExpPreVector.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Prime_Pos();
-		LocalVector.block(3 * pi, 0, 3, 1) = origin_local_grid[pi];
-	}
-	*/
-
-	//回転行列を3Nにする
-	Eigen::MatrixXd rotate_matrix3N = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	// Calc rotate_matrix3N
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		rotate_matrix3N.block(3 * pi, 3 * pi, 3, 3) = rotate_matrix;
-	}
-
-	//計算
-	Constant_term_iteration = TIME_STEP * TIME_STEP * rotate_matrix3N * stiffness_matrix * ( (rotate_matrix3N.transpose() * ((SUM_M_Matrix -  Ident2) * PrimeVector)) + OrigineVector);
-	//Constant_term_iteration = TIME_STEP * TIME_STEP * stiffness_matrix * ((rotate_matrix3N.transpose() * ((SUM_M_Matrix - Ident2) * PrimeVector)) + OrigineVector);
-	//debug
-	/*for (unsigned int pi = 0; pi < particle_num; pi++) {
-		//節点のidを確認
-		std::cout << "particle is" << std::endl; 
-		std::cout << particles[pi]->p_id << std::endl;
-		//値
-		std::cout << "Constant value D is" << std::endl;
-		std::cout << Constant_term_iteration.block(3 * pi, 0, 3, 1) << std::endl;
-	}*/
-
-	//python用の出力
-	//OP_python_ConstantDelta();
-}
-void TetraGroupD::Calc_Constant_term_iteration_Sparse() {
-	//初期化
-	Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
-
-	//計算
-	//MassCondi = Eigen::MatrixXd::Identity(3 * particles.size(), 3 * particles.size()) - SUM_M_Matrix;//(I-Mj,cm)
-	Constant_term_iteration = Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * (OrigineVector - Rn_MatrixTR_Sparse * MassCondi_Sparse * PrimeVector);
-	
-	//Eigen::MatrixXd MCInv = MassDamInv_Matrix.inverse();//(Mj+Cj')^-1
-	//Eigen::SparseMatrix<double> MCInv_Sparse = MCInv.sparseView();//sparse 化
-	//Constant_term_iteration = StiffnessTT_Matrix_Sparse * (OrigineVector - Rn_MatrixTR_Sparse * MassCondi_Sparse * PrimeVector);
-
-	/*Constant_term_iteration = MassCondi_Sparse * -1 * PrimeVector;
-	Constant_term_iteration = Rn_MatrixTR_Sparse * Constant_term_iteration;
-	Constant_term_iteration += OrigineVector;
-	Constant_term_iteration = Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Constant_term_iteration;*/
-	
-
-	//重心じゃないやつ用
-	/*
-	Constant_term_iteration = -1 * PrimeVector;
-	Constant_term_iteration = Rn_MatrixTR_Sparse * Constant_term_iteration;
-	Constant_term_iteration += InitialVector;
-	Constant_term_iteration = Rn_Matrix_Sparse * StiffnessTT_Matrix_Sparse * Constant_term_iteration;
-	*/
-
-	//Old用
-	/*
-	Constant_term_iteration = MassCondi_Sparse * -1 * PrimeVector;
-	Constant_term_iteration = Constant_term_iteration;
-	Constant_term_iteration += OrigineVector;
-	Constant_term_iteration = StiffnessTT_Matrix_Sparse * Constant_term_iteration;
-	*/
-
-	//Constant_term_iteration = Rn_Matrix_Sparse * Constant_term_iteration;
-	//std::cout << Constant_term_iteration << std::endl;
 }
 
 void TetraGroupD::Set_Deltax_In_Group(Eigen::VectorXd a) {
