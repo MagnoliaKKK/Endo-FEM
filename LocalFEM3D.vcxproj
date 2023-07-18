@@ -197,11 +197,6 @@
     <ClCompile Include="TetraGroupD.cpp" />
     <ClCompile Include="TriangleD.cpp" />
     <ClCompile Include="UseBlockObjectDouble.cpp" />
-    <ClCompile Include="UseGroupOneTetraObjectDouble.cpp" />
-    <ClCompile Include="UseGroupTriprismObjectDouble.cpp" />
-    <ClCompile Include="UseGroupTwoTetraObjectDouble.cpp" />
-    <ClCompile Include="UseLinearFEMDouble.cpp" />
-    <ClCompile Include="UseOldFEMDouble.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base.h" />
@@ -222,11 +217,6 @@
     <ClInclude Include="MEMO.h" />
     <ClInclude Include="StopwatchTimer.h" />
     <ClInclude Include="UseBlockObjectDouble.h" />
-    <ClInclude Include="UseGroupOneTetraObjectDouble.h" />
-    <ClInclude Include="UseGroupTriprismObjectDouble.h" />
-    <ClInclude Include="UseGroupTwoTetraObjectDouble.h" />
-    <ClInclude Include="UseLinearFEMDouble.h" />
-    <ClInclude Include="UseOldFEMDouble.h" />
     <ClInclude Include="UTClapack.h" />
   </ItemGroup>
   <ItemGroup>

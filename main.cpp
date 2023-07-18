@@ -1,11 +1,8 @@
 ﻿#include "Base.h"
 
-#include "UseGroupOneTetraObjectDouble.h"
-#include "UseGroupTwoTetraObjectDouble.h"
-#include "UseGroupTriprismObjectDouble.h"
+
 #include "UseBlockObjectDouble.h"
 
-#include "UseOldFEMDouble.h"
 #include "UseLinearFEMDouble.h"
 
 #include "InputKey.h"
@@ -278,47 +275,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//オブジェクトのインスタンス
 	ObjectD* o;						  
 	
-	if (howmanytetras == 1) {
-		particles = Create_Particles_OneTetraD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//Vector3dが原点で、ひとつの四面体要素ができる。
-		//オブジェクトのインスタンスを生成する
-		o = new UseGroupOneTetraObjectDouble(particles, gum); // ひとつの四面体要素を一つのグループにする
-	}
-	else if (howmanytetras == 2) {
-		particles = Create_Particles_TwoTetraD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//Vector3dが原点で、ふたつの四面体要素ができる。
-		//オブジェクトのインスタンスを生成する
-		o = new UseGroupTwoTetraObjectDouble(particles, gum2); // ふたつの四面体要素を二つのグループにする
-		//o = new UseLinearFEMDouble(particles, gum2); // ふたつの四面体要素を一つのグループにする
-	}
-	else if (howmanytetras == 3) {
-		particles = Create_Particles_Tri_prismD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//Vector3dが原点で、複数の三角柱ができる。
-		//オブジェクトのインスタンスを生成する
-		o = new UseGroupTriprismObjectDouble(particles, gum2); // 3この四面体要素から三角柱二つを1つグループにする
-	}
-	else if (howmanytetras == 4) {
-		//モデルを適当に選ぶ
-		particles = Create_Particles_Tri_prismD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//Vector3dが原点で、
-		//オブジェクトのインスタンスを生成する
-		o = new UseLinearFEMDouble(particles, gum2); // モデルを一つのグループにする
-	}
-	else if (howmanytetras == 5) {
-		//モデルを適当に選ぶ
-		particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//particles = Create_Particles_TwoTetraD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//particles = Create_Particles_OneTetraD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//オブジェクトのインスタンスを生成する
-		o = new UseOldFEMDouble(particles, almin);  // モデルを従来のFEMでシミュレーションする
-	}
-	else {
-		particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
-		//Vector3dが原点で、右下奥に直方体ができる。
-		//オブジェクトのインスタンスを生成する
-		//o = new UseBlockObjectDouble(particles, gum);  // モデルを従来のFEMでシミュレーションする
-		o = new UseBlockObjectDouble(particles, gum3);
-	}
+	particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
+	//Vector3dが原点で、右下奥に直方体ができる。
+	//オブジェクトのインスタンスを生成する
+	//o = new UseBlockObjectDouble(particles, gum);  // モデルを従来のFEMでシミュレーションする
+	o = new UseBlockObjectDouble(particles, gum3);
+
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
 
 	//DXライブラリで描画する色(白),随時設定する
