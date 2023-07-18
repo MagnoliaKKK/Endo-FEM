@@ -142,17 +142,7 @@ void TetraGroupD::Create_M_Matrix() {
 	//std::cout << M_Matrix << std::endl;
 	inv_M_Matrix = M_Matrix.inverse();
 }
-//グループの対角化質量行列を作成する
-void TetraGroupD::Create_Diag_M_Matrix() {
-	ParticleD* pit;
-	Diag_M_Matrix = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
-	for (unsigned int pi = 0; pi < particle_num;pi++) {
-		pit = particles[pi];
-		Diag_M_Matrix.block(3 * pi, 3 * pi, 3, 3) = pit->p_mass * Eigen::Matrix3d::Identity();
-	}
-	//std::cout << "Diag_M_Matrix" <<std::endl;
-	//std::cout << Diag_M_Matrix << std::endl;
-}
+
 
 //グループの対角化SUM質量行列を作成する
 void TetraGroupD::Create_SUM_M_Matrix() {
@@ -350,8 +340,6 @@ void TetraGroupD::Draw()const {
 		_e->Draw();
 	}
 }
-void TetraGroupD::Set_Gravity() {
-}
 
 //各particleに隣接する点を記録する
 void TetraGroupD::Find_Edges() {
@@ -380,71 +368,6 @@ void TetraGroupD::Find_Edges() {
 	}
 }
 
-//行列を値が存在するところのみ格納する
-void TetraGroupD::Create_Local_Stiffmatrix_Array() {
-
-	//隣接点を記録する(隣接する点とのみ剛性行列は値をもつ)
-	for (auto _e : elements) {
-		std::vector<ParticleD*> temp_ps = _e->Get_Particle();
-		for (auto it = particles.begin(); it != particles.end(); ++it) {
-			size_t index1 = std::distance(particles.begin(), it);
-			for (auto it2 = it; it2 != particles.end(); ++it2) {
-				size_t index2 = std::distance(particles.begin(), it2);
-				size_t p1_index = -1, p2_index = -1;
-
-				for (auto tempit = temp_ps.begin(); tempit != temp_ps.end(); ++tempit) {
-					size_t index = std::distance(temp_ps.begin(), tempit);
-					if (*it == *tempit) { p1_index = index; }
-					if (*it2 == *tempit) { p2_index = index; }
-				}
-				if (-1 == p1_index || -1 == p2_index) {
-					continue;
-				}
-				stiffmatrix_valued_list[index1].push_back(index2);
-				if (index1 != index2) {
-					stiffmatrix_valued_list_sym[index2].push_back(index1);
-				}
-			}
-		}
-	}
-
-	//重複して記録してある点があるので消去する
-	for (unsigned int vi = 0; vi < stiffmatrix_valued_list.size(); vi++) {
-		sort(stiffmatrix_valued_list[vi].begin(), stiffmatrix_valued_list[vi].end());
-		stiffmatrix_valued_list[vi].erase(unique(stiffmatrix_valued_list[vi].begin(), stiffmatrix_valued_list[vi].end()), stiffmatrix_valued_list[vi].end());
-	}
-	//重複して記録してある点があるので消去する
-	for (unsigned int vi = 0; vi < stiffmatrix_valued_list_sym.size(); vi++) {
-		sort(stiffmatrix_valued_list_sym[vi].begin(), stiffmatrix_valued_list_sym[vi].end());
-		stiffmatrix_valued_list_sym[vi].erase(unique(stiffmatrix_valued_list_sym[vi].begin(), stiffmatrix_valued_list_sym[vi].end()), stiffmatrix_valued_list_sym[vi].end());
-	}
-
-	//隣接リストから剛性行列を抜き出しリストにする
-	Eigen::MatrixXi rotated_indexesmatrix = Eigen::MatrixXi::Zero(3 * particles.size(), 3 * particles.size());
-	for (auto it = particles.begin(); it != particles.end(); ++it) {
-		size_t index1 = std::distance(particles.begin(), it);
-		ParticleD* pit = particles[index1];
-		for (unsigned int vi = 0; vi < stiffmatrix_valued_list[index1].size(); vi++) {
-			//隣接リストから剛性行列を抜き出す
-			Eigen::Matrix3d* local = new Eigen::Matrix3d((stiffness_matrix.block(3 * index1, 3 * stiffmatrix_valued_list[index1][vi], 3, 3)));
-			rotated_stiffmatrixs.push_back(local);
-
-			//同じ頂点ではないとき
-			if (index1 != stiffmatrix_valued_list[index1][vi]) {
-				rotated_indexesmatrix(index1, stiffmatrix_valued_list[index1][vi]) = rotated_stiffmatrixs.size() - 1;
-			}
-		}
-		//グループのparticleの数の分、配列をとる
-		local_xs.push_back(new Eigen::Vector3d(Eigen::Vector3d::Zero()));
-	}
-	//値がある場所を記録する
-	for (auto it = particles.begin(); it != particles.end(); ++it) {
-		size_t index1 = std::distance(particles.begin(), it);
-		for (unsigned int vi = 0; vi < stiffmatrix_valued_list_sym[index1].size(); vi++) {
-			valued_sym_rotated_indexes.push_back(rotated_indexesmatrix(stiffmatrix_valued_list_sym[index1][vi], index1));
-		}
-	}
-}
 
 // グループごとの予測位置の計算
 // Calculate the predicted position for each group
@@ -554,96 +477,8 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 	//std::cout << "calc EXP" << std::endl;
 }
 
-//CRSによって行列計算をうまく行いながらFEM計算をする
-void TetraGroupD::Calc_CRSFEM() {
-	ParticleD* pit;
-	Eigen::Vector3d xcm = Eigen::Vector3d::Zero();
 
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		pit = particles[pi];
-		xcm += pit->p_mass * particles[pi]->Get_Exp_Pos();
-	}
-	xcm = xcm / mass;
 
-	int _rsmi = 0;
-	int _rsm_symi = 0;
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		(*local_xs[pi]) = rotate_matrix.transpose()*(particles[pi]->Get_Exp_Pos() - xcm) - origin_local_grid[pi];
-	}
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		pit = particles[pi];
-
-		Eigen::Vector3d u = Eigen::Vector3d::Zero();
-
-		//上三角行列の部分の計算
-		unsigned int svl_size = stiffmatrix_valued_list[pi].size();
-		for (unsigned int smvi = 0; smvi <svl_size; smvi++) {
-			unsigned int p_local_i = stiffmatrix_valued_list[pi][smvi];
-
-			u += (*rotated_stiffmatrixs[_rsmi]) * (*local_xs[p_local_i]);
-			_rsmi++;
-		}
-		//下三角行列の部分の計算
-		unsigned int svlsy_size = stiffmatrix_valued_list_sym[pi].size();
-
-		for (unsigned int smyi = 0; smyi < svlsy_size; smyi++) {
-			unsigned int p_local_i = stiffmatrix_valued_list_sym[pi][smyi];
-
-			u += (*rotated_stiffmatrixs[valued_sym_rotated_indexes[_rsm_symi]]).transpose() * (*local_xs[p_local_i]);
-			_rsm_symi++;
-		}
-
-		//外力のみで計算した位置に弾性力を考慮した項を加える
-		if (!((pit)->Is_Fixed())) {
-			u = rotate_matrix * u / pit->p_mass * TIME_STEP * TIME_STEP * f_damping;
-			//バネダンパ下記途中
-			pit->Set_Exp_Pos(pit->Get_Prime_Pos() - u);
-			if(M_damping!=0){
-				pit->Set_Exp_Pos(pit->Get_Exp_Pos() - (pit->Get_Vel() / pit->p_mass) * TIME_STEP * TIME_STEP * M_damping);
-			}
-			pit->Set_Initial_Pos(pit->Get_Prime_Pos() - u);
-		}
-	}
-	if (fetestexcept(FE_INVALID)) {
-		std::cout << "FE_INVALID FEM" << std::endl;
-	}
-	feclearexcept(FE_ALL_EXCEPT);
-}
-//CRS形式を使わずに疎行列FEM計算をする
-void TetraGroupD::Calc_FEM() {
-	ParticleD* pit;
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		pit = particles[pi];
-		pLocal.block(3 * pi, 0, 3, 1) = pit->Get_Exp_Pos();
-	}
-
-	Eigen::Vector3d xcm = Eigen::Vector3d::Zero();
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		pit = particles[pi];
-		xcm += pit->p_mass * particles[pi]->Get_Exp_Pos();
-	}
-	xcm = xcm / mass;
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		xgLocal.block(3 * pi, 0, 3, 1) = rotate_matrix.transpose()*(particles[pi]->Get_Exp_Pos() - xcm) - origin_local_grid[pi];
-	}
-	//上と下とで計算は同じだが、下のほうが速い
-	//f_inLocal = R_Matrix * stiffness_matrix * trans_R_Matrix * (pLocal - xgLocal);
-	f_inLocal = stiffness_matrix * xgLocal;
-
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		pit = particles[pi];
-		if (!(pit)->Is_Fixed()) {
-			Eigen::Vector3d u = rotate_matrix*f_inLocal.block(3 * pi, 0, 3, 1) * TIME_STEP * TIME_STEP*f_damping / pit->p_mass;
-			pit->Set_Exp_Pos(pit->Get_Prime_Pos() - u);
-			pit->Set_Initial_Pos(pit->Get_Prime_Pos() - u);
-		}
-	}
-}
 
 //回転行列の更新
 void TetraGroupD::Update_Rotate() {
@@ -903,29 +738,7 @@ void TetraGroupD::Create_Rotate_Matrix_APD() {
 	}
 	APDcount++;
 }
-void TetraGroupD::InsertAPD(Eigen::Matrix3d p,Eigen::Matrix3d q, int c) {
-	double tempK = 0.0;
 
-	//角距離の計算
-	double Theta = ((p.transpose() * q).trace() - 1) / 2;
-	//std::cout << "Theta" << std::setprecision(10) << Theta<< std::endl;
-	tempK = acos(Theta);
-	//std::cout << "Insert" << std::setprecision(10) << tempK << std::endl;
-	if (fetestexcept(FE_INVALID)) {
-		std::cout << "FE_INVALID Angler" << std::endl;
-	}
-	feclearexcept(FE_ALL_EXCEPT);
-
-	//代入
-	if (MaxRotationVector[c] < tempK) {
-		MaxRotationVector[c] = tempK;
-		//std::cout << "Insert" << std::setprecision(4) << tempK<< std::endl;
-	}
-	if (MinRotationVector[c] > tempK) {
-		MinRotationVector[c] = tempK;
-		//std::cout << "Insert" << std::setprecision(4) << tempK << std::endl;
-	}
-}
 Eigen::Vector3d TetraGroupD::axlAPD(Eigen::Matrix3d a) {
 	Eigen::Vector3d g = Eigen::Vector3d::Zero();
 	g[0] = a(1, 2) - a(2, 1);
@@ -945,15 +758,6 @@ double TetraGroupD::Get_Volume() {
 	return volume;
 }
 
-Eigen::Vector3d TetraGroupD::Get_Prime_Pos(int pid) {
-	int element_p_id = -1;
-	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		if (particles[pi]->p_id == pid)
-			temp = particles[pi]->Get_Prime_Pos();
-	}
-	return temp;
-}
 Eigen::Vector3d TetraGroupD::Get_Initial_Pos(int pid) {
 	int element_p_id = -1;
 	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
@@ -976,17 +780,7 @@ Eigen::Vector3d TetraGroupD::Get_Exp_Pos(int pid) {
 	} 
 	return temp;
 }
-//idからその節点のグループでの位置を取得する
-Eigen::Vector3d TetraGroupD::Get_X_In_Group(int pid) {
-	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		if (particles[pi]->p_id == pid) {
-			temp = x_In_Group.block(3 * pi, 0, 3, 1);
-			return temp;
-		}
-	}
-	return temp;
-}
+
 //idからその節点のグループでの解を取得する
 Eigen::Vector3d TetraGroupD::Get_Deltax_In_Group(int pid) {
 	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
@@ -1059,46 +853,10 @@ double TetraGroupD::Get_GMass_In_Group(int pid) {
 	return tgmass;
 }
 //idから全体を考慮したその節点の質量を取得する
-double TetraGroupD::Get_Mass_In_Group(int pid) {
-	double tmass = 0.0;
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		if (particles[pi]->p_id == pid) {
-			tmass = particles[pi]->Get_Mass();
-			return tmass;
-		}
-	}
-	return tmass;
-}
-
-//節点idからグループにおけるその節点のindexを取得する
-unsigned int TetraGroupD::Get_Group_Index(int pid){
-	int element_p_id = -1;
-	unsigned int index = 0;
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		if (particles[pi]->p_id == pid) {
-			index = pi;
-			return index;
-		}
-	}
-	return index;
-}
 
 void TetraGroupD::Set_Group_Mass(double a) {
 	this->Group_Mass = a;
 }
-double TetraGroupD::Get_Group_Mass() {
-	return this->Group_Mass;
-}
-/*
-//idからexp_posを変数のベクトル値に変更する
-void TetraGroupD::Update_CoExp_Pos(int pid,Eigen::Vector3d a) {
-	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		if (particles[pi]->p_id == pid) {
-			particles[pi]->Set_Exp_Pos(a);
-		}
-	}
-}
-*/
 
 void TetraGroupD::ReSet_Fbind_Pos() {
 	//std::cout << bind_force_iterative << std::endl;
@@ -1199,50 +957,21 @@ Eigen::Quaterniond TetraGroupD::Exp2(Eigen::Vector3d a) {
 	Eigen::Quaterniond qq = Eigen::Quaterniond(cos((a * 0.5).norm()), x, y, z);
 	return  qq;
 }
-//implicitの計算
-//CRS形式を使わずに計算する
-//省略法の反復におけるLocal制約の計算
-//fulpivotで連立方程式を解き反復する
-//弾性力以外の力による位置を引いてから計算する
-//解いた解は位置
 
 
 //GMRESの前処理を行う
 
 void TetraGroupD::CalcDeltax()
 {
-	//DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration; //constant_... is right hand side
-	//DeltaxNew = Rn_MatrixTR_Sparse * DeltaxNew;
+
 	Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
 	solver.compute(Jacobi_Matrix_Sparse);
 	DeltaxNew = solver.solve(Constant_term_iteration);
 	DeltaxNew = Rn_MatrixTR_Sparse * DeltaxNew;
-	
-	//for (int i = 0; i < DeltaxNew.size(); i++) {
-	//	if (std::abs(DeltaxNew[i]) < 1e-2) {
-	//		DeltaxNew[i] = 0;
-	//	}
-	//}
-	//DeltaxNew = DeltaxNew.unaryExpr([](double v) { return std::abs(v) < 1e-2 ? 0 : v; });
-	//int aaaaa = 1;
-	//std::cout << DeltaxNew << std::endl;
+
 }
-//implicitの計算
-//CRS形式を使わずに計算する
-//反復におけるLocal制約の計算
-//弾性力以外の力による位置を引いてから計算する
-//解いた解は変位
-//前処理済
 
-//implicitの計算
-//CRS形式を使わずに計算する
-//省略法の反復におけるLocal制約の計算
-//ヤコビ法で連立方程式を解き反復する
-//弾性力以外の力による位置を引いてから計算する
-//解いた解は変位
-
-//Fbindを更新する
 
 void TetraGroupD::Update_Fbind_Pos8() {
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
