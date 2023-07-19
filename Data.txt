@@ -61,18 +61,18 @@ useUpBind = 1
 #x方向のサイズ(int)
 xsize =7
 #y方向のサイズ(int)
-ysize = 3
+ysize = 7
 #z方向のサイズ(int) 
-zsize = 3
+zsize = 7
 #一辺の長さ	(double)
 sidelength = 4
 
 #x方向をn分割
 dividedbyn = 3
 #y方向をm分割
-dividedbym = 1
+dividedbym = 3
 #z方向をl分割
-dividedbyl = 1
+dividedbyl = 3
 
 #三角柱の長さ(三角柱ブロックの数)
 Tri_prismnum = 3

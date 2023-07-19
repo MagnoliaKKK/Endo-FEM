@@ -5,6 +5,7 @@
 
 #include "ObjectD.h"
 #include "Eigen/SVD"
+
 //===========================================================================//
 ObjectD::ObjectD(std::vector<ParticleD*> p, ObjectData data)
 	: particles(p), data(data)//変数の初期化
@@ -31,16 +32,13 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 
 	for (int i = 0; i < loop; i++)
 	{
-		for (auto _g : groups) {
-			
+		#pragma omp parallel for //作用最大 135 to 30
+		for (int j = 0; j < static_cast<int>(groups.size()); j++) {
+			auto _g = groups[j];
+
 			_g->RHS0();
 
 			_g->CalcDeltax();
-			//std::ofstream outputfile("deltaxx.txt", std::ios_base::app);
-		    //outputfile << "deltax" << _g->tetra_group_id << " is " << std::endl;
-			//outputfile << std::setprecision(3) << _g->DeltaxNew << std::endl;
-			//outputfile.close();
-			
 
 			if (fetestexcept(FE_INVALID)) {
 				std::cout << "FE_INVALID Deltax" << std::endl;
@@ -59,9 +57,9 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			}
 			feclearexcept(FE_ALL_EXCEPT);
 		}
-		for (auto _g : groups) {
-			//Eigen::VectorXd GMRES_Bind = Eigen::VectorXd(3 * _g->particle_num);
-			//GMRES_Bind = _g->bind_force_iterative;
+		#pragma omp parallel for //没明显作用
+		for (int i = 0; i < static_cast<int>(groups.size()); i++) {
+			auto _g = groups[i];
 			_g->Update_Fbind_Pos8();
 		}
 	}

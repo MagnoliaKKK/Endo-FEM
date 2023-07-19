@@ -377,28 +377,20 @@ void UseBlockObjectDouble::Create_Group(std::vector<TetraElementD*> tetra_set, i
 void UseBlockObjectDouble::Update() {
 	double Exptime = 0.0;
 	double Rotatetime = 0.0;
-	for (auto _g : groups) {
-		//弾性力以外の力による位置更新を計算
-		//std::cout << "Hello STEP" << countup << std::endl;
-		//std::cout << std::fixed << std::setprecision(10) << particles[3]->Get_Grid() << std::endl;
-		//初期速度代入
-		//particles[3]->Update_Velocity(Eigen::Vector3d(0.0, 0.1, 0.0));
+	#pragma omp parallel for //作用一般 135 to 50
+	for (int i = 0; i < static_cast<int>(groups.size()); i++) {
+		auto _g = groups[i];
 
 		mtCEPos.startMyTimer();
-		//_g->Calc_Exp_Pos3();
-		_g->Calc_Exp_Pos_Group();//Predicted position xj(i+1)
+
+		_g->Calc_Exp_Pos_Group(); //Predicted position xj(i+1)
 		mtCEPos.endMyTimer();
 		Exptime += mtCEPos.getDt();
-		//std::cout<<"Hello EXP"<<countup<<std::endl;
-		//std::cout << std::fixed << std::setprecision(10) <<particles[3]->Get_Exp_Pos() <<std::endl;
 
 		//回転を計算
 		mtUpRotate.startMyTimer();
 		if (useUpRotate) {
 			_g->Update_Rotate();
-		
-
-			//_g->Update_Rotate2();
 		}
 		else {
 			_g->rotate_matrix = Eigen::Matrix3d::Identity();
@@ -411,14 +403,11 @@ void UseBlockObjectDouble::Update() {
 			_g->Rn_Matrix_Sparse = rotate_matrix3N.sparseView();
 			_g->Rn_MatrixTR_Sparse = (rotate_matrix3N.transpose()).sparseView();
 		}
-		
+
 		mtUpRotate.endMyTimer();
 		Rotatetime += mtUpRotate.getDt();
-		//std::cout << "create Rotate" << std::endl;
 	}
-	//std::cout << "Exp Time is " << Exptime << std::endl;
-	//std::cout << "Rotate Time is " << Rotatetime << std::endl;
-	//予測位置の平均を節点が保持しておく(Objectがvectorとしてもっていてもいい)-----------------
+
 	for (auto _p : particles) {
 		if (!(_p->Is_Fixed())) {
 			_p->Set_Exp_Pos(Calc_New_Exp_Pos_Mean(_p));
