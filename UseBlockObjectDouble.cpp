@@ -198,10 +198,10 @@ void UseBlockObjectDouble::Create_Groups() {
 			//質量行列の代入
 			_g->M_Matrix_C = Eigen::MatrixXd::Zero(3 * _g->particles.size(), 3 * _g->particles.size());
 			_g->M_Matrix_C = _g->M_Matrix;
-			std::ofstream outputfile("Mass_Matrix.txt", std::ios_base::app);
-			outputfile << "Mass_Matrix "<< _g->tetra_group_id<<" is " << std::endl;
-			outputfile << std::setprecision(3) << _g->M_Matrix_C << std::endl;
-			outputfile.close();
+			//std::ofstream outputfile("Mass_Matrix.txt", std::ios_base::app);
+			//outputfile << "Mass_Matrix "<< _g->tetra_group_id<<" is " << std::endl;
+			//outputfile << std::setprecision(3) << _g->M_Matrix_C << std::endl;
+			//outputfile.close();
 			
 			//グループの質量
 			double tempM = 0.0;
