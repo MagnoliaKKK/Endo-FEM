@@ -33,7 +33,7 @@ howmanytetras = 6
 #バネダンパ係数(質量比例減衰)
 M_damping = 0.5
 #バネダンパ係数(剛性比例減衰)
-K_damping = 0.5
+K_damping = 0.0
 #拘束力の係数
 F_bind_coeff = -1.0e+04
 #拘束力のダンパー係数
