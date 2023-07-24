@@ -377,7 +377,7 @@ void UseBlockObjectDouble::Create_Group(std::vector<TetraElementD*> tetra_set, i
 void UseBlockObjectDouble::Update() {
 	double Exptime = 0.0;
 	double Rotatetime = 0.0;
-	//#pragma omp parallel for //作用一般 135 to 50
+	#pragma omp parallel for //作用一般 135 to 50
 	for (int i = 0; i < static_cast<int>(groups.size()); i++) {
 		auto _g = groups[i];
 
