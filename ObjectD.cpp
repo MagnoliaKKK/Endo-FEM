@@ -791,9 +791,11 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 		for (auto _p : particles) {
 			if (!(_p->Is_Fixed())) {
 				_p->Set_Deltax_In_Model(CalcMeanPos(_p));
+				_p->Set_Velocity_In_Model(Calc_Mean_Vel(_p));
 			}
 			else {
 				_p->Set_Deltax_In_Model(CalcMeanPos(_p));
+				_p->Set_Velocity_In_Model(Calc_Mean_Vel(_p));
 			}
 			if (fetestexcept(FE_INVALID)) {
 				std::cout << "FE_INVALID PBD 263" << std::endl;
@@ -1000,6 +1002,26 @@ Eigen::Vector3d ObjectD::CalcMeanPos(ParticleD* p) {
 		delta_p += tg->Get_DeltaxNew(p->p_id);
 		// = tg->Get_Deltax_In_Group(p->p_id);
 
+	}
+	//std::cout << p->p_id << "is" << std::setprecision(10) << delta_p << std::endl;
+	//所属するグループが1つ
+	if (p->p_belong_TetraGroup_ids.size() == 1) {
+		//std::cout << p->p_id <<"is"<<std::setprecision(10) << delta_p << std::endl;
+		return delta_p;
+	}
+	//所属するグループが複数
+	else {
+		delta_p = delta_p / p->p_belong_TetraGroup_ids.size();
+		//std::cout << p->p_id << "is" << std::setprecision(10) << delta_p <<std::endl;
+		return delta_p;
+	}
+}
+Eigen::Vector3d ObjectD::Calc_Mean_Vel(ParticleD* p) {
+	if (p->p_belong_TetraGroup_ids.size() == 0) { std::cout << "ERROR486" << std::endl; return Eigen::Vector3d::Zero(); }
+	Eigen::Vector3d delta_p = Eigen::Vector3d::Zero();
+	for (auto _g : p->p_belong_TetraGroup_ids) {
+		TetraGroupD* tg = groups[_g];
+		delta_p += tg->Get_Velocity(p->p_id);
 	}
 	//std::cout << p->p_id << "is" << std::setprecision(10) << delta_p << std::endl;
 	//所属するグループが1つ

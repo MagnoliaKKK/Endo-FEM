@@ -108,6 +108,7 @@ public:
 	Eigen::Vector3d Get_X_In_Group(int pid);
 	Eigen::Vector3d Get_Deltax_In_Group(int pid);
 	Eigen::Vector3d Get_DeltaxNew(int pid);
+	Eigen::Vector3d Get_Velocity(int pid);
 	Eigen::Vector3d Get_Exp_In_Group(int pid);
 	Eigen::Vector3d Get_Grid_In_Group(int pid);
 	Eigen::Vector3d Get_Vel_In_Group(int pid);

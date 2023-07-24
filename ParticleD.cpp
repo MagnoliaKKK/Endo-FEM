@@ -71,6 +71,9 @@ void ParticleD::Set_Initial_Pos(const Eigen::Vector3d &pos) {
 void ParticleD::Set_Deltax_In_Model(const Eigen::Vector3d &pos) {
 	this->deltax_in_model = pos;
 }
+void ParticleD::Set_Velocity_In_Model(const Eigen::Vector3d& vel) {
+	this->velocity = vel;
+}
 void ParticleD::Set_DeltaxAgo_In_Model(const Eigen::Vector3d &pos) {
 	this->deltaxago_in_model = pos;
 }
@@ -161,6 +164,9 @@ const Eigen::Vector3d& ParticleD::Get_ExpAgo_Pos()const {
 }
 const Eigen::Vector3d& ParticleD::Get_Deltax_In_Model()const {
 	return this->deltax_in_model;
+}
+const Eigen::Vector3d& ParticleD::Get_Mean_Vel()const {
+	return this->mean_vel;
 }
 const Eigen::Vector3d& ParticleD::Get_DeltaxAgo_In_Model()const {
 	return this->deltaxago_in_model;

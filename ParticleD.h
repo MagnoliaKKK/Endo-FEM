@@ -34,6 +34,8 @@ public:
 
 	//この節点のFEMにおける解ベクトルをセット
 	void Set_Deltax_In_Model(const  Eigen::Vector3d &pos);
+	void Set_Velocity_In_Model(const  Eigen::Vector3d &vel);
+	
 	void Set_DeltaxAgo_In_Model(const  Eigen::Vector3d &pos);
 
 	void Set_IM_Grid(int a);
@@ -53,6 +55,7 @@ public:
 	const Eigen::Vector3d& Get_Initial_Pos()const;
 	const Eigen::Vector3d& Get_ExpAgo_Pos()const;
 	const Eigen::Vector3d& Get_Deltax_In_Model()const;
+	const Eigen::Vector3d& Get_Mean_Vel()const;
 	const Eigen::Vector3d& Get_DeltaxAgo_In_Model()const;
 	const Eigen::Vector3d& ParticleD::Get_Draw_Grid()const;
 	const Eigen::Vector3d& ParticleD::Get_IM_Grid()const;
@@ -80,6 +83,7 @@ private:
 	Eigen::Vector3d prime_pos;		//弾性力以外による変位した位置（1ステップで固定）
 	Eigen::Vector3d initial_pos;	//初期位置
 	Eigen::Vector3d deltax_in_model;//線形方程式の解ベクトル(モデルで共有)
+	Eigen::Vector3d mean_vel;
 	Eigen::Vector3d deltaxago_in_model;//線形方程式の解ベクトル(モデルで共有)(1つ前を記録)
 	bool fixed;						//固定されているかどうか
 	Eigen::Vector3d drawgrid;	//描画用のグローバル座標

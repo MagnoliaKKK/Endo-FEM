@@ -50,6 +50,7 @@ public:
 	//Debiug用
 	Eigen::VectorXd ConbiteGMRES;//GMRESの収束をみるために20反復を値として格納
 	int GMREScount;//出力するためにSTep数を記録
+	
 
 
 protected:
@@ -79,10 +80,12 @@ protected:
 
 	Eigen::Vector3d Calc_New_Exp_Pos(ParticleD* p);//位置修正(差を考える)
 	Eigen::Vector3d Calc_New_Exp_Pos_Mean(ParticleD* p);//位置修正(現在は足して平均をとる)
+	Eigen::Vector3d Calc_Mean_Vel(ParticleD* p);//平均速度
 	Eigen::Vector3d Calc_New_Delatax_Mean(ParticleD* p);//解の修正(平均をとる)
 	Eigen::Vector3d CalcMeanPos(ParticleD* p);
 	Eigen::Vector3d Set_New_Exp_Pos(ParticleD* p);//グループの位置をオブジェクト位置にのSet
 	Eigen::Vector3d Set_New_Exp_Pos(ParticleD* p,Eigen::VectorXd Delta);//グループの位置をオブジェクト位置にのSet.Deltaつき
+	
 };
 
 #endif

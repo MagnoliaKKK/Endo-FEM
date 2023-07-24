@@ -1353,6 +1353,17 @@ Eigen::Vector3d TetraGroupD::Get_DeltaxNew(int pid) {
 	std::cout << "ERROR1153 NOT FOUND" << std::endl;
 	return temp;
 }
+Eigen::Vector3d TetraGroupD::Get_Velocity(int pid) {
+	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
+	for (unsigned int pi = 0; pi < particle_num; pi++) {
+		if (particles[pi]->p_id == pid) {
+			temp = GroupVelVector.block(3 * pi, 0, 3, 1);
+			return temp;
+		}
+	}
+	std::cout << "ERROR1153 NOT FOUND" << std::endl;
+	return temp;
+}
 //idからその節点のグループでの予測位置を取得する
 Eigen::Vector3d TetraGroupD::Get_Exp_In_Group(int pid) {
 	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
@@ -2101,6 +2112,7 @@ void TetraGroupD::Update_Fbind_Pos6() {
 void TetraGroupD::Update_Fbind_Pos8() {
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		Eigen::Vector3d Conv = Eigen::Vector3d::Zero();
+		Eigen::Vector3d Conv1 = Eigen::Vector3d::Zero();
 		//共有節点かどうか
 		//本当は分離しないといけない
 		if ((particles[pi]->p_belong_TetraGroup_ids.size()) > 1)  // 如果是共同点（点所属组数大于1
@@ -2108,12 +2120,16 @@ void TetraGroupD::Update_Fbind_Pos8() {
 			//固定されていない点
 			if (!(particles[pi]->Is_Fixed())) {
 				//(n)(Exp + Deltax)
-				Conv = particles[pi]->p_belong_TetraGroup_ids.size() * (PrimeVector.block(3 * pi, 0, 3, 1) + DeltaxNew.block(3 * pi, 0, 3, 1));
+				Conv = (PrimeVector.block(3 * pi, 0, 3, 1) + DeltaxNew.block(3 * pi, 0, 3, 1));
+				Conv1 = GroupVelVector.block(3 * pi, 0, 3, 1);
 				//std::cout << DeltaxNew.block(3 * pi, 0, 3, 1) << std::endl;
 				//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
-				Conv = Conv - particles[pi]->p_belong_TetraGroup_ids.size() * (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
+				Conv = Conv - (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
+				Conv1 = Conv1 - particles[pi]->Get_Mean_Vel();
 				//Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
+				bind_force_iterative.block(3 * pi, 0, 3, 1) += (-0.2) * Conv1;
+
 				if (fetestexcept(FE_INVALID)) {
 					std::cout << "FE_INVALID bindF" << std::endl;
 				}
@@ -2379,7 +2395,7 @@ void TetraGroupD::RHS0() {
 	//tempC = MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
 	//tempF = MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;
 	//Constant_term_iteration = tempD * tempE + tempF;
-	Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse) * (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector)) + MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;;
+	Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse) * (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector)) + MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;
 
 	//Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix) *
 		//(OrigineVector - rotate_matrix3N.transpose() * (PrimeVector - SUM_M_Matrix * PrimeVector)) + MassDamInv_Matrix
