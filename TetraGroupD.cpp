@@ -2128,7 +2128,7 @@ void TetraGroupD::Update_Fbind_Pos8() {
 				Conv1 = Conv1 - particles[pi]->Get_Mean_Vel();
 				//Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
-				bind_force_iterative.block(3 * pi, 0, 3, 1) += (-0.2) * Conv1;
+				bind_force_iterative.block(3 * pi, 0, 3, 1) += (-2) * Conv1;
 
 				if (fetestexcept(FE_INVALID)) {
 					std::cout << "FE_INVALID bindF" << std::endl;
