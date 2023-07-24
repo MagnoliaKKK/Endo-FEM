@@ -32,7 +32,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 
 	for (int i = 0; i < loop; i++)
 	{
-		#pragma omp parallel for //作用最大 135 to 30
+		//#pragma omp parallel for //作用最大 135 to 30
 		for (int j = 0; j < static_cast<int>(groups.size()); j++) {
 			auto _g = groups[j];
 
@@ -59,7 +59,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			}
 			feclearexcept(FE_ALL_EXCEPT);
 		}
-		#pragma omp parallel for //没明显作用
+		//#pragma omp parallel for //没明显作用
 		for (int i = 0; i < static_cast<int>(groups.size()); i++) {
 			auto _g = groups[i];
 			_g->Update_Fbind_Pos8();
