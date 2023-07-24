@@ -313,30 +313,30 @@ void UseBlockObjectDouble::Create_Groups() {
 	GMREScount = 0;
 	ConbiteGMRES = Eigen::VectorXd::Zero(20);
 	//Debug出力
-	std::ofstream outputfile("MinvK.txt");
-	for (auto _g : groups) {
-		Eigen::MatrixXd Define = Eigen::MatrixXd::Zero(_g->particle_num, _g->particle_num);
-		Define = _g->M_Matrix_C.inverse() *_g->stiffness_matrix;
-		outputfile << "np.array([";
-		for (unsigned int pi = 0; pi < 3 * _g->particle_num - 1; pi++) {
-			//値
-			outputfile << "[";
-			for (unsigned int pj = 0; pj < 3 * _g->particle_num - 1; pj++) {
-				//値
-				outputfile << Define.block(pi, pj, 1, 1) << ",";
-			}
-			outputfile << Define.block(pi, 3 * _g->particle_num - 1, 1, 1) << "]," << "\n";
-		}
-		outputfile << "[";
-		for (unsigned int pj = 0; pj < 3 * _g->particle_num - 1; pj++) {
-			//値
-			outputfile << Define.block(3 * _g->particle_num - 1, pj, 1, 1) << ",";
-		}
-		outputfile << Define.block(3 * _g->particle_num - 1, 3 * _g->particle_num - 1, 1, 1) << "]])" << "\n";
-		outputfile << "\n" << "\n" << "\n" << "\n" << "\n";
-	}
-	outputfile.close();
-	std::cout << "OutPut Define" << std::endl;
+	//std::ofstream outputfile("MinvK.txt");
+	//for (auto _g : groups) {
+	//	Eigen::MatrixXd Define = Eigen::MatrixXd::Zero(_g->particle_num, _g->particle_num);
+	//	Define = _g->M_Matrix_C.inverse() *_g->stiffness_matrix;
+	//	outputfile << "np.array([";
+	//	for (unsigned int pi = 0; pi < 3 * _g->particle_num - 1; pi++) {
+	//		//値
+	//		outputfile << "[";
+	//		for (unsigned int pj = 0; pj < 3 * _g->particle_num - 1; pj++) {
+	//			//値
+	//			outputfile << Define.block(pi, pj, 1, 1) << ",";
+	//		}
+	//		outputfile << Define.block(pi, 3 * _g->particle_num - 1, 1, 1) << "]," << "\n";
+	//	}
+	//	outputfile << "[";
+	//	for (unsigned int pj = 0; pj < 3 * _g->particle_num - 1; pj++) {
+	//		//値
+	//		outputfile << Define.block(3 * _g->particle_num - 1, pj, 1, 1) << ",";
+	//	}
+	//	outputfile << Define.block(3 * _g->particle_num - 1, 3 * _g->particle_num - 1, 1, 1) << "]])" << "\n";
+	//	outputfile << "\n" << "\n" << "\n" << "\n" << "\n";
+	//}
+	//outputfile.close();
+	//std::cout << "OutPut Define" << std::endl;
 }
 //==========================================================================//
 //	@end		   			  グループ作成								    //
