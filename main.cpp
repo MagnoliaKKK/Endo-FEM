@@ -480,7 +480,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		unsigned int string_color3 = GetColor(0, 255, 255); // 5列目の文字列の色を緑色にする
 		//DrawString(100, 80, sstr5.str().data(), string_color3);// 5列目を描画する
 		sstr5.str("");				// 5列目のバッファをクリア
-
+		std::ofstream file("frame_times.txt");
+	
 		// 位置関係が分かるように地面にラインを描画する
 		//Draw_Mesh();
 	}

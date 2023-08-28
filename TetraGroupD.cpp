@@ -1003,7 +1003,7 @@ void TetraGroupD::Update_Fbind_Pos8() {
 				Conv1 = Conv1 - particles[pi]->Get_Mean_Vel();
 				//Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
-				bind_force_iterative.block(3 * pi, 0, 3, 1) += (-2) * Conv1;
+				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_damping * Conv1;
 
 				if (fetestexcept(FE_INVALID)) {
 					std::cout << "FE_INVALID bindF" << std::endl;
@@ -1095,7 +1095,7 @@ void TetraGroupD::RHS0() {
 	//tempC = MassDamInv_Matrix * rotate_matrix3N.inverse() * bind_force_iterative;
 	//tempF = MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;
 	//Constant_term_iteration = tempD * tempE + tempF;
-	Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse) * (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector)) + MassDamInvSparse * Rn_MatrixTR_Sparse * bind_force_iterative;
+	Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse) * (OrigineVector - Rn_MatrixTR_Sparse * (PrimeVector - SUM_M * PrimeVector)) + MassDamInvSparse * Rn_MatrixTR_Sparse * 0.01 * 0.01* bind_force_iterative;
 
 	//Constant_term_iteration = (TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix) *
 		//(OrigineVector - rotate_matrix3N.transpose() * (PrimeVector - SUM_M_Matrix * PrimeVector)) + MassDamInv_Matrix

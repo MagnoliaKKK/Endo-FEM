@@ -1,19 +1,19 @@
 ﻿#シミュレーション定数 double 
 MOUSE_RANGE = 40.0
 #タイムステップ秒, second(リアルタイム時間なら0.03ぐらい) double ,1.0e-1
-TIME_STEP = 1.0e-2
+TIME_STEP = 0.01
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)
-PBD_LOOP = 2
+PBD_LOOP = 10
 #修正値和による閾値の設定(double)
 config = 1.0e-03
 
 
 #物理量定数
 PI = 3.14159265358979265358979
-#重力加速度(m/s2)
-Gravity = 10.0
+#重力加速度(m/s2)ty  v
+Gravity = 10
 #最初に力をかけるか(1)いなか(0)
 UseIniForce = 0
 #ヤコビ(1)かLU(0)か
@@ -31,13 +31,13 @@ fixedion = 1
 #物体の形、四面体一つ(1)、四面体二つ(2)、三角柱(3)、LinearLocal(4)、OLDFEM(5)、箱(6)
 howmanytetras = 6
 #バネダンパ係数(質量比例減衰)
-M_damping = 0.5
+M_damping = 10
 #バネダンパ係数(剛性比例減衰)
-K_damping = 0.0
+K_damping = 10
 #拘束力の係数
-F_bind_coeff = -1.0e+04
+F_bind_coeff = -1.0e+07
 #拘束力のダンパー係数
-F_bind_damping = 0.0
+F_bind_damping = 1
 #拘束力か(1)全体係数行列か(0)
 whichmethodused = 1
 #反復計算を非定常反復(GMRESなど)で解くか(1)かLUか(0)
@@ -53,7 +53,7 @@ useSparse = 0
 #回転行列を更新するか(1)しないか(0)
 useUpRotate = 1
 #回転行列をAPD更新するか(1)SVDで更新するか(0)
-useAPD = 0
+useAPD = 1
 #拘束力を更新するか(1)しないか(0)
 useUpBind = 1
 
