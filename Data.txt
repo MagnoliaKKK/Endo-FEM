@@ -31,13 +31,13 @@ fixedion = 1
 #物体の形、四面体一つ(1)、四面体二つ(2)、三角柱(3)、LinearLocal(4)、OLDFEM(5)、箱(6)
 howmanytetras = 6
 #バネダンパ係数(質量比例減衰)
-M_damping = 10
+M_damping = 2
 #バネダンパ係数(剛性比例減衰)
-K_damping = 10
+K_damping = 1
 #拘束力の係数
 F_bind_coeff = -1.0e+07
 #拘束力のダンパー係数
-F_bind_damping = 1
+F_bind_damping = 100
 #拘束力か(1)全体係数行列か(0)
 whichmethodused = 1
 #反復計算を非定常反復(GMRESなど)で解くか(1)かLUか(0)
@@ -49,7 +49,7 @@ outerGMRES = 100
 #GMRESなどの反復法で前処理をするか(1)しないか(0)
 usePreIte = 1
 #行列をSparseで計算するか(1)しないか(0)
-useSparse = 0
+useSparse = 1
 #回転行列を更新するか(1)しないか(0)
 useUpRotate = 1
 #回転行列をAPD更新するか(1)SVDで更新するか(0)
@@ -68,7 +68,7 @@ zsize = 3
 sidelength = 4
 
 #x方向をn分割
-dividedbyn = 3
+dividedbyn = 6
 #y方向をm分割
 dividedbym = 1
 #z方向をl分割

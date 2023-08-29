@@ -6,6 +6,7 @@
 #define _OBJECTD
 
 #include "TetraGroupD.h"
+#include "TetraElementD.h"
 
 class ObjectD {
 public:
@@ -46,7 +47,7 @@ public:
 	int Share_particlenum;                //共有する節点の組み合わせの総和=l
 	std::vector<int>Share_particle_id;  //共有する節点の各座標
 	int AllParticlenum;					//節点の総和=l
-
+	Eigen::MatrixXd M_MatrixBody;		//質量行列
 	//Debiug用
 	Eigen::VectorXd ConbiteGMRES;//GMRESの収束をみるために20反復を値として格納
 	int GMREScount;//出力するためにSTep数を記録
@@ -77,7 +78,7 @@ protected:
 	void Solve_Constraints13(unsigned int loop);//new method
 
 	void Volume_consevation(unsigned int loop);
-
+	void CalcMassMatrix();
 	Eigen::Vector3d Calc_New_Exp_Pos(ParticleD* p);//位置修正(差を考える)
 	Eigen::Vector3d Calc_New_Exp_Pos_Mean(ParticleD* p);//位置修正(現在は足して平均をとる)
 	Eigen::Vector3d Calc_Mean_Vel(ParticleD* p);//平均速度

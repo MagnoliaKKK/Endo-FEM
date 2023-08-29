@@ -81,6 +81,9 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 		}
 		
 	}
+	CalcMassMatrix();
+	std::cout << M_MatrixBody << std::endl;
+	int aaa;
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;
 	}
@@ -504,4 +507,23 @@ void ObjectD::Triprism_Triangulation() {
 
 const std::string& ObjectD::Get_Name()const { //オブジェクトの名前を取得
 	return data_name;
+}
+void ObjectD::CalcMassMatrix() {
+	M_MatrixBody = Eigen::MatrixXd::Zero(3 * Sum_particlenum, 3 * Sum_particlenum);
+	for (auto _e : tetras) {
+		for (auto p1_it = particles.begin(); p1_it != particles.end(); ++p1_it) {
+			size_t p1_index = std::distance(particles.begin(), p1_it);
+			for (auto p2_it = particles.begin(); p2_it != particles.end(); ++p2_it) {
+				size_t p2_index = std::distance(particles.begin(), p2_it);
+
+				M_MatrixBody.block(3 * p1_index, 3 * p2_index, 3, 3) =
+					M_MatrixBody.block(3 * p1_index, 3 * p2_index, 3, 3) + _e->Get_M_Submatrix(*p1_it, *p2_it);
+			}
+		}
+	}
+	//loop all tetras	
+	
+	//質量行列の逆行列を作成
+	//std::cout << M_Matrix << std::endl;
+	//inv_M_Matrix = M_MatrixBody.inverse();
 }

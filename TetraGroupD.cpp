@@ -141,6 +141,7 @@ void TetraGroupD::Create_M_Matrix() {
 	//質量行列の逆行列を作成
 	//std::cout << M_Matrix << std::endl;
 	inv_M_Matrix = M_Matrix.inverse();
+	int bbb = 1;
 }
 
 
