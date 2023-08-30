@@ -52,7 +52,9 @@ public:
 	Eigen::VectorXd ConbiteGMRES;//GMRESの収束をみるために20反復を値として格納
 	int GMREScount;//出力するためにSTep数を記録
 	
-
+	Eigen::VectorXd f_Local;	//Nニュートン
+	Eigen::VectorXd x_Local;
+	Eigen::VectorXd v_Local;
 
 protected:
 
@@ -79,6 +81,8 @@ protected:
 
 	void Volume_consevation(unsigned int loop);
 	void CalcMassMatrix();
+	void CalcPrePos();//New prediction position
+	
 	Eigen::Vector3d Calc_New_Exp_Pos(ParticleD* p);//位置修正(差を考える)
 	Eigen::Vector3d Calc_New_Exp_Pos_Mean(ParticleD* p);//位置修正(現在は足して平均をとる)
 	Eigen::Vector3d Calc_Mean_Vel(ParticleD* p);//平均速度

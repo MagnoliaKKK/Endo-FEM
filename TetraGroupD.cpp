@@ -48,7 +48,14 @@ void TetraGroupD::BuildMatrix() {
 	for (auto _e : elements) {
 		_e->Create_M_Matrix(data.density);
 	}
+	for (auto _e : elements) {
+		_e->CreateDm();
+		_e->CreateDs();
+		_e->CreateDefTensor();
+		_e->CreateStrain();
+		_e->CreateStress(data.young,data.poisson);
 
+	}
 	//グループの質量行列を作成する
 	Create_M_Matrix();
 	std::cout << "Create Object M Matrix Of Group" << tetra_group_id << std::endl;

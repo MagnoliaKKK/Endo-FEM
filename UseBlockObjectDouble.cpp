@@ -477,6 +477,8 @@ void UseBlockObjectDouble::Update() {
 	DrawString(0, 67, sstr3.str().data(), string_color3);
 	sstr2.str("");
 	sstr3.str("");
+
+	
 }
 //==========================================================================//
 //	@end		   				ループ設定									//

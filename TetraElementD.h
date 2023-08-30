@@ -33,7 +33,14 @@ public:
 	void Create_Faces();
 	Eigen::Matrix<double, 6, 12> Create_B_Martix(const Eigen::Vector3d& origin);//(6x12)
 	Eigen::Matrix<double, 6, 6> Create_D_Martix(const double& young, const double& poisson);//(6x6)
-
+	void CreateDm();//create Dm
+	void CreateDs();//create Ds
+	void CreateDefTensor();//create deformation tensor
+	void CreateStrain();//create strain tensor
+	void CreateStress(const double& young, const double& poisson);//create PK stress tensor
+	void CreateEnegyDensity();//create energy density
+	void CreatePKFirstStress();//create PK first stress tensor
+	void CreatePotentialEnergy();//create potential energy
 	Eigen::Vector3d Get_Center();
 	Eigen::Matrix3d Get_K_Submatrix(ParticleD* p1, ParticleD* p2);
 	int Get_K_Submatrix_Edge(ParticleD* p1, ParticleD* p2);
@@ -60,6 +67,14 @@ public:
 
 	double Kappa;
 	void Calc_Conservation(std::vector<ParticleD*> Gp,Eigen::VectorXd m);
+	Eigen::MatrixXd Ds;
+	Eigen::MatrixXd Dm;
+	Eigen::MatrixXd DefTensor;
+	Eigen::MatrixXd Strain;
+	Eigen::MatrixXd Stress;
+	double EnergyDensity;
+	Eigen::MatrixXd PKFirstStress;
+	double PotentialEnergy;
 private:
 	std::vector<ParticleD*> particles;				  // 持っているparticle(4個)
 	std::vector<TriangleD*> faces;					  // 持っている面(4面)
@@ -71,5 +86,7 @@ private:
 	Eigen::MatrixXd m_matrix;						  // 四面体の質量行列(対角行列)(12x12)
 	double Ini_volume;//静止状態の体積
 };
+
+	
 
 #endif

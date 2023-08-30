@@ -343,6 +343,71 @@ void TetraElementD::Create_Stiffness_Matrix2(const Eigen::Vector3d& origin, cons
 	}
 	std::cout << local_stiffness_matrix.block(3 * 4 - 1, 3 * 4 - 1, 1, 1) << "]])" << std::endl;
 	*/
+	
+}
+void TetraElementD::CreateDm() {
+	Eigen::Vector3d p1, p2, p3, p4;
+	Dm = Eigen::Matrix<double, 3, 3>::Zero();
+	p1 = particles[0]->Get_Initial_Pos();
+	p2 = particles[1]->Get_Initial_Pos();
+	p3 = particles[2]->Get_Initial_Pos();
+	p4 = particles[3]->Get_Initial_Pos();
+	
+	Dm << p1[0] - p4[0], p2[0] - p4[0], p3[0] - p4[0],
+		p1[1] - p4[1], p2[1] - p4[1], p3[1] - p4[1],
+		p1[2] - p4[2], p2[2] - p4[2], p3[2] - p4[2];
+	
+}
+void TetraElementD::CreateDs() {
+	Ds = Eigen::Matrix<double, 3, 3>::Zero();
+	Eigen::Vector3d p1, p2, p3, p4;
+	p1 = particles[0]->Get_Grid();
+	p2 = particles[1]->Get_Grid();
+	p3 = particles[2]->Get_Grid();
+	p4 = particles[3]->Get_Grid();
+	Eigen::Matrix<double, 3, 3> Ds;
+	Ds << p1[0] - p4[0], p2[0] - p4[0], p3[0] - p4[0],
+		p1[1] - p4[1], p2[1] - p4[1], p3[1] - p4[1],
+		p1[2] - p4[2], p2[2] - p4[2], p3[2] - p4[2];
+	
+}
+void TetraElementD::CreateDefTensor() {
+	DefTensor = Ds * Dm.inverse();
+}
+void TetraElementD::CreateStrain() {
+	Strain = 0.5 * (DefTensor.transpose() * DefTensor - Eigen::Matrix<double, 3, 3>::Identity());
+}
+void TetraElementD::CreateStress(const double& young, const double& poisson) {
+	//Create stress tensor, D_Matrix is the strain-displacement matrix,strain is calculated in the function CreateStrain
+//stress = D_Matrix * strain
+	Eigen::MatrixXd D = Create_D_Martix(young, poisson);
+
+	Eigen::VectorXd E_voigt(6);
+	E_voigt << Strain(0, 0), Strain(1, 1), Strain(2, 2), 2 * Strain(1, 2), 2 * Strain(0, 2), 2 * Strain(0, 1);
+	Eigen::VectorXd S_voigt = D * E_voigt;
+
+	// Convert S from Voigt notation back to 3x3 form
+	
+	Stress = Eigen::MatrixXd::Zero(3, 3);
+	Stress(0,0) = S_voigt(0);
+	Stress(1,1) = S_voigt(1);
+	Stress(2,2) = S_voigt(2);
+	Stress(1,2) = S_voigt(3);
+	Stress(0,2) = S_voigt(4);
+	Stress(0,1) = S_voigt(5);	
+	Stress(2,1) = S_voigt(3);
+	Stress(2,0) = S_voigt(4);
+	Stress(1,0) = S_voigt(5);
+
+}
+void TetraElementD::CreateEnegyDensity() {
+	EnergyDensity = 0.5 * (Strain.transpose() * Stress).trace();
+}
+void TetraElementD::CreatePKFirstStress() {
+	PKFirstStress = DefTensor * Stress;
+}
+void TetraElementD::CreatePotentialEnergy() {
+	PotentialEnergy = EnergyDensity * Ini_volume;
 }
 //===========================================================================//
 //	@end		   			局所剛性行列の作成							     //

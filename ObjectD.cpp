@@ -521,9 +521,28 @@ void ObjectD::CalcMassMatrix() {
 			}
 		}
 	}
-	//loop all tetras	
+
+}
+
+
+void ObjectD::CalcPrePos() {
 	
-	//質量行列の逆行列を作成
-	//std::cout << M_Matrix << std::endl;
-	//inv_M_Matrix = M_MatrixBody.inverse();
+		//初期化
+	f_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
+	x_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
+	v_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
+	for (unsigned int pi = 0; pi < Sum_particlenum; pi++) {
+		f_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Force();
+		x_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Vel();
+		v_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Grid();
+
+	}
+	for (unsigned int pi = 0; pi < Sum_particlenum; pi++) {
+		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + f_Local.block(3 * pi, 0, 3, 1) * TIME_STEP / particles[pi]->Get_Mass();
+		x_Local.block(3 * pi, 0, 3, 1) = x_Local.block(3 * pi, 0, 3, 1) + v_Local.block(3 * pi, 0, 3, 1) * TIME_STEP;
+	}
+
+			
+			
+	
 }
