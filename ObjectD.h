@@ -56,6 +56,11 @@ public:
 	Eigen::VectorXd x_Local;
 	Eigen::VectorXd v_Local;
 
+	Eigen::VectorXd EnergyGradGlobal;	//エネルギー勾配
+	double LagrangeMulti;//ラグランジュ算子
+	double EnergyGradGlobalNorm;//エネルギー勾配のノルム
+	double EnergyBody;
+
 protected:
 
 	virtual void Init() = 0;			//初期化(オーバーライドする)
@@ -82,6 +87,10 @@ protected:
 	void Volume_consevation(unsigned int loop);
 	void CalcMassMatrix();
 	void CalcPrePos();//New prediction position
+	void Assemble_EnergyGradGlobal();//エネルギー勾配の作成
+	void CreateEnergyBody();//energybodyの作成
+	void CreateLagrangeMulti();//ラグランジュ乗数の作成
+	void UpdatePos();//位置の更新
 	
 	Eigen::Vector3d Calc_New_Exp_Pos(ParticleD* p);//位置修正(差を考える)
 	Eigen::Vector3d Calc_New_Exp_Pos_Mean(ParticleD* p);//位置修正(現在は足して平均をとる)

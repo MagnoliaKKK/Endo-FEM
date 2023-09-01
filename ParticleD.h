@@ -60,6 +60,7 @@ public:
 	const Eigen::Vector3d& ParticleD::Get_Draw_Grid()const;
 	const Eigen::Vector3d& ParticleD::Get_IM_Grid()const;
 	const double& ParticleD::Get_Mass()const;
+	
 
 	bool Is_Fixed()const;
 

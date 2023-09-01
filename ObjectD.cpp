@@ -540,9 +540,46 @@ void ObjectD::CalcPrePos() {
 	for (unsigned int pi = 0; pi < Sum_particlenum; pi++) {
 		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + f_Local.block(3 * pi, 0, 3, 1) * TIME_STEP / particles[pi]->Get_Mass();
 		x_Local.block(3 * pi, 0, 3, 1) = x_Local.block(3 * pi, 0, 3, 1) + v_Local.block(3 * pi, 0, 3, 1) * TIME_STEP;
-	}
+	}	
+}
 
-			
-			
-	
+void ObjectD::Assemble_EnergyGradGlobal() {
+	EnergyGradGlobal = Eigen::VectorXd::Zero(3*Sum_particlenum);
+	Eigen::MatrixXd temp = Eigen::MatrixXd::Zero(3 , 3 * Sum_particlenum);
+	for (auto _e : tetras) {
+		for (auto p_it = particles.begin(); p_it != particles.end(); ++p_it) {
+			size_t p_index = std::distance(particles.begin(), p_it);
+
+			// 从当前元素获取此粒子的能量梯度。
+			Eigen::Vector3d local_gradient = _e->Get_SubEnergyGrad(*p_it);
+
+			// 将局部梯度加到全局梯度的适当位置。
+			temp.col(p_index) += local_gradient;
+
+		}
+	}
+	for (int i = 0; i < 3 * Sum_particlenum; ++i) {
+		int row = i % 3;
+		int col = i / 3;
+		EnergyGradGlobal(i) = temp(row, col);
+	}
+}
+void ObjectD::CreateEnergyBody() {
+	for (auto _e : tetras) {
+		_e->CreateEnegyDensity();
+		EnergyBody += _e->PotentialEnergy;
+	}
+}
+void ObjectD::CreateLagrangeMulti() {
+	double Bottom = 0;
+	for (int i = 0; i < Sum_particlenum; i++) {
+		Bottom = Bottom + (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i).squaredNorm();	
+	}
+	LagrangeMulti = (-1) * EnergyBody / Bottom;
+}
+void ObjectD::UpdatePos() {
+	for (int i = 0; i < Sum_particlenum; i++) {
+		Eigen ::Vector3d temp = (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
+		particles[i]->Update_Grid(temp);
+	}
 }

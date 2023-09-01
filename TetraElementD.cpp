@@ -409,6 +409,39 @@ void TetraElementD::CreatePKFirstStress() {
 void TetraElementD::CreatePotentialEnergy() {
 	PotentialEnergy = EnergyDensity * Ini_volume;
 }
+void TetraElementD::CreateEnergyGrad() {
+	EnergyGrad = Eigen::Matrix<double, 3, 4>::Zero();
+	//EnergyGrad = Ini_volume * PKFirstStress * Dm.inverse().transpose()
+	
+	Eigen::Matrix<double, 3, 3> tempResult = Ini_volume * PKFirstStress * Dm.inverse().transpose();
+	// 设置前三列
+	EnergyGrad.block<3, 3>(0, 0) = tempResult;
+	// 计算前三列的和
+	Eigen::Matrix<double, 3, 1> sumOfColumns = tempResult.rowwise().sum();
+	// 设置第四列为前三列的和的负数
+	EnergyGrad.col(3) = -sumOfColumns;
+}
+
+Eigen::Vector3d TetraElementD::Get_SubEnergyGrad(ParticleD* p) {
+	Eigen::Vector3d gradient = Eigen::Vector3d::Zero();
+	// Find the index of particle p in the particles list.
+	size_t p_index = -1;
+	for (auto it = particles.begin(); it != particles.end(); ++it) {
+		if (p == *it) {
+			p_index = std::distance(particles.begin(), it);
+			break;
+		}
+	}
+
+	if (-1 == p_index) {
+		return gradient; // Returns zero vector.
+	}
+	// Extract energy gradient for particle p from EnergyGrad matrix.
+	gradient = EnergyGrad.col(p_index);
+
+	return gradient;
+}
+
 //===========================================================================//
 //	@end		   			局所剛性行列の作成							     //
 //===========================================================================//

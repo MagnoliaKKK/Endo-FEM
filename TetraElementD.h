@@ -41,6 +41,10 @@ public:
 	void CreateEnegyDensity();//create energy density
 	void CreatePKFirstStress();//create PK first stress tensor
 	void CreatePotentialEnergy();//create potential energy
+	void CreateEnergyGrad();//create energy gradient
+	Eigen::Vector3d Get_SubEnergyGrad(ParticleD* p);
+
+
 	Eigen::Vector3d Get_Center();
 	Eigen::Matrix3d Get_K_Submatrix(ParticleD* p1, ParticleD* p2);
 	int Get_K_Submatrix_Edge(ParticleD* p1, ParticleD* p2);
@@ -75,6 +79,8 @@ public:
 	double EnergyDensity;
 	Eigen::MatrixXd PKFirstStress;
 	double PotentialEnergy;
+	Eigen::MatrixXd EnergyGrad;
+
 private:
 	std::vector<ParticleD*> particles;				  // 持っているparticle(4個)
 	std::vector<TriangleD*> faces;					  // 持っている面(4面)
