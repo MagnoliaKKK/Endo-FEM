@@ -532,14 +532,14 @@ void ObjectD::CalcPrePos() {
 	x_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
 	v_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
 	for (unsigned int pi = 0; pi < Sum_particlenum; pi++) {
-		f_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Force();
-		x_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Vel();
-		v_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Grid();
+		f_Local.segment<3>(pi) = particles[pi]->Get_Force();
+		v_Local.segment<3>(pi) = particles[pi]->Get_Vel();
+		x_Local.segment<3>(pi) = particles[pi]->Get_Grid();
 
 	}
 	for (unsigned int pi = 0; pi < Sum_particlenum; pi++) {
-		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + f_Local.block(3 * pi, 0, 3, 1) * TIME_STEP / particles[pi]->Get_Mass();
-		x_Local.block(3 * pi, 0, 3, 1) = x_Local.block(3 * pi, 0, 3, 1) + v_Local.block(3 * pi, 0, 3, 1) * TIME_STEP;
+		v_Local.segment<3>(pi) = v_Local.segment<3>(pi) + f_Local.segment<3>(pi) * TIME_STEP / particles[pi]->Get_Mass();
+		x_Local.segment<3>(pi) = x_Local.segment<3>(pi) + v_Local.segment<3>(pi) * TIME_STEP;
 	}	
 }
 
@@ -579,7 +579,42 @@ void ObjectD::CreateLagrangeMulti() {
 }
 void ObjectD::UpdatePos() {
 	for (int i = 0; i < Sum_particlenum; i++) {
-		Eigen ::Vector3d temp = (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
-		particles[i]->Update_Grid(temp);
+		Deltax = (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
+		
+		//该写velocity了
 	}
+	x_corrected = x_Local + Deltax;
+}
+
+void ObjectD::UpdateVel() {
+	for (int i = 0; i < Sum_particlenum; i++) {
+		particles[i]->Set_Velocity_In_Model((x_corrected.segment<3>(i) - particles[i]->Get_Grid())/TIME_STEP);
+	}
+}
+
+void ObjectD::PBDCalculation() {
+	
+	CalcPrePos();
+	for (auto _e : tetras) {
+		_e->CreateDm();
+		_e->CreateDs();
+		for (int i = 0; i < 5; i++) {
+			_e->CreateDefTensor();
+			_e->CreateStrain();
+			_e->CreateStress(data.young, data.poisson);
+			_e->CreateEnegyDensity();
+			_e->CreatePKFirstStress();
+			_e->CreateEnergyGrad();
+			Assemble_EnergyGradGlobal();
+			CreateEnergyBody();
+			CreateLagrangeMulti();
+			UpdatePos();
+			
+		}
+		UpdateVel();
+		
+	}
+	
+	
+		
 }

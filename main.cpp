@@ -423,7 +423,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
 			if (countup>50 && countup<100000) {
-				obj[i]->Update();			//オブジェクトの位置更新
+				//obj[i]->Update();			//オブジェクトの位置更新
+				obj[i]->PBDCalculation();
 			}
 			mtUpdate.endMyTimer();		//１ステップ中の位置更新の計算時間を測るstopwatchを終了
 

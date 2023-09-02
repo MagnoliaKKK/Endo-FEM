@@ -25,6 +25,14 @@ public:
 	int Get_ezolg();		//制約条件による更新回数を取得
 	double convite;			//反復においてどれだけ値が変化しているかを記録する(前回と今の佐野ノルムの2乗)
 	const std::string& Get_Name()const;//オブジェクトの名前を取得
+	void CalcMassMatrix();
+	void CalcPrePos();//New prediction position
+	void Assemble_EnergyGradGlobal();//エネルギー勾配の作成
+	void CreateEnergyBody();//energybodyの作成
+	void CreateLagrangeMulti();//ラグランジュ乗数の作成
+	void UpdatePos();//位置の更新
+	void UpdateVel();//速度の更新
+	void PBDCalculation();//PBDの計算
 
 	void Set_Force(Eigen::Vector3d grid);//最後の頂点(一番右下の頂点)にマウスのポインタ分だけ力をかける
 	Eigen::Vector3d Outofforce;
@@ -55,11 +63,13 @@ public:
 	Eigen::VectorXd f_Local;	//Nニュートン
 	Eigen::VectorXd x_Local;
 	Eigen::VectorXd v_Local;
+	Eigen::VectorXd x_corrected;
 
 	Eigen::VectorXd EnergyGradGlobal;	//エネルギー勾配
 	double LagrangeMulti;//ラグランジュ算子
 	double EnergyGradGlobalNorm;//エネルギー勾配のノルム
 	double EnergyBody;
+	Eigen::VectorXd Deltax;//position correction
 
 protected:
 
@@ -85,12 +95,7 @@ protected:
 	void Solve_Constraints13(unsigned int loop);//new method
 
 	void Volume_consevation(unsigned int loop);
-	void CalcMassMatrix();
-	void CalcPrePos();//New prediction position
-	void Assemble_EnergyGradGlobal();//エネルギー勾配の作成
-	void CreateEnergyBody();//energybodyの作成
-	void CreateLagrangeMulti();//ラグランジュ乗数の作成
-	void UpdatePos();//位置の更新
+
 	
 	Eigen::Vector3d Calc_New_Exp_Pos(ParticleD* p);//位置修正(差を考える)
 	Eigen::Vector3d Calc_New_Exp_Pos_Mean(ParticleD* p);//位置修正(現在は足して平均をとる)
