@@ -509,7 +509,7 @@ const std::string& ObjectD::Get_Name()const { //オブジェクトの名前を�
 	return data_name;
 }
 void ObjectD::CalcMassMatrix() {
-	M_MatrixBody = Eigen::MatrixXd::Zero(3 * Sum_particlenum, 3 * Sum_particlenum);
+	M_MatrixBody = Eigen::MatrixXd::Zero(3 * particles.size(), 3 * particles.size());
 	for (auto _e : tetras) {
 		for (auto p1_it = particles.begin(); p1_it != particles.end(); ++p1_it) {
 			size_t p1_index = std::distance(particles.begin(), p1_it);
@@ -528,24 +528,24 @@ void ObjectD::CalcMassMatrix() {
 void ObjectD::CalcPrePos() {
 	
 		//初期化
-	f_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
-	x_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
-	v_Local = Eigen::VectorXd::Zero(3 * Sum_particlenum);
-	for (unsigned int pi = 0; pi < Sum_particlenum; pi++) {
-		f_Local.segment<3>(pi) = particles[pi]->Get_Force();
-		v_Local.segment<3>(pi) = particles[pi]->Get_Vel();
-		x_Local.segment<3>(pi) = particles[pi]->Get_Grid();
+	f_Local = Eigen::VectorXd::Zero(3 * particles.size());
+	x_Local = Eigen::VectorXd::Zero(3 * particles.size());
+	v_Local = Eigen::VectorXd::Zero(3 * particles.size());
+	for (unsigned int pi = 0; pi < particles.size(); pi++) {
+		f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0.0, Gravity, 0.0);;
+		x_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Grid();
+		v_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Vel();
 
 	}
-	for (unsigned int pi = 0; pi < Sum_particlenum; pi++) {
-		v_Local.segment<3>(pi) = v_Local.segment<3>(pi) + f_Local.segment<3>(pi) * TIME_STEP / particles[pi]->Get_Mass();
+	for (unsigned int pi = 0; pi < particles.size(); pi++) {
+		v_Local.segment<3>(pi) = v_Local.segment<3>(pi) + f_Local * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
 		x_Local.segment<3>(pi) = x_Local.segment<3>(pi) + v_Local.segment<3>(pi) * TIME_STEP;
 	}	
 }
 
 void ObjectD::Assemble_EnergyGradGlobal() {
-	EnergyGradGlobal = Eigen::VectorXd::Zero(3*Sum_particlenum);
-	Eigen::MatrixXd temp = Eigen::MatrixXd::Zero(3 , 3 * Sum_particlenum);
+	EnergyGradGlobal = Eigen::VectorXd::Zero(3* particles.size());
+	Eigen::MatrixXd temp = Eigen::MatrixXd::Zero(3 , 3 * particles.size());
 	for (auto _e : tetras) {
 		for (auto p_it = particles.begin(); p_it != particles.end(); ++p_it) {
 			size_t p_index = std::distance(particles.begin(), p_it);
@@ -558,7 +558,7 @@ void ObjectD::Assemble_EnergyGradGlobal() {
 
 		}
 	}
-	for (int i = 0; i < 3 * Sum_particlenum; ++i) {
+	for (int i = 0; i < 3 * particles.size(); ++i) {
 		int row = i % 3;
 		int col = i / 3;
 		EnergyGradGlobal(i) = temp(row, col);
@@ -567,38 +567,45 @@ void ObjectD::Assemble_EnergyGradGlobal() {
 void ObjectD::CreateEnergyBody() {
 	for (auto _e : tetras) {
 		_e->CreateEnegyDensity();
+		_e->CreatePotentialEnergy();
 		EnergyBody += _e->PotentialEnergy;
 	}
 }
 void ObjectD::CreateLagrangeMulti() {
 	double Bottom = 0;
-	for (int i = 0; i < Sum_particlenum; i++) {
+	for (int i = 0; i < particles.size(); i++) {
 		Bottom = Bottom + (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i).squaredNorm();	
 	}
 	LagrangeMulti = (-1) * EnergyBody / Bottom;
 }
 void ObjectD::UpdatePos() {
-	for (int i = 0; i < Sum_particlenum; i++) {
+	Deltax = Eigen::VectorXd::Zero(3 * particles.size());
+	for (int i = 0; i < particles.size(); i++) {
 		Deltax = (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
 		
 		//该写velocity了
 	}
 	x_corrected = x_Local + Deltax;
+
 }
 
 void ObjectD::UpdateVel() {
-	for (int i = 0; i < Sum_particlenum; i++) {
+	for (int i = 0; i < particles.size(); i++) {
 		particles[i]->Set_Velocity_In_Model((x_corrected.segment<3>(i) - particles[i]->Get_Grid())/TIME_STEP);
 	}
 }
 
 void ObjectD::PBDCalculation() {
-	
+	CalcMassMatrix();
 	CalcPrePos();
+	for (auto e : tetras) {
+		e->CreateDm();
+	}
 	for (auto _e : tetras) {
-		_e->CreateDm();
-		_e->CreateDs();
+		
 		for (int i = 0; i < 5; i++) {
+		
+			_e->CreateDs();
 			_e->CreateDefTensor();
 			_e->CreateStrain();
 			_e->CreateStress(data.young, data.poisson);
@@ -609,6 +616,7 @@ void ObjectD::PBDCalculation() {
 			CreateEnergyBody();
 			CreateLagrangeMulti();
 			UpdatePos();
+			
 			
 		}
 		UpdateVel();

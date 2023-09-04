@@ -353,10 +353,10 @@ void TetraElementD::CreateDm() {
 	p3 = particles[2]->Get_Initial_Pos();
 	p4 = particles[3]->Get_Initial_Pos();
 	
-	Dm << p1[0] - p4[0], p2[0] - p4[0], p3[0] - p4[0],
-		p1[1] - p4[1], p2[1] - p4[1], p3[1] - p4[1],
-		p1[2] - p4[2], p2[2] - p4[2], p3[2] - p4[2];
-	
+	Dm << p1.x() - p4.x(), p2.x() - p4.x(), p3.x() - p4.x(),
+		p1.y() - p4.y(), p2.y() - p4.y(), p3.y() - p4.y(),
+		p1.z() - p4.z(), p2.z() - p4.z(), p3.z() - p4.z();
+
 }
 void TetraElementD::CreateDs() {
 	Ds = Eigen::Matrix<double, 3, 3>::Zero();
@@ -365,16 +365,18 @@ void TetraElementD::CreateDs() {
 	p2 = particles[1]->Get_Grid();
 	p3 = particles[2]->Get_Grid();
 	p4 = particles[3]->Get_Grid();
-	Eigen::Matrix<double, 3, 3> Ds;
-	Ds << p1[0] - p4[0], p2[0] - p4[0], p3[0] - p4[0],
-		p1[1] - p4[1], p2[1] - p4[1], p3[1] - p4[1],
-		p1[2] - p4[2], p2[2] - p4[2], p3[2] - p4[2];
-	
+	Ds << p1.x() - p4.x(), p2.x() - p4.x(), p3.x() - p4.x(),
+		p1.y() - p4.y(), p2.y() - p4.y(), p3.y() - p4.y(),
+		p1.z() - p4.z(), p2.z() - p4.z(), p3.z() - p4.z();
+
 }
 void TetraElementD::CreateDefTensor() {
+	DefTensor = Eigen::Matrix<double, 3, 3>::Zero();
 	DefTensor = Ds * Dm.inverse();
+	
 }
 void TetraElementD::CreateStrain() {
+	Strain = Eigen::Matrix<double, 3, 3>::Zero();
 	Strain = 0.5 * (DefTensor.transpose() * DefTensor - Eigen::Matrix<double, 3, 3>::Identity());
 }
 void TetraElementD::CreateStress(const double& young, const double& poisson) {
@@ -427,10 +429,15 @@ Eigen::Vector3d TetraElementD::Get_SubEnergyGrad(ParticleD* p) {
 	// Find the index of particle p in the particles list.
 	size_t p_index = -1;
 	for (auto it = particles.begin(); it != particles.end(); ++it) {
+		size_t index = std::distance(particles.begin(), it);
 		if (p == *it) {
+			p_index = index;
+			
+		}
+		/*if (p == *it) {
 			p_index = std::distance(particles.begin(), it);
 			break;
-		}
+		}*/
 	}
 
 	if (-1 == p_index) {

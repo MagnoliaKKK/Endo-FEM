@@ -32,6 +32,7 @@ public:
 	void CreateLagrangeMulti();//ラグランジュ乗数の作成
 	void UpdatePos();//位置の更新
 	void UpdateVel();//速度の更新
+
 	void PBDCalculation();//PBDの計算
 
 	void Set_Force(Eigen::Vector3d grid);//最後の頂点(一番右下の頂点)にマウスのポインタ分だけ力をかける
@@ -70,6 +71,7 @@ public:
 	double EnergyGradGlobalNorm;//エネルギー勾配のノルム
 	double EnergyBody;
 	Eigen::VectorXd Deltax;//position correction
+
 
 protected:
 

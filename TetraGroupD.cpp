@@ -48,14 +48,7 @@ void TetraGroupD::BuildMatrix() {
 	for (auto _e : elements) {
 		_e->Create_M_Matrix(data.density);
 	}
-	for (auto _e : elements) {
-		_e->CreateDm();
-		_e->CreateDs();
-		_e->CreateDefTensor();
-		_e->CreateStrain();
-		_e->CreateStress(data.young,data.poisson);
-
-	}
+	
 	//グループの質量行列を作成する
 	Create_M_Matrix();
 	std::cout << "Create Object M Matrix Of Group" << tetra_group_id << std::endl;
@@ -148,7 +141,7 @@ void TetraGroupD::Create_M_Matrix() {
 	//質量行列の逆行列を作成
 	//std::cout << M_Matrix << std::endl;
 	inv_M_Matrix = M_Matrix.inverse();
-	int bbb = 1;
+
 }
 
 

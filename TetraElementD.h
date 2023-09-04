@@ -71,15 +71,15 @@ public:
 
 	double Kappa;
 	void Calc_Conservation(std::vector<ParticleD*> Gp,Eigen::VectorXd m);
-	Eigen::MatrixXd Ds;
-	Eigen::MatrixXd Dm;
-	Eigen::MatrixXd DefTensor;
-	Eigen::MatrixXd Strain;
+	Eigen::Matrix3d Ds;
+	Eigen::Matrix3d Dm;
+	Eigen::Matrix3d DefTensor;
+	Eigen::Matrix3d Strain;
 	Eigen::MatrixXd Stress;
 	double EnergyDensity;
 	Eigen::MatrixXd PKFirstStress;
 	double PotentialEnergy;
-	Eigen::MatrixXd EnergyGrad;
+	Eigen::Matrix<double, 3, 4>EnergyGrad;
 
 private:
 	std::vector<ParticleD*> particles;				  // 持っているparticle(4個)
