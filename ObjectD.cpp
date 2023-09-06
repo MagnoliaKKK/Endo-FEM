@@ -81,7 +81,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 		}
 		
 	}
-	CalcMassMatrix();
+	
 	std::cout << M_MatrixBody << std::endl;
 	int aaa;
 	if (fetestexcept(FE_INVALID)) {
@@ -537,15 +537,18 @@ void ObjectD::CalcPrePos() {
 		v_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Vel();
 
 	}
+	
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
 		v_Local.segment<3>(pi) = v_Local.segment<3>(pi) + f_Local * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
 		x_Local.segment<3>(pi) = x_Local.segment<3>(pi) + v_Local.segment<3>(pi) * TIME_STEP;
-	}	
+		particles[pi]->Set_Exp_Pos(x_Local.segment<3>(pi));
+	}
+
 }
 
 void ObjectD::Assemble_EnergyGradGlobal() {
 	EnergyGradGlobal = Eigen::VectorXd::Zero(3* particles.size());
-	Eigen::MatrixXd temp = Eigen::MatrixXd::Zero(3 , 3 * particles.size());
+	temp = Eigen::MatrixXd::Zero(3 , 3 * particles.size());
 	for (auto _e : tetras) {
 		for (auto p_it = particles.begin(); p_it != particles.end(); ++p_it) {
 			size_t p_index = std::distance(particles.begin(), p_it);
@@ -572,16 +575,18 @@ void ObjectD::CreateEnergyBody() {
 	}
 }
 void ObjectD::CreateLagrangeMulti() {
-	double Bottom = 0;
+	Bottom = 0;
+	int c = 0;
 	for (int i = 0; i < particles.size(); i++) {
-		Bottom = Bottom + (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i).squaredNorm();	
+		Bottom = Bottom + (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment<3>(i).squaredNorm();
+		c += 1;
 	}
 	LagrangeMulti = (-1) * EnergyBody / Bottom;
 }
 void ObjectD::UpdatePos() {
 	Deltax = Eigen::VectorXd::Zero(3 * particles.size());
 	for (int i = 0; i < particles.size(); i++) {
-		Deltax = (1 / particles[i]->Get_Mass()) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
+		Deltax.segment<3>(i) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
 		
 		//该写velocity了
 	}
@@ -598,12 +603,10 @@ void ObjectD::UpdateVel() {
 void ObjectD::PBDCalculation() {
 	CalcMassMatrix();
 	CalcPrePos();
-	for (auto e : tetras) {
-		e->CreateDm();
-	}
+	
 	for (auto _e : tetras) {
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 3; i++) {
 		
 			_e->CreateDs();
 			_e->CreateDefTensor();
@@ -619,10 +622,10 @@ void ObjectD::PBDCalculation() {
 			
 			
 		}
-		UpdateVel();
+		
 		
 	}
-	
+	UpdateVel();
 	
 		
 }

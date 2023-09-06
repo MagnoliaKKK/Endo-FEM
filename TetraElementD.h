@@ -80,6 +80,7 @@ public:
 	Eigen::MatrixXd PKFirstStress;
 	double PotentialEnergy;
 	Eigen::Matrix<double, 3, 4>EnergyGrad;
+	Eigen::MatrixXd Dmatrix;
 
 private:
 	std::vector<ParticleD*> particles;				  // 持っているparticle(4個)

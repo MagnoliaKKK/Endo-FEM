@@ -71,6 +71,8 @@ public:
 	double EnergyGradGlobalNorm;//エネルギー勾配のノルム
 	double EnergyBody;
 	Eigen::VectorXd Deltax;//position correction
+	double Bottom;
+	Eigen::MatrixXd temp;
 
 
 protected:

@@ -361,10 +361,10 @@ void TetraElementD::CreateDm() {
 void TetraElementD::CreateDs() {
 	Ds = Eigen::Matrix<double, 3, 3>::Zero();
 	Eigen::Vector3d p1, p2, p3, p4;
-	p1 = particles[0]->Get_Grid();
-	p2 = particles[1]->Get_Grid();
-	p3 = particles[2]->Get_Grid();
-	p4 = particles[3]->Get_Grid();
+	p1 = particles[0]->Get_Exp_Pos();
+	p2 = particles[1]->Get_Exp_Pos();
+	p3 = particles[2]->Get_Exp_Pos();
+	p4 = particles[3]->Get_Exp_Pos();
 	Ds << p1.x() - p4.x(), p2.x() - p4.x(), p3.x() - p4.x(),
 		p1.y() - p4.y(), p2.y() - p4.y(), p3.y() - p4.y(),
 		p1.z() - p4.z(), p2.z() - p4.z(), p3.z() - p4.z();
@@ -381,12 +381,12 @@ void TetraElementD::CreateStrain() {
 }
 void TetraElementD::CreateStress(const double& young, const double& poisson) {
 	//Create stress tensor, D_Matrix is the strain-displacement matrix,strain is calculated in the function CreateStrain
-//stress = D_Matrix * strain
-	Eigen::MatrixXd D = Create_D_Martix(young, poisson);
+	//stress = D_Matrix * strain
+	Dmatrix = Create_D_Martix(young, poisson);
 
 	Eigen::VectorXd E_voigt(6);
 	E_voigt << Strain(0, 0), Strain(1, 1), Strain(2, 2), 2 * Strain(1, 2), 2 * Strain(0, 2), 2 * Strain(0, 1);
-	Eigen::VectorXd S_voigt = D * E_voigt;
+	Eigen::VectorXd S_voigt = Dmatrix * E_voigt;
 
 	// Convert S from Voigt notation back to 3x3 form
 	

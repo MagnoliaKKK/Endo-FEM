@@ -71,8 +71,7 @@ double M_damping;	  //バネダンパ係数(M,alpha)
 double K_damping;	  //バネダンパ係数(K,Beta)
 int dividedbyn;//x方向をn分割
 int dividedbym;//y方向をm分割
-int dividedbyl;//z方向をl分割　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
-
+int dividedbyl;//z方向をl分割　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
 double F_bind_coeff;//拘束力の係数
 double F_bind_damping;//拘束力のダンパー係数
 
@@ -423,8 +422,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
 			if (countup>50 && countup<100000) {
-				//obj[i]->Update();			//オブジェクトの位置更新
-				obj[i]->PBDCalculation();
+				obj[i]->Update();			//オブジェクトの位置更新
+
+				//obj[i]->PBDCalculation();
 			}
 			mtUpdate.endMyTimer();		//１ステップ中の位置更新の計算時間を測るstopwatchを終了
 
@@ -467,17 +467,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		sstr.str("");	// 1列目のバッファをクリア
 		//動く節点3の座標を追跡する(四面体要素1,2つのとき用)
 		sstr4 << std::fixed;
-		Eigen::Vector3d Grige = Eigen::Vector3d::Zero();
-		Grige = obj[0]->groups[obj[0]->groups.size() - 1]->Get_Grid_In_Group(61);
-		Eigen::Vector3d Grige2 = Eigen::Vector3d::Zero();
-		Grige2 = obj[0]->groups[obj[0]->groups.size() - 1]->Get_Vel_In_Group(61);
-		sstr4 << Grige;
-		unsigned int string_color2 = GetColor(0, 255, 0); // 4列目の文字列の色を緑色にする
-		//DrawString(0, 80, sstr4.str().data(), string_color2);// 4列目を描画する
-		sstr4.str("");				// 4列目のバッファをクリア
-		//動く節点3の速度を追跡する
-		sstr5 << std::fixed;
-		sstr5 << Grige2;
+		//Eigen::Vector3d Grige = Eigen::Vector3d::Zero();
+		//Grige = obj[0]->groups[obj[0]->groups.size() - 1]->Get_Grid_In_Group(61);
+		//Eigen::Vector3d Grige2 = Eigen::Vector3d::Zero();
+		//Grige2 = obj[0]->groups[obj[0]->groups.size() - 1]->Get_Vel_In_Group(61);
+		//sstr4 << Grige;
+		//unsigned int string_color2 = GetColor(0, 255, 0); // 4列目の文字列の色を緑色にする
+		////DrawString(0, 80, sstr4.str().data(), string_color2);// 4列目を描画する
+		//sstr4.str("");				// 4列目のバッファをクリア
+		////動く節点3の速度を追跡する
+		//sstr5 << std::fixed;
+		//sstr5 << Grige2;
 		unsigned int string_color3 = GetColor(0, 255, 255); // 5列目の文字列の色を緑色にする
 		//DrawString(100, 80, sstr5.str().data(), string_color3);// 5列目を描画する
 		sstr5.str("");				// 5列目のバッファをクリア

@@ -220,6 +220,9 @@ void UseBlockObjectDouble::Create_Groups() {
 	double StiffnessTime = 0.0;
 	for (auto _g : groups) {
 		mtStiffness.startMyTimer();
+		for (auto e : tetras) {
+			e->CreateDm();
+		}
 		_g->Create_Center_Grid();
 		_g->Create_Local_Stiffness_Matrix();
 		_g->Create_Damping_Matrix();
