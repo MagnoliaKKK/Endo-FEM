@@ -52,6 +52,7 @@ void UseBlockObjectDouble::Create_Groups() {
 			}
 		}
 	}
+
 	//----------------------------------------------------------------------//
 	//-------------------------N個のGroupの作成----------------------------//
 	std::vector< TetraElementD* > remain = this->Create_Group_Candidate();
@@ -231,7 +232,7 @@ void UseBlockObjectDouble::Create_Groups() {
 
 		//節点情報などの計算
 		_g->Create_Information();
-
+		_g->LHS0();
 		//各種counter
 		_g->APDcount = 0;
 		_g->Apqtime = 0.0;
@@ -378,9 +379,10 @@ void UseBlockObjectDouble::Create_Group(std::vector<TetraElementD*> tetra_set, i
 //	@start		   				ループ設定									//
 //==========================================================================//
 void UseBlockObjectDouble::Update() {
+	
 	double Exptime = 0.0;
 	double Rotatetime = 0.0;
-	#pragma omp parallel for //作用一般 135 to 50
+	//#pragma omp parallel for //作用一般 135 to 50
 	for (int i = 0; i < static_cast<int>(groups.size()); i++) {
 		auto _g = groups[i];
 
@@ -444,6 +446,19 @@ void UseBlockObjectDouble::Update() {
 	double FbinditeraTime = 0.0;
 	Solve_Constraints13(PBD_LOOP);
 	mtCconstr.endMyTimer();
+	//std::vector<double> results;
+	//results.push_back(mtUpdate.getDt());
+	//std::ofstream file("output.txt");
+	//if (!file.is_open()) {
+	//	std::cerr << "Error opening output.txt for writing!" << std::endl;
+	//}
+
+	//for (const auto& dt : results) {
+	//	file << dt << std::endl;
+	//}
+
+	//file.close();//オブジェクトの位置更新
+
 	std::ostringstream sstr;
 	std::ostringstream sstr2;
 	std::ostringstream sstr3;

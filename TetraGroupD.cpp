@@ -986,6 +986,7 @@ void TetraGroupD::CalcDeltax()
 
 
 void TetraGroupD::Update_Fbind_Pos8() {
+	
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		Eigen::Vector3d Conv = Eigen::Vector3d::Zero();
 		Eigen::Vector3d Conv1 = Eigen::Vector3d::Zero();
@@ -1004,7 +1005,7 @@ void TetraGroupD::Update_Fbind_Pos8() {
 				Conv1 = Conv1 - particles[pi]->Get_Mean_Vel();
 				//Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
-				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_damping * Conv1;
+				//bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_damping * Conv1;
 
 				if (fetestexcept(FE_INVALID)) {
 					std::cout << "FE_INVALID bindF" << std::endl;
@@ -1020,6 +1021,14 @@ void TetraGroupD::Update_Fbind_Pos8() {
 			Conv = (PrimeVector.block(3 * pi, 0, 3, 1) + DeltaxNew.block(3 * pi, 0, 3, 1));
 			//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
 			Conv = Conv - (particles[pi]->Get_Exp_Pos());
+			if (((particles[pi]->p_belong_TetraGroup_ids.size()) > 1)) {
+				if (Conv.squaredNorm() < 10e-3) {
+					std::cout << "Converce " << particles[pi]->p_id << std::endl;
+				}
+				else
+					std::cout << "NotConvergence " << std::endl;
+				Conv.setZero();
+			}
 			bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
 			if (fetestexcept(FE_INVALID)) {
 				std::cout << "FE_INVALID BindF1" << std::endl;
@@ -1028,14 +1037,10 @@ void TetraGroupD::Update_Fbind_Pos8() {
 			//std::cout << "Bind" << particles[pi]->p_id << "of " << tetra_group_id << " is " << std::endl;
 			//std::cout << bind_force_iterative.block(3 * pi, 0, 3, 1) << std::endl;
 		}
-		//if (((particles[pi]->p_belong_TetraGroup_ids.size()) > 1)) {
-		//	if (Conv.squaredNorm() < 10e-3) {
-		//		std::cout << "Converce " << particles[pi]->p_id << std::endl;
-		//	}
-		//	else
-		//		std::cout << "NotConvergence " << std::endl;
-		//}
+	
+		
 	}
+
 }
 //Debug用
 //節点は別処理

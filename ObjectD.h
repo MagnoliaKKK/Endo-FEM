@@ -32,7 +32,7 @@ public:
 	void CreateLagrangeMulti();//ラグランジュ乗数の作成
 	void UpdatePos();//位置の更新
 	void UpdateVel();//速度の更新
-
+	Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid);
 	void PBDCalculation();//PBDの計算
 
 	void Set_Force(Eigen::Vector3d grid);//最後の頂点(一番右下の頂点)にマウスのポインタ分だけ力をかける
