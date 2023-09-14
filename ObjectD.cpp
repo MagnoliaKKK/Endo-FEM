@@ -11,7 +11,7 @@ ObjectD::ObjectD(std::vector<ParticleD*> p, ObjectData data)
 	: particles(p), data(data)//変数の初期化
 	 ,Outofforce(Eigen::Vector3d::Zero())
 {
-	mtUpRotate.setid(4), mtCEPos.setid(5), mtCFEM.setid(6), mtCconstr.setid(7), mtCP_1.setid(8), mtCP_2.setid(9), mtCP_3.setid(10);
+	mtUpRotate.setid(4), mtCEPos.setid(5), mtCFEM.setid(6), mtCconstr.setid(7), mtCP_1.setid(8), mtCP_2.setid(9), mtCP_3.setid(10), mtEnergyConstraint.setid(11);
 }	//stopwatchのidをセット
 ObjectD::~ObjectD() {
 }
@@ -33,7 +33,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (int i = 0; i < loop; i++)
 	{
 		
-		//#pragma omp parallel for //作用最大 135 to 30
+		#pragma omp parallel for //作用最大 135 to 30
 		for (int j = 0; j < static_cast<int>(groups.size()); j++) {
 			auto _g = groups[j];
 
@@ -619,7 +619,8 @@ Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid) {
 void ObjectD::PBDCalculation() {
 	//CalcMassMatrix();
 	CalcPrePos();
-	for (int i = 0; i < 5; i++) {
+	mtEnergyConstraint.startMyTimer();
+	for (int i = 0; i < 2; i++) {
 		for (auto _e : tetras) {
 			_e->CreateDs();
 			_e->CreateDefTensor();
@@ -634,7 +635,8 @@ void ObjectD::PBDCalculation() {
 		CreateLagrangeMulti();
 		UpdatePos();
 	}
-	
+	mtEnergyConstraint.endMyTimer();
+	std::cout << std::setprecision(4) << mtEnergyConstraint.getDt() << std::endl;
 	
 	UpdateVel();
 	

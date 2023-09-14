@@ -41,6 +41,7 @@ public:
 	MicroSecondTimer mtCEPos;	 // 弾性力以外の力による位置更新の計算時間
 	MicroSecondTimer mtCFEM;	 // 一回目の有限要素法による位置更新の計算時間
 	MicroSecondTimer mtCconstr;	 // 制約条件による位置の修正にかかる時間
+	MicroSecondTimer mtEnergyConstraint;	 // 制約条件による位置の修正にかかる時間(PBD)
 	MicroSecondTimer mtCP_1;     //省略法の反復計算にかかる時間
 	MicroSecondTimer mtCP_2;     //省略法の局所剛性行列のFEMによる制約での計算時間
 	MicroSecondTimer mtCP_3;     //省略法の位置の更新にかかる時間

@@ -382,7 +382,7 @@ void UseBlockObjectDouble::Update() {
 	
 	double Exptime = 0.0;
 	double Rotatetime = 0.0;
-	//#pragma omp parallel for //作用一般 135 to 50
+	#pragma omp parallel for //作用一般 135 to 50
 	for (int i = 0; i < static_cast<int>(groups.size()); i++) {
 		auto _g = groups[i];
 
@@ -446,6 +446,7 @@ void UseBlockObjectDouble::Update() {
 	double FbinditeraTime = 0.0;
 	Solve_Constraints13(PBD_LOOP);
 	mtCconstr.endMyTimer();
+	std::cout << mtCconstr.getDt() << std::endl;
 	//std::vector<double> results;
 	//results.push_back(mtUpdate.getDt());
 	//std::ofstream file("output.txt");
@@ -459,24 +460,24 @@ void UseBlockObjectDouble::Update() {
 
 	//file.close();//オブジェクトの位置更新
 
-	std::ostringstream sstr;
-	std::ostringstream sstr2;
-	std::ostringstream sstr3;
-	std::ostringstream sstr4;
-	std::ostringstream sstr5;
-	std::ostringstream sstr6;
-	//各計算にかかった時間を出力
-	sstr << std::fixed;
-	unsigned int string_color = GetColor(255, 255, 255);
-	sstr << "Rotate is " << std::setprecision(4) << mtUpRotate.getDt() << ",EXFis " << std::setprecision(4) << mtCEPos.getDt()
-		<< ",Jacobi is " << std::setprecision(4) << mtCP_3.getDt()
-		/*<< ",FEM is " << std::setprecision(4) << mtCP_2.getDt() */
-		<< ",Const" << std::setprecision(4) << mtCconstr.getDt() << std::endl;
-	//     回転の計算時間,弾性力以外の力による位置更新の計算時間(ms)
-	//	   Jacobi行列の更新にかかる時間
-	//	   一回目の有限要素法による位置更新の計算時間(グループの総和),制約条件による位置の修正にかかる時間
-	DrawString(0, 15, sstr.str().data(), string_color);
-	sstr.str("");
+	//std::ostringstream sstr;
+	//std::ostringstream sstr2;
+	//std::ostringstream sstr3;
+	//std::ostringstream sstr4;
+	//std::ostringstream sstr5;
+	//std::ostringstream sstr6;
+	////各計算にかかった時間を出力
+	//sstr << std::fixed;
+	//unsigned int string_color = GetColor(255, 255, 255);
+	//sstr << "Rotate is " << std::setprecision(4) << mtUpRotate.getDt() << ",EXFis " << std::setprecision(4) << mtCEPos.getDt()
+	//	<< ",Jacobi is " << std::setprecision(4) << mtCP_3.getDt()
+	//	/*<< ",FEM is " << std::setprecision(4) << mtCP_2.getDt() */
+	//	<< ",Const" << std::setprecision(4) << mtCconstr.getDt() << std::endl;
+	////     回転の計算時間,弾性力以外の力による位置更新の計算時間(ms)
+	////	   Jacobi行列の更新にかかる時間
+	////	   一回目の有限要素法による位置更新の計算時間(グループの総和),制約条件による位置の修正にかかる時間
+	//DrawString(0, 15, sstr.str().data(), string_color);
+	//sstr.str("");
 
 	//マウスの座標を出力(外力を働かせるようにもできる)
 	/*
@@ -489,12 +490,12 @@ void UseBlockObjectDouble::Update() {
 		sstr3 << "Force is (" << Outofforce[0] << "," << Outofforce[1] << "," << Outofforce[2] << ")" << "N" << std::endl;
 	}
 	*/
-	unsigned int string_color2 = GetColor(255, 255, 1);
+	/*unsigned int string_color2 = GetColor(255, 255, 1);
 	DrawString(0, 49, sstr2.str().data(), string_color2);
 	unsigned int string_color3 = GetColor(255, 100, 100);
 	DrawString(0, 67, sstr3.str().data(), string_color3);
 	sstr2.str("");
-	sstr3.str("");
+	sstr3.str("");*/
 
 	
 }

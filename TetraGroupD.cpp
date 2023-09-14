@@ -978,9 +978,12 @@ void TetraGroupD::CalcDeltax()
 
 	Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
-	solver.compute(Jacobi_Matrix_Sparse);
-	DeltaxNew = solver.solve(Constant_term_iteration);
+	/*solver.compute(Jacobi_Matrix_Sparse);
+	DeltaxNew = solver.solve(Constant_term_iteration);*/
+	DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration;
 	DeltaxNew = Rn_MatrixTR_Sparse * DeltaxNew;
+
+
 
 }
 
@@ -1058,8 +1061,10 @@ void TetraGroupD::LHS0() {
 
 	//Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose() * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
 	//Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix - TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * SUM_M_Matrix;
-	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse * MassCondi_Sparse;
-	Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
+	//Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse * MassCondi_Sparse;
+	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
+	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse().sparseView();
+	
 	/*Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
 	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse();*/
 	//std::ofstream file("Jacobi_Matrix.txt");

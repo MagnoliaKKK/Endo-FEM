@@ -151,7 +151,7 @@ if (pauseT.size() > 0)
 	}
 };
 
-static MicroSecondTimer mt, mtUpdate, mtDraw, mtTest;
+static MicroSecondTimer mt, mtUpdate, mtDraw, mtTest, mtEnergyConstraint;
 
 
 #endif
