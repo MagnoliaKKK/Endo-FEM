@@ -642,3 +642,8 @@ void ObjectD::PBDCalculation() {
 	
 		
 }
+void ObjectD::UpdateOldFEM() {
+	for (auto g : groups) {
+		g->OldFEM();
+	}
+}

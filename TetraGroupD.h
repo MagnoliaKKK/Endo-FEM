@@ -58,6 +58,7 @@ public:
 	Eigen::VectorXd InitialVector;  // constanttermを計算するときに使う初期座標のベクトル(OldFEM用)
 	Eigen::VectorXd GroupGridVector;  // グループにおける位置
 	Eigen::VectorXd GroupVelVector;  // グループにおける速度
+	Eigen::Vector3d GroupPosition;//Old FEM 解出计算group位置
 
 	Eigen::VectorXd iterativeVector; //反復法のGMRES用の初期値
 
@@ -183,6 +184,7 @@ public:
 	void Calc_GMRES_Pre();//debug用(前処理)
 	void Calc_GMRES_FEM();//debug用(前処理済)
 	void CalcDeltax();
+	void CalcDeltax2();//OldFEM用
 
 	void Calc_Jacobi_Matrix_iteration();//反復法、ヤコビで使う行列の更新(1ステップで一回)
 	void Calc_Jacobi_Matrix_iteration_Sparse();//反復法、ヤコビで使う行列の更新(1ステップで一回)(Sparse)
@@ -195,6 +197,8 @@ public:
 	void RHS0();
 	void Calc_Jacobi_Matrix_iteration_Old();//OldFEMの係数行列作成
 	void Calc_Constant_term_iteration_Old ();//OldFEMの定数値作成
+
+	void OldFEM();//OldFEMの計算
 
 	void Draw()const;
 

@@ -32,7 +32,7 @@ void ParticleD::Update(const Eigen::Vector3d &next_grid) {
 	acceleration = (((next_grid - this->grid) / TIME_STEP)- velocity) / TIME_STEP;
 	velocity = (next_grid - this->grid) / TIME_STEP;
 	this->grid = next_grid;
-}
+}//可以用在traditional FEM
 void ParticleD::Update_Grid(const Eigen::Vector3d &next_grid) {
 	this->grid = next_grid;
 }

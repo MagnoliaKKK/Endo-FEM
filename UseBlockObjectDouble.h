@@ -14,6 +14,7 @@ public:
 	~UseBlockObjectDouble();										 //デコンストラクタ
 
 	void Update();												 //更新作業
+	void UpdateOldFEM();										 //更新作業OldFEM
 
 private:
 	void Init();												 //初期化

@@ -32,6 +32,7 @@ public:
 	void CreateLagrangeMulti();//ラグランジュ乗数の作成
 	void UpdatePos();//位置の更新
 	void UpdateVel();//速度の更新
+	void UpdateOldFEM();
 	Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid);
 	void PBDCalculation();//PBDの計算
 
