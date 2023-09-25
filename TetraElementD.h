@@ -29,6 +29,7 @@ public:
 						//剛性行列の作成
 	void Create_Stiffness_Matrix(const Eigen::Vector3d& origin, const double& young, const double& poisson);
 	void Create_Stiffness_Matrix2(const Eigen::Vector3d& origin, const double& young, const double& poisson);
+	void Create_Stiffness_Matrix3(const Eigen::Vector3d& origin, const double& young, const double& poisson);
 	void Create_M_Matrix(double& density);	// 質量行列の作成	
 	void Create_Faces();
 	Eigen::Matrix<double, 6, 12> Create_B_Martix(const Eigen::Vector3d& origin);//(6x12)
@@ -52,6 +53,7 @@ public:
 	Eigen::MatrixXd TetraElementD::Get_M_Matrix();
 	int Get_M_Submatrix_Edge(ParticleD* p1, ParticleD* p2);
 	bool Is_Adequate()const;
+	void Calc_Center_Element();
 
 
 	//==========================================================================//
@@ -81,6 +83,7 @@ public:
 	double PotentialEnergy;
 	Eigen::Matrix<double, 3, 4>EnergyGrad;
 	Eigen::MatrixXd Dmatrix;
+	Eigen::Vector3d Center_Element;
 
 private:
 	std::vector<ParticleD*> particles;				  // 持っているparticle(4個)

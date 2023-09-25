@@ -283,7 +283,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	o = new UseBlockObjectDouble(particles, gum3);
 
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
-	o->CalcMassMatrix();
+	//o->CalcMassMatrix();
 
 	//DXライブラリで描画する色(白),随時設定する
 	unsigned int string_color = GetColor(255, 255, 255);
@@ -426,8 +426,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
 			if (countup>50 && countup<100000) {
-				obj[i]->UpdateOldFEM();
-				//obj[i]->Update();	
+				//obj[i]->UpdateOldFEM();
+				obj[i]->Update();	
 				
 
 				//obj[i]->PBDCalculation();

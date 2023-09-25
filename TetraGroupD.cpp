@@ -1140,17 +1140,23 @@ void TetraGroupD::CalcDeltax2() {
 }
 
 void TetraGroupD::OldFEM() {
-	for (auto e : elements) {
-		e->Create_Stiffness_Matrix2(center_grid, data.young, data.poisson);
+	for (unsigned int pi = 0; pi < particle_num; pi++) {
+		center_grid[0] += SUM_M_Matrix(0, 3 * pi) * GroupPosition[3 * pi];
+		center_grid[1] += SUM_M_Matrix(1, 3 * pi) * GroupPosition[3 * pi + 1];
+		center_grid[2] += SUM_M_Matrix(2, 3 * pi) * GroupPosition[3 * pi + 2];
 	}
-	Create_Stiffness_Matrix();
+	for (auto e : elements) {
+		//e->Calc_Center_Element();
+		e->Create_Stiffness_Matrix3(center_grid, data.young, data.poisson);
+	}
+	Create_Local_Stiffness_Matrix();
 	Calc_Jacobi_Matrix_iteration_Old();
 	Calc_Constant_term_iteration_Old();
 	CalcDeltax2();
 	for (int i = 0; i < particle_num; i++) {
 		GroupGridVector.block(3* i, 0, 3, 1) = GroupPosition.block(3 * i, 0, 3, 1);
 
-		//particles[i]->Update_Velocity();
+		particles[i]->Update(GroupPosition.block(3 * i, 0, 3, 1));
 	}
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		//速度をいれてみた
