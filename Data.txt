@@ -5,8 +5,8 @@ TIME_STEP = 1.0e-2
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)
-PBD_LOOP = 10
-#修正値和による閾値の設定(double)
+PBD_LOOP = 5
+#修正値和にる閾値の設定(double)
 config = 1.0e-03
 
 
@@ -31,13 +31,13 @@ fixedion = 1
 #物体の形、四面体一つ(1)、四面体二つ(2)、三角柱(3)、LinearLocal(4)、OLDFEM(5)、箱(6)
 howmanytetras = 6
 #バネダンパ係数(質量比例減衰)
-M_damping = 0.5
+M_damping = 10
 #バネダンパ係数(剛性比例減衰)
-K_damping = 0.5
+K_damping = 10
 #拘束力の係数
-F_bind_coeff = -1.0e+03
+F_bind_coeff = -0.2e+03
 #拘束力のダンパー係数
-F_bind_damping = 0.0
+F_bind_damping = 0
 #拘束力か(1)全体係数行列か(0)
 whichmethodused = 1
 #反復計算を非定常反復(GMRESなど)で解くか(1)かLUか(0)
