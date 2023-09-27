@@ -283,7 +283,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	o = new UseBlockObjectDouble(particles, gum3);
 
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
-	//o->CalcMassMatrix();
+	o->CalcMassMatrix();
 
 	//DXライブラリで描画する色(白),随時設定する
 	unsigned int string_color = GetColor(255, 255, 255);
@@ -425,12 +425,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
-			if (countup>50 && countup<100000) {
+			if (countup>=0 && countup<100000) {
 				//obj[i]->UpdateOldFEM();
-				obj[i]->Update();	
+				//obj[i]->Update();	
 				
 
-				//obj[i]->PBDCalculation();
+				obj[i]->PBDCalculation();
 				
 			}
 
@@ -465,8 +465,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			//Draw_Group_Grid(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			// 描写する時間を測るstopwatchを終了
-			//DrawRotationNew(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			//Draw_Group_Grid_New(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+			DrawRotationNew(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+			Draw_Group_Grid_New(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			mtDraw.endMyTimer();		
 			
 		}
@@ -660,6 +660,8 @@ void DrawRotationNew(ObjectD* obj, float SinParam, float CosParam, float CameraV
 	//Calculate Centor of mass of the object and save it in CentorVector
 	for (int i = 0; i < obj->particles.size(); i++)
 	{
+		auto aaa = obj->M_MatrixBody(3 * i, 3 * i);
+		auto bbb = obj->x_corrected(3 * i);
 		CentorVector[0] += obj->M_MatrixBody(3 * i, 3 * i) * obj->x_corrected(3 * i);
 		CentorVector[1] += obj->M_MatrixBody(3 * i + 1, 3 * i + 1) * obj->x_corrected(3 * i + 1);
 		CentorVector[2] += obj->M_MatrixBody(3 * i + 2, 3 * i + 2) * obj->x_corrected(3 * i + 2);
@@ -800,33 +802,33 @@ void Draw_Rotation(ObjectD* obj,float SinParam, float CosParam, float CameraVAng
 	}
 	*/
 }
-//void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
-//	double Volume_i = 0.0;
-//	for (auto e : obj->tetras) {
-//		Eigen::Vector3d Draw_particle0 = Eigen::Vector3d::Zero();
-//		Eigen::Vector3d Draw_particle1 = Eigen::Vector3d::Zero();
-//		Eigen::Vector3d Draw_particle2 = Eigen::Vector3d::Zero();
-//		Eigen::Vector3d Draw_particle3 = Eigen::Vector3d::Zero();
-//
-//		//Volume_i += _e->Calc_Volume(_g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id));
-//		Draw_particle0 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[0]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-//		Draw_particle1 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[1]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-//		Draw_particle2 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[2]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-//		Draw_particle3 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[3]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-//
-//		DrawCircle(int(Draw_particle0.x()), int(Draw_particle0.y()), 3, WHITE, TRUE);
-//		DrawCircle(int(Draw_particle1.x()), int(Draw_particle1.y()), 3, WHITE, TRUE);
-//		DrawCircle(int(Draw_particle2.x()), int(Draw_particle2.y()), 3, WHITE, TRUE);
-//		DrawCircle(int(Draw_particle3.x()), int(Draw_particle3.y()), 3, WHITE, TRUE);
-//
-//		MyDrawLine3(Draw_particle0, Draw_particle1, WHITE);
-//		MyDrawLine3(Draw_particle0, Draw_particle2, WHITE);
-//		MyDrawLine3(Draw_particle0, Draw_particle3, WHITE);
-//		MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
-//		MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
-//		MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
-//	}
-//}
+void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
+	double Volume_i = 0.0;
+	for (auto e : obj->tetras) {
+		Eigen::Vector3d Draw_particle0 = Eigen::Vector3d::Zero();
+		Eigen::Vector3d Draw_particle1 = Eigen::Vector3d::Zero();
+		Eigen::Vector3d Draw_particle2 = Eigen::Vector3d::Zero();
+		Eigen::Vector3d Draw_particle3 = Eigen::Vector3d::Zero();
+
+		//Volume_i += _e->Calc_Volume(_g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id));
+		Draw_particle0 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[0]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+		Draw_particle1 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[1]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+		Draw_particle2 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[2]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+		Draw_particle3 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[3]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+
+		DrawCircle(int(Draw_particle0.x()), int(Draw_particle0.y()), 3, WHITE, TRUE);
+		DrawCircle(int(Draw_particle1.x()), int(Draw_particle1.y()), 3, WHITE, TRUE);
+		DrawCircle(int(Draw_particle2.x()), int(Draw_particle2.y()), 3, WHITE, TRUE);
+		DrawCircle(int(Draw_particle3.x()), int(Draw_particle3.y()), 3, WHITE, TRUE);
+
+		MyDrawLine3(Draw_particle0, Draw_particle1, WHITE);
+		MyDrawLine3(Draw_particle0, Draw_particle2, WHITE);
+		MyDrawLine3(Draw_particle0, Draw_particle3, WHITE);
+		MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
+		MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
+		MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
+	}
+}
 //Draw node position  of each Groups 
 void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
 	//グループごとの座標を出力
