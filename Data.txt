@@ -1,11 +1,11 @@
 ﻿#シミュレーション定数 double 
 MOUSE_RANGE = 40.0
 #タイムステップ秒, second(リアルタイム時間なら0.03ぐらい) double ,1.0e-1
-TIME_STEP = 0.01
+TIME_STEP = 5
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)
-PBD_LOOP = 2
+PBD_LOOP = 10
 #修正値和による閾値の設定(double)
 config = 1.0e-03
 
@@ -59,11 +59,11 @@ useUpBind = 1
 
 #objectsize
 #x方向のサイズ(int)
-xsize =7
+xsize =3
 #y方向のサイズ(int)
-ysize = 3
+ysize = 2
 #z方向のサイズ(int) 
-zsize = 3
+zsize = 2
 #一辺の長さ	(double)
 sidelength = 4
 

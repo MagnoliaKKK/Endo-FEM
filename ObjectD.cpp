@@ -576,7 +576,10 @@ void ObjectD::Assemble_EnergyGradGlobal() {
 		int row = i % 3;
 		int col = i / 3;
 		EnergyGradGlobal(i) = temp(row, col);
+		
 	}
+	int aaa = 1;
+	aaa += 1;
 }
 void ObjectD::CreateEnergyBody() {
 	for (auto _e : tetras) {
@@ -643,7 +646,7 @@ void ObjectD::PBDCalculation() {
 	//CalcMassMatrix();
 	CalcPrePos();
 	mtEnergyConstraint.startMyTimer();
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 50; i++) {
 		for (auto _e : tetras) {
 			_e->CreateDs();
 			_e->CreateDefTensor();

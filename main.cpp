@@ -1,4 +1,5 @@
-﻿#include "Base.h"
+﻿
+#include "Base.h"
 
 
 #include "UseBlockObjectDouble.h"
@@ -280,7 +281,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Vector3dが原点で、右下奥に直方体ができる。
 	//オブジェクトのインスタンスを生成する
 	//o = new UseBlockObjectDouble(particles, gum);  // モデルを従来のFEMでシミュレーションする
-	o = new UseBlockObjectDouble(particles, gum);
+	o = new UseBlockObjectDouble(particles, gum3);
 
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
 	o->CalcMassMatrix();
