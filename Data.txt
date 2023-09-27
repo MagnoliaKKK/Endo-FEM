@@ -59,7 +59,7 @@ useUpBind = 1
 
 #objectsize
 #x方向のサイズ(int)
-xsize =5
+xsize =7
 #y方向のサイズ(int)
 ysize = 3
 #z方向のサイズ(int) 

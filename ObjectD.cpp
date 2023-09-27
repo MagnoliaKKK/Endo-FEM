@@ -526,8 +526,16 @@ void ObjectD::CalcMassMatrix() {
 	}
 
 }
-
-
+void ObjectD::Initialization()
+{
+	InitialPos = Eigen::VectorXd::Zero(3 * particles.size());
+	InitialVel = Eigen::VectorXd::Zero(3 * particles.size());
+	for (int i = 0; i < particles.size(); i++)
+	{
+		InitialPos.segment(3 * i, 3) = particles[i]->Get_Initial_Pos();
+		InitialVel.segment(3 * i, 3).setZero();
+	}
+}
 void ObjectD::CalcPrePos() {
 	
 		//初期化
@@ -542,9 +550,9 @@ void ObjectD::CalcPrePos() {
 	}
 	
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
-		v_Local.segment<3>(pi) = v_Local.segment<3>(pi) + f_Local * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
-		x_Local.segment<3>(pi) = x_Local.segment<3>(pi) + v_Local.segment<3>(pi) * TIME_STEP;
-		particles[pi]->Set_Exp_Pos(x_Local.segment<3>(pi));
+		v_Local.segment(3 * pi, 3) = v_Local.segment(3 * pi, 3) + f_Local * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
+		x_Local.segment(3 * pi, 3) = x_Local.segment(3 * pi, 3) + v_Local.segment(3 * pi, 3) * TIME_STEP;
+		particles[pi]->Set_Exp_Pos(x_Local.segment(3 * pi, 3));
 	}
 
 }
@@ -581,34 +589,49 @@ void ObjectD::CreateLagrangeMulti() {
 	Bottom = 0;
 	int c = 0;
 	for (int i = 0; i < particles.size(); i++) {
-		Bottom = Bottom + (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment<3>(i).squaredNorm();
+		Bottom = Bottom + (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment(3 * i, 3).squaredNorm();
 		c += 1;
 	}
 	LagrangeMulti = (-1) * EnergyBody / Bottom;
 }
 void ObjectD::UpdatePos() {
+	x_corrected = Eigen::VectorXd::Zero(3 * particles.size());
 	Deltax = Eigen::VectorXd::Zero(3 * particles.size());
 	for (int i = 0; i < particles.size(); i++) {
-		Deltax.segment<3>(i) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
+		Deltax.segment(3 * i, 3) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment(3 * i, 3) * LagrangeMulti;
+		if (!(particles[i]->Is_Fixed()))
+		{
+			x_corrected.segment(3 * i, 3) = x_Local.segment(3 * i, 3) + Deltax.segment(3 * i, 3);
+		}
+		else {
+			x_corrected.segment(3 * i, 3) = InitialPos.segment(3 * i, 3);
+		}
 		
 		//particles[i]->Update_Grid(x_corrected.segment<3>(i));
 		//该写velocity了
 	}
-
-	x_corrected = x_Local + Deltax;
+	
+	//x_corrected = x_Local + Deltax;
 
 }
 
 void ObjectD::UpdateVel() {
 	for (int i = 0; i < particles.size(); i++) {
-		particles[i]->Set_Velocity_In_Model((x_corrected.segment<3>(i) - particles[i]->Get_Grid())/TIME_STEP);
+		if (!(particles[i]->Is_Fixed()))
+		{
+			particles[i]->Set_Velocity_In_Model((x_corrected.segment(3 * i, 3) - particles[i]->Get_Grid()) / TIME_STEP);
+		}
+		else {
+			particles[i]->Set_Velocity_In_Model((x_corrected.segment(3 * i, 3) - particles[i]->Get_Grid()) / TIME_STEP);
+		}
+		
 	}
 }
 Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid) {
 	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
 		if (particles[pi]->p_id == pid) {
-			temp = x_corrected.segment<3>(pi);
+			temp = x_corrected.segment(3 * pi, 3);
 			return temp;
 		}
 	}
@@ -620,7 +643,7 @@ void ObjectD::PBDCalculation() {
 	//CalcMassMatrix();
 	CalcPrePos();
 	mtEnergyConstraint.startMyTimer();
-	for (int i = 0; i < 2; i++) {
+	for (int i = 0; i < 5; i++) {
 		for (auto _e : tetras) {
 			_e->CreateDs();
 			_e->CreateDefTensor();

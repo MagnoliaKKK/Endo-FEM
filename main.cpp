@@ -220,7 +220,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ObjectSize size_data = { xsize, ysize, zsize ,sidelength };	//	モデルの大きさ(x,y,z方向), 1辺の長さ
 	ObjectData almi = { 2.7e+03, 6.9e+10, 0.3, size_data };	    //	アルミの（密度、ヤング率、ポアソン比）
 	ObjectData almin = { 2.7e+03, 1.0e+7, 0.49, size_data };	//	ゴムの（密度、ヤング率、ポアソン比）
-	ObjectData gum = { 0.91e+03, 1.0e+06, 0.49, size_data };	//	ゴムの（密度、ヤング率、ポアソン比）
+	ObjectData gum = { 0.91e+03, 1.0e+15, 0, size_data };	//	ゴムの（密度、ヤング率、ポアソン比）
 	ObjectData gum2 = { 0.91e+03, 1.0e+07, 0.49, size_data };	//	堅いゴムの（密度、ヤング率、ポアソン比）
 	ObjectData gum3 = { 0.91e+03, 1.0e+08, 0.49, size_data };	//	堅いゴムの（密度、ヤング率、ポアソン比）
 	ObjectData orihar = { 2.7e-03, 6.9e+12, 0.3, size_data };	//	幻想物体オリハルコンの（密度、ヤング率、ポアソン比）
@@ -280,7 +280,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//Vector3dが原点で、右下奥に直方体ができる。
 	//オブジェクトのインスタンスを生成する
 	//o = new UseBlockObjectDouble(particles, gum);  // モデルを従来のFEMでシミュレーションする
-	o = new UseBlockObjectDouble(particles, gum3);
+	o = new UseBlockObjectDouble(particles, gum);
 
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
 	o->CalcMassMatrix();

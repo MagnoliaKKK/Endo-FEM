@@ -9,7 +9,8 @@ UseBlockObjectDouble::UseBlockObjectDouble(std::vector<ParticleD*> p, ObjectData
 	: ObjectD(p, data)//親クラスはObjectクラス
 {
 	std::cout << "Create Object Using Local Stiffness Matrix with Group" << std::endl;
-	Init();			//初期設定
+	Init();	//初期設定
+	Initialization();
 }
 UseBlockObjectDouble::~UseBlockObjectDouble() { //デコンストラクタ
 	for (auto _g : groups) {
@@ -28,6 +29,7 @@ UseBlockObjectDouble::~UseBlockObjectDouble() { //デコンストラクタ
 void UseBlockObjectDouble::Init() {
 	Delaunay_Triangulation();  //ドロネー三角形分割をする
 	Create_Groups();		   //グループを作る
+
 	data_name = "Use_GroupBlock";//オブジェクトの名前をUse_GroupBlockとする
 }
 //==========================================================================//

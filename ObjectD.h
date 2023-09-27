@@ -25,6 +25,7 @@ public:
 	int Get_ezolg();		//制約条件による更新回数を取得
 	double convite;			//反復においてどれだけ値が変化しているかを記録する(前回と今の佐野ノルムの2乗)
 	const std::string& Get_Name()const;//オブジェクトの名前を取得
+	void Initialization();//Initialize position and velocity
 	void CalcMassMatrix();
 	void CalcPrePos();//New prediction position
 	void Assemble_EnergyGradGlobal();//エネルギー勾配の作成
@@ -75,6 +76,8 @@ public:
 	Eigen::VectorXd Deltax;//position correction
 	double Bottom;
 	Eigen::MatrixXd temp;
+	Eigen::VectorXd InitialPos;//object vertices initial position 
+	Eigen::VectorXd InitialVel;
 
 
 protected:
