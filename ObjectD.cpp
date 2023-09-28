@@ -550,7 +550,8 @@ void ObjectD::CalcPrePos() {
 	}
 	
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
-		v_Local.segment(3 * pi, 3) = v_Local.segment(3 * pi, 3) + f_Local * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
+		auto aaa = M_MatrixBody(3 * pi, 3 * pi);
+		v_Local.segment(3 * pi, 3) = v_Local.segment(3 * pi, 3) + f_Local.segment(3 * pi, 3) * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
 		x_Local.segment(3 * pi, 3) = x_Local.segment(3 * pi, 3) + v_Local.segment(3 * pi, 3) * TIME_STEP;
 		particles[pi]->Set_Exp_Pos(x_Local.segment(3 * pi, 3));
 	}
@@ -601,7 +602,7 @@ void ObjectD::UpdatePos() {
 		Deltax.segment(3 * i, 3) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment(3 * i, 3) * LagrangeMulti;
 		if (!(particles[i]->Is_Fixed()))
 		{
-			x_corrected.segment(3 * i, 3) = x_Local.segment(3 * i, 3) + Deltax.segment(3 * i, 3);
+			x_corrected.segment(3 * i, 3) = x_Local.segment(3 * i, 3)+Deltax.segment(3 * i, 3);
 		}
 		else {
 			x_corrected.segment(3 * i, 3) = InitialPos.segment(3 * i, 3);
@@ -622,7 +623,7 @@ void ObjectD::UpdateVel() {
 			particles[i]->Set_Velocity_In_Model((x_corrected.segment(3 * i, 3) - particles[i]->Get_Grid()) / TIME_STEP);
 		}
 		else {
-			particles[i]->Set_Velocity_In_Model((x_corrected.segment(3 * i, 3) - particles[i]->Get_Grid()) / TIME_STEP);
+			particles[i]->Set_Velocity_In_Model(Eigen::Vector3d::Zero(3));
 		}
 		
 	}

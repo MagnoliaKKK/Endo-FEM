@@ -22,6 +22,7 @@
 #include <sstream>
 #include <iomanip>
 
+
 //#pragma fenv_access (on)
 #pragma comment(lib, "winmm.lib")
 //カメラの回転スピード
@@ -426,7 +427,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
-			if (countup>=50 && countup<100000) {
+			if (countup>=0 && countup<100000) {
 				//obj[i]->UpdateOldFEM();
 				//obj[i]->Update();	
 				
@@ -444,7 +445,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//実験用の変数
 			int countup2 = 0;
-			if (countup>50) {
+			if (countup>0) {
 				countup2 = countup;
 			}
 			if (countup > 100000) {
@@ -466,7 +467,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			//Draw_Group_Grid(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			// 描写する時間を測るstopwatchを終了
-			if (countup > 50 && countup < 100000) {
+			if (countup >=0 && countup < 100000) {
 				DrawRotationNew(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 				Draw_Group_Grid_New(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			}
@@ -496,7 +497,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		unsigned int string_color3 = GetColor(0, 255, 255); // 5列目の文字列の色を緑色にする
 		//DrawString(100, 80, sstr5.str().data(), string_color3);// 5列目を描画する
 		sstr5.str("");				// 5列目のバッファをクリア
-		std::ofstream file("frame_times.txt");
+		//std::ofstream file("frame_times.txt");
 	
 		// 位置関係が分かるように地面にラインを描画する
 		//Draw_Mesh();
@@ -804,6 +805,16 @@ void Draw_Rotation(ObjectD* obj,float SinParam, float CosParam, float CameraVAng
 	}
 	*/
 }
+
+//int转换成Tchar字符串，不然没有办法用DrawString显示 
+TCHAR* IntToTChar(int num) {
+	TCHAR* buffer = (TCHAR*)malloc(20 * sizeof(TCHAR)); // 分配足够大小的缓冲区
+	if (buffer != nullptr) {
+		_stprintf_s(buffer, 20, _T("%d"), num);
+	}
+	return buffer; // 返回动态分配的缓冲区
+}
+
 void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
 	double Volume_i = 0.0;
 	for (auto e : obj->tetras) {
@@ -817,11 +828,18 @@ void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float Cam
 		Draw_particle1 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[1]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 		Draw_particle2 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[2]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 		Draw_particle3 = Calc_Draw_Grid(obj->Get_Grid_In_Object(e->Get_Particle()[3]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-
+		auto id = e->Get_Particle()[0]->p_id;
+		auto coordinate = obj->Get_Grid_In_Object(e->Get_Particle()[0]->p_id);
 		DrawCircle(int(Draw_particle0.x()), int(Draw_particle0.y()), 3, WHITE, TRUE);
 		DrawCircle(int(Draw_particle1.x()), int(Draw_particle1.y()), 3, WHITE, TRUE);
 		DrawCircle(int(Draw_particle2.x()), int(Draw_particle2.y()), 3, WHITE, TRUE);
 		DrawCircle(int(Draw_particle3.x()), int(Draw_particle3.y()), 3, WHITE, TRUE);
+		
+
+		DrawString(int(Draw_particle0.x()), int(Draw_particle0.y()), IntToTChar(e->Get_Particle()[0]->p_id), RED);
+		DrawString(int(Draw_particle1.x()), int(Draw_particle1.y()), IntToTChar(e->Get_Particle()[1]->p_id), RED);
+		DrawString(int(Draw_particle2.x()), int(Draw_particle2.y()), IntToTChar(e->Get_Particle()[2]->p_id), RED);
+		DrawString(int(Draw_particle3.x()), int(Draw_particle3.y()), IntToTChar(e->Get_Particle()[3]->p_id), RED);
 
 		MyDrawLine3(Draw_particle0, Draw_particle1, WHITE);
 		MyDrawLine3(Draw_particle0, Draw_particle2, WHITE);
@@ -831,6 +849,8 @@ void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float Cam
 		MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
 	}
 }
+
+
 //Draw node position  of each Groups 
 void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
 	//グループごとの座標を出力

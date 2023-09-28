@@ -1,7 +1,7 @@
 ﻿#シミュレーション定数 double 
 MOUSE_RANGE = 40.0
 #タイムステップ秒, second(リアルタイム時間なら0.03ぐらい) double ,1.0e-1
-TIME_STEP = 5
+TIME_STEP = 1
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)

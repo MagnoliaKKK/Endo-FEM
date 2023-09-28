@@ -478,6 +478,8 @@ void TetraElementD::CreateDs() {
 	p2 = particles[1]->Get_Exp_Pos();
 	p3 = particles[2]->Get_Exp_Pos();
 	p4 = particles[3]->Get_Exp_Pos();
+	auto bbb = p1.x() - p4.x();
+	auto aaa = p1.y() - p4.y();
 	Ds << p1.x() - p4.x(), p2.x() - p4.x(), p3.x() - p4.x(),
 		p1.y() - p4.y(), p2.y() - p4.y(), p3.y() - p4.y(),
 		p1.z() - p4.z(), p2.z() - p4.z(), p3.z() - p4.z();
@@ -500,7 +502,7 @@ void TetraElementD::CreateStress(const double& young, const double& poisson) {
 	Dmatrix = Create_D_Martix(young, poisson);
 
 	Eigen::VectorXd E_voigt(6);
-	E_voigt << Strain(0, 0), Strain(1, 1), Strain(2, 2), 2 * Strain(1, 2), 2 * Strain(0, 2), 2 * Strain(0, 1);
+	E_voigt << Strain(0, 0), Strain(1, 1), Strain(2, 2), 2*Strain(1, 2), 2*Strain(0, 2), 2*Strain(0, 1);
 	Eigen::VectorXd S_voigt = Dmatrix * E_voigt;
 
 	// Convert S from Voigt notation back to 3x3 form
@@ -530,7 +532,7 @@ void TetraElementD::CreateEnergyGrad() {
 	EnergyGrad = Eigen::Matrix<double, 3, 4>::Zero();
 	//EnergyGrad = Ini_volume * PKFirstStress * Dm.inverse().transpose()
 	
-	Eigen::Matrix<double, 3, 3> tempResult = Ini_volume * PKFirstStress * Dm.inverse().transpose();
+	Eigen::Matrix<double, 3, 3> tempResult = Ini_volume * PKFirstStress * Dm.transpose().inverse();
 	// 设置前三列
 	EnergyGrad.block<3, 3>(0, 0) = tempResult;
 	// 计算前三列的和
