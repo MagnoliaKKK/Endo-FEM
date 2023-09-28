@@ -485,6 +485,8 @@ void TetraElementD::CreateDs() {
 }
 void TetraElementD::CreateDefTensor() {
 	DefTensor = Eigen::Matrix<double, 3, 3>::Zero();
+	//Eigen::Matrix3d tmp = Eigen::Matrix<double, 3, 3>::Zero();
+	//tmp = Dm.inverse();
 	DefTensor = Ds * Dm.inverse();
 	
 }

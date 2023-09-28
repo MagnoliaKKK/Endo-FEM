@@ -426,7 +426,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
-			if (countup>=0 && countup<100000) {
+			if (countup>=50 && countup<100000) {
 				//obj[i]->UpdateOldFEM();
 				//obj[i]->Update();	
 				
@@ -466,8 +466,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			//Draw_Group_Grid(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			// 描写する時間を測るstopwatchを終了
-			DrawRotationNew(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_Group_Grid_New(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+			if (countup > 50 && countup < 100000) {
+				DrawRotationNew(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+				Draw_Group_Grid_New(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+			}
+			
 			mtDraw.endMyTimer();		
 			
 		}
@@ -661,8 +664,6 @@ void DrawRotationNew(ObjectD* obj, float SinParam, float CosParam, float CameraV
 	//Calculate Centor of mass of the object and save it in CentorVector
 	for (int i = 0; i < obj->particles.size(); i++)
 	{
-		auto aaa = obj->M_MatrixBody(3 * i, 3 * i);
-		auto bbb = obj->x_corrected(3 * i);
 		CentorVector[0] += obj->M_MatrixBody(3 * i, 3 * i) * obj->x_corrected(3 * i);
 		CentorVector[1] += obj->M_MatrixBody(3 * i + 1, 3 * i + 1) * obj->x_corrected(3 * i + 1);
 		CentorVector[2] += obj->M_MatrixBody(3 * i + 2, 3 * i + 2) * obj->x_corrected(3 * i + 2);

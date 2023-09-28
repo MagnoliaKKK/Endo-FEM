@@ -543,7 +543,7 @@ void ObjectD::CalcPrePos() {
 	x_Local = Eigen::VectorXd::Zero(3 * particles.size());
 	v_Local = Eigen::VectorXd::Zero(3 * particles.size());
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
-		f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0.0, Gravity, 0.0);;
+		f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0.0, Gravity, 0.0);
 		x_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Grid();
 		v_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Vel();
 
@@ -576,10 +576,7 @@ void ObjectD::Assemble_EnergyGradGlobal() {
 		int row = i % 3;
 		int col = i / 3;
 		EnergyGradGlobal(i) = temp(row, col);
-		
 	}
-	int aaa = 1;
-	aaa += 1;
 }
 void ObjectD::CreateEnergyBody() {
 	for (auto _e : tetras) {
@@ -659,7 +656,7 @@ void ObjectD::PBDCalculation() {
 		Assemble_EnergyGradGlobal();
 		CreateEnergyBody();
 		CreateLagrangeMulti();
-		UpdatePos();
+		UpdatePos(); //e->Get_Particle()[0]->p_id
 	}
 	mtEnergyConstraint.endMyTimer();
 	std::cout << std::setprecision(4) << mtEnergyConstraint.getDt() << std::endl;
