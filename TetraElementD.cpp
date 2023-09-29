@@ -520,11 +520,26 @@ void TetraElementD::CreateStress(const double& young, const double& poisson) {
 	Stress(1,0) = S_voigt(5);
 
 }
-void TetraElementD::CreateEnegyDensity() {
-	EnergyDensity = 0.5 * (Strain.transpose() * Stress).trace();
+void TetraElementD::CreateEnegyDensity(const double& young, const double& poisson) {
+	//EnergyDensity = 0.5 * (Strain.transpose() * Stress).trace();
+	double I1, I3;
+	double miu, lambda;
+	I1 = (DefTensor.transpose() * DefTensor).trace();
+	I3 = (DefTensor.transpose() * DefTensor).determinant();
+	miu = young / (2 * (1 + poisson));
+	lambda = young * poisson / ((1 + poisson) * (1 - 2 * poisson));
+	EnergyDensity = miu / 2 * (I1 - log10(I3) - 3) + miu / 8 * (log10(I3)) * (log10(I3));
+
 }
-void TetraElementD::CreatePKFirstStress() {
-	PKFirstStress = DefTensor * Stress;
+void TetraElementD::CreatePKFirstStress(const double& young, const double& poisson) {
+	//PKFirstStress = DefTensor * Stress;
+	double I3;
+	double miu, lambda;
+	I3 = (DefTensor.transpose() * DefTensor).determinant();
+	miu = young / (2 * (1 + poisson));
+	lambda = young * poisson / ((1 + poisson) * (1 - 2 * poisson));
+	PKFirstStress = miu * DefTensor - miu * DefTensor.transpose() + lambda * log10(I3) / 2 * DefTensor.inverse().transpose();
+
 }
 void TetraElementD::CreatePotentialEnergy() {
 	PotentialEnergy = EnergyDensity * Ini_volume;

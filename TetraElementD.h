@@ -39,8 +39,8 @@ public:
 	void CreateDefTensor();//create deformation tensor
 	void CreateStrain();//create strain tensor
 	void CreateStress(const double& young, const double& poisson);//create PK stress tensor
-	void CreateEnegyDensity();//create energy density
-	void CreatePKFirstStress();//create PK first stress tensor
+	void CreateEnegyDensity(const double& young, const double& poisson);//create energy density
+	void CreatePKFirstStress(const double& young, const double& poisson);//create PK first stress tensor
 	void CreatePotentialEnergy();//create potential energy
 	void CreateEnergyGrad();//create energy gradient
 	Eigen::Vector3d Get_SubEnergyGrad(ParticleD* p);

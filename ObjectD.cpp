@@ -587,7 +587,7 @@ void ObjectD::Assemble_EnergyGradGlobal() {
 }
 void ObjectD::CreateEnergyBody() {
 	for (auto _e : tetras) {
-		_e->CreateEnegyDensity();
+		_e->CreateEnegyDensity(data.young, data.poisson);
 		_e->CreatePotentialEnergy();
 		EnergyBody += _e->PotentialEnergy;
 	}
@@ -661,9 +661,9 @@ void ObjectD::PBDCalculation() {
 			_e->CreateDs();
 			_e->CreateDefTensor();
 			_e->CreateStrain();
-			_e->CreateStress(data.young, data.poisson);
-			_e->CreateEnegyDensity();
-			_e->CreatePKFirstStress();
+			//_e->CreateStress(data.young, data.poisson);
+			_e->CreateEnegyDensity(data.young, data.poisson);
+			_e->CreatePKFirstStress(data.young, data.poisson);
 			_e->CreateEnergyGrad();
 		}
 		Assemble_EnergyGradGlobal();
