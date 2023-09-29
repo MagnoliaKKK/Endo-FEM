@@ -5,7 +5,7 @@ TIME_STEP = 1
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)
-PBD_LOOP = 10
+PBD_LOOP = 5
 #修正値和による閾値の設定(double)
 config = 1.0e-03
 

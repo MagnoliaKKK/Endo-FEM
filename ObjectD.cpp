@@ -33,7 +33,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (int i = 0; i < loop; i++)
 	{
 		
-		#pragma omp parallel for //作用最大 135 to 30
+		//#pragma omp parallel for //作用最大 135 to 30
 		for (int j = 0; j < static_cast<int>(groups.size()); j++) {
 			auto _g = groups[j];
 
@@ -534,6 +534,7 @@ void ObjectD::Initialization()
 	{
 		InitialPos.segment(3 * i, 3) = particles[i]->Get_Initial_Pos();
 		InitialVel.segment(3 * i, 3).setZero();
+		//x_corrected.segment(3 * i, 3).setZero();
 	}
 }
 void ObjectD::CalcPrePos() {
@@ -560,23 +561,28 @@ void ObjectD::CalcPrePos() {
 
 void ObjectD::Assemble_EnergyGradGlobal() {
 	EnergyGradGlobal = Eigen::VectorXd::Zero(3* particles.size());
-	temp = Eigen::MatrixXd::Zero(3 , 3 * particles.size());
-	for (auto _e : tetras) {
-		for (auto p_it = particles.begin(); p_it != particles.end(); ++p_it) {
-			size_t p_index = std::distance(particles.begin(), p_it);
+	EnergyGradMatrix = Eigen::MatrixXd::Zero(3 , particles.size());//组装好的能量梯度  
+	//for (auto _e : tetras) {
+	//	for (auto p_it = particles.begin(); p_it != particles.end(); ++p_it) {
+	//		size_t p_index = std::distance(particles.begin(), p_it);
 
-			// 从当前元素获取此粒子的能量梯度。
-			Eigen::Vector3d local_gradient = _e->Get_SubEnergyGrad(*p_it);
+	//		// 从当前元素获取此粒子的能量梯度。
+	//		Eigen::Vector3d local_gradient = _e->Get_SubEnergyGrad(*p_it);
 
-			// 将局部梯度加到全局梯度的适当位置。
-			temp.col(p_index) += local_gradient;
+	//		// 将局部梯度加到全局梯度的适当位置。
+	//		temp.col(p_index) += local_gradient;
 
+	//	}
+	//}
+	for (auto e : tetras) {
+		for (int i = 0; i < 4; i++) {
+			EnergyGradMatrix.col(e->Get_Particle()[i]->p_id) += e->EnergyGrad.block(0, i, 3, 1);	
 		}
 	}
 	for (int i = 0; i < 3 * particles.size(); ++i) {
 		int row = i % 3;
 		int col = i / 3;
-		EnergyGradGlobal(i) = temp(row, col);
+		EnergyGradGlobal(i) = EnergyGradMatrix(row, col);
 	}
 }
 void ObjectD::CreateEnergyBody() {
@@ -590,6 +596,8 @@ void ObjectD::CreateLagrangeMulti() {
 	Bottom = 0;
 	int c = 0;
 	for (int i = 0; i < particles.size(); i++) {
+		auto tmpa = (1 / M_MatrixBody(3 * i, 3 * i));
+		auto tmpb = EnergyGradGlobal.segment(3 * i, 3).squaredNorm();
 		Bottom = Bottom + (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment(3 * i, 3).squaredNorm();
 		c += 1;
 	}
@@ -598,14 +606,18 @@ void ObjectD::CreateLagrangeMulti() {
 void ObjectD::UpdatePos() {
 	x_corrected = Eigen::VectorXd::Zero(3 * particles.size());
 	Deltax = Eigen::VectorXd::Zero(3 * particles.size());
+
 	for (int i = 0; i < particles.size(); i++) {
 		Deltax.segment(3 * i, 3) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment(3 * i, 3) * LagrangeMulti;
 		if (!(particles[i]->Is_Fixed()))
 		{
 			x_corrected.segment(3 * i, 3) = x_Local.segment(3 * i, 3)+Deltax.segment(3 * i, 3);
+
+			particles[i]->Update_Grid(x_corrected.segment(3 * i, 3));
 		}
 		else {
 			x_corrected.segment(3 * i, 3) = InitialPos.segment(3 * i, 3);
+			//particles[i]->Update_Grid(x_corrected.segment(3 * i, 3));
 		}
 		
 		//particles[i]->Update_Grid(x_corrected.segment<3>(i));
@@ -644,7 +656,7 @@ void ObjectD::PBDCalculation() {
 	//CalcMassMatrix();
 	CalcPrePos();
 	mtEnergyConstraint.startMyTimer();
-	for (int i = 0; i < 50; i++) {
+	for (int i = 0; i < 1; i++) {
 		for (auto _e : tetras) {
 			_e->CreateDs();
 			_e->CreateDefTensor();
@@ -660,7 +672,7 @@ void ObjectD::PBDCalculation() {
 		UpdatePos(); //e->Get_Particle()[0]->p_id
 	}
 	mtEnergyConstraint.endMyTimer();
-	std::cout << std::setprecision(4) << mtEnergyConstraint.getDt() << std::endl;
+	//std::cout << std::setprecision(4) << mtEnergyConstraint.getDt() << std::endl;
 	
 	UpdateVel();
 	

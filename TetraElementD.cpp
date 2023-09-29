@@ -490,7 +490,8 @@ void TetraElementD::CreateDefTensor() {
 	//Eigen::Matrix3d tmp = Eigen::Matrix<double, 3, 3>::Zero();
 	//tmp = Dm.inverse();
 	DefTensor = Ds * Dm.inverse();
-	
+	double det;
+	det = DefTensor.determinant();
 }
 void TetraElementD::CreateStrain() {
 	Strain = Eigen::Matrix<double, 3, 3>::Zero();

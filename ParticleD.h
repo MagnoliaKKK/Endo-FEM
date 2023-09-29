@@ -31,6 +31,7 @@ public:
 	void Set_Prime_Pos(const  Eigen::Vector3d &pos);
 	void Set_Initial_Pos(const  Eigen::Vector3d &pos);
 	void Set_ExpAgo_Pos(const  Eigen::Vector3d &pos);
+	void Set_x_correctedPBD(const Eigen::Vector3d& pos);
 
 	//この節点のFEMにおける解ベクトルをセット
 	void Set_Deltax_In_Model(const  Eigen::Vector3d &pos);
@@ -60,6 +61,7 @@ public:
 	const Eigen::Vector3d& ParticleD::Get_Draw_Grid()const;
 	const Eigen::Vector3d& ParticleD::Get_IM_Grid()const;
 	const double& ParticleD::Get_Mass()const;
+	const Eigen::Vector3d& Get_x_correctedPBD()const;
 	
 
 	bool Is_Fixed()const;
@@ -89,6 +91,7 @@ private:
 	bool fixed;						//固定されているかどうか
 	Eigen::Vector3d drawgrid;	//描画用のグローバル座標
 	Eigen::Vector3d imgrid;	//分割用のグローバル座標
+	Eigen::Vector3d x_correctedPBD;//PBD方法点的global坐标
 };
 
 #endif

@@ -75,7 +75,7 @@ public:
 	double EnergyBody;
 	Eigen::VectorXd Deltax;//position correction
 	double Bottom;
-	Eigen::MatrixXd temp;
+	Eigen::MatrixXd EnergyGradMatrix;
 	Eigen::VectorXd InitialPos;//object vertices initial position 
 	Eigen::VectorXd InitialVel;
 
