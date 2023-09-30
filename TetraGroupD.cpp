@@ -404,7 +404,8 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 	//重力を加え速度を更新する
 	//Apply gravity and update velocity
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + (f_Local.block(3 * pi, 0, 3, 1) / M_Matrix_C(3 * pi, 3 * pi)) * TIME_STEP + gravity.block(3 * pi, 0, 3, 1) * TIME_STEP;
+		/// M_Matrix_C(3 * pi, 3 * pi))
+		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + (f_Local.block(3 * pi, 0, 3, 1) / M_Matrix_C(3 * pi, 3 * pi) + gravity.block(3 * pi, 0, 3, 1)) * TIME_STEP;
 		Eigen::VectorXd tempA = Eigen::VectorXd::Zero(3 * particles.size());
 		Eigen::VectorXd tempB = Eigen::VectorXd::Zero(3 * particles.size());
 		Eigen::VectorXd tempC = Eigen::VectorXd::Zero(3 * particles.size());

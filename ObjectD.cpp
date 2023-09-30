@@ -552,7 +552,7 @@ void ObjectD::CalcPrePos() {
 	
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
 		auto aaa = M_MatrixBody(3 * pi, 3 * pi);
-		v_Local.segment(3 * pi, 3) = v_Local.segment(3 * pi, 3) + f_Local.segment(3 * pi, 3) * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
+		v_Local.segment(3 * pi, 3) = v_Local.segment(3 * pi, 3) + f_Local.segment(3 * pi, 3) * TIME_STEP;
 		x_Local.segment(3 * pi, 3) = x_Local.segment(3 * pi, 3) + v_Local.segment(3 * pi, 3) * TIME_STEP;
 		particles[pi]->Set_Exp_Pos(x_Local.segment(3 * pi, 3));
 	}
@@ -656,11 +656,11 @@ void ObjectD::PBDCalculation() {
 	//CalcMassMatrix();
 	CalcPrePos();
 	mtEnergyConstraint.startMyTimer();
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 2; i++) {
 		for (auto _e : tetras) {
 			_e->CreateDs();
 			_e->CreateDefTensor();
-			_e->CreateStrain();
+			//_e->CreateStrain();
 			//_e->CreateStress(data.young, data.poisson);
 			_e->CreateEnegyDensity(data.young, data.poisson);
 			_e->CreatePKFirstStress(data.young, data.poisson);
