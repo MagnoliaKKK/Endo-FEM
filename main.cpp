@@ -21,6 +21,10 @@
 #include <sstream>
 #include <iomanip>
 #include "SocketHandler.h"
+
+#include <set>
+#include <cstdint>
+
 //#pragma fenv_access (on)
 #pragma comment(lib, "winmm.lib")
 //カメラの回転スピード
@@ -36,6 +40,90 @@ void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraV
 Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 void DrawRotationNew(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
+
+
+//read STL part
+struct Point {
+	float x, y, z;
+	bool operator<(const Point& other) const {
+		if (x != other.x) return x < other.x;
+		if (y != other.y) return y < other.y;
+		return z < other.z;
+	}
+};
+
+std::set<Point> readBinarySTL(const std::string& filename) {
+	std::ifstream file(filename, std::ios::binary);
+	std::set<Point> points;
+
+	if (!file.is_open()) {
+		std::cerr << "Error opening file" << std::endl;
+		return points; // 返回空的 set
+	}
+
+	char header[80];
+	file.read(header, 80);
+
+	uint32_t numTriangles;
+	file.read(reinterpret_cast<char*>(&numTriangles), 4);
+
+	for (uint32_t i = 0; i < numTriangles; i++) {
+		Point normal;
+		file.read(reinterpret_cast<char*>(&normal), sizeof(Point));
+
+		for (int j = 0; j < 3; j++) {
+			Point vertex;
+			file.read(reinterpret_cast<char*>(&vertex), sizeof(Point));
+			points.insert(vertex);
+		}
+
+		uint16_t attribute;
+		file.read(reinterpret_cast<char*>(&attribute), 2);
+	}
+
+	file.close();
+	return points;
+}
+
+//读取STL测试 需要num点总数 和phys pushback进去所有的点坐标Vector3D
+std::vector<ParticleD*> Create_STL_ParticlesD(Eigen::Vector3d origin) { //ObjectSize size_data = { xsize, ysize, zsize ,sidelength };
+	std::vector<ParticleD*> particles;//オブジェクトの頂点群
+	std::string filename = "C:/Users/yunxiu/Desktop/FEM/icoSphere.stl";
+	//std::string filename = "C:/Users/yunxiu/Desktop/FEM/icoSphere.stl";
+	//std::string filename = "C:/Users/yunxiu/Desktop/FEM/square.stl";
+	auto points = readBinarySTL(filename);
+
+	// 输出点的总数和坐标
+
+
+
+	unsigned int num = points.size(); //頂点の数は各軸の要素の積 xyz
+	std::vector<ParticleD*> p(num);//頂点の集合
+	std::vector<Eigen::Vector3d> phys;//頂点の各座標
+
+	for (const auto& point : points) {
+		std::cout << point.x << " " << point.y << " " << point.z << std::endl;
+		float scale = 6;
+		phys.push_back(Eigen::Vector3d(origin.x() + point.x * scale, origin.y() + point.y * scale, origin.z() + point.z * scale));
+	}
+
+	for (unsigned int i = 0; i < num; i++) {
+		p[i] = new ParticleD(phys[i]);
+		p[i]->p_id = i;
+		particles.push_back(p[i]);
+		//if (i >= size_data.x_vertex_num * size_data.y_vertex_num * size_data.z_vertex_num - size_data.y_vertex_num * size_data.z_vertex_num) {
+		//	p[i]->Set_Fixed(fixedion);// 一番端の頂点を固定する
+		//}
+		
+		if (phys[i].x() < -1.5) {
+			p[i]->Set_Fixed(fixedion);// 一番端の頂点を固定する
+		}
+	}
+	std::cout << "success create particle" << ":" << num << std::endl;//頂点の作成に成功したことを出力
+	return particles;
+}
+
+//////////////////////////stop STL part
 
 // (x,y)の点を(mx,my)を中心にang角回転する
 void rotate(float *x, float *y, const float ang, const float mx, const float my) {
@@ -509,7 +597,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 //===========================================================================//
 
 //Nodes for a box model
-std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize size_data) {
+std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize size_data) { //ObjectSize size_data = { xsize, ysize, zsize ,sidelength };
 	std::vector<ParticleD*> particles;//オブジェクトの頂点群
 	unsigned int num = size_data.x_vertex_num * size_data.y_vertex_num * size_data.z_vertex_num; //頂点の数は各軸の要素の積 xyz
 	std::vector<ParticleD*> p(num);//頂点の集合
@@ -520,8 +608,7 @@ std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize siz
 				phys.push_back(Eigen::Vector3d(origin.x() + xi * size_data.size, origin.y() + yi * size_data.size, origin.z() + zi * size_data.size));
 			}
 		}
-	}
-	//各頂点にidと座標を入れる
+	}	//各頂点にidと座標を入れる
 	for (unsigned int i = 0; i < num; i++) {
 		p[i] = new ParticleD(phys[i]);
 		p[i]->p_id = i;
@@ -536,6 +623,10 @@ std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize siz
 	std::cout << "success create particle" << ":" << num << std::endl;//頂点の作成に成功したことを出力
 	return particles;
 }
+
+
+
+
 //Nodes for one Tetra model
 std::vector<ParticleD*> Create_Particles_OneTetraD(Eigen::Vector3d origin, ObjectSize size_data) {
 	std::vector<ParticleD*> particles;//オブジェクトの頂点群
@@ -882,3 +973,5 @@ Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam
 
 	return temp;
 }
+
+
