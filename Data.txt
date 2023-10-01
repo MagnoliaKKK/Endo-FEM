@@ -5,7 +5,7 @@ TIME_STEP = 0.01
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)
-PBD_LOOP = 2
+PBD_LOOP = 10
 #修正値和による閾値の設定(double)
 config = 1.0e-03
 
@@ -35,7 +35,7 @@ M_damping = 2
 #バネダンパ係数(剛性比例減衰)
 K_damping = 1
 #拘束力の係数
-F_bind_coeff = -1.0e+8
+F_bind_coeff = -1.0e+07
 #拘束力のダンパー係数
 F_bind_damping = 100
 #拘束力か(1)全体係数行列か(0)
@@ -59,18 +59,18 @@ useUpBind = 1
 
 #objectsize
 #x方向のサイズ(int)
-xsize = 7
+xsize = 13
 #y方向のサイズ(int)
-ysize = 7
+ysize = 3
 #z方向のサイズ(int) 
 zsize = 3
 #一辺の長さ	(double)
 sidelength = 3
 
 #x方向をn分割
-dividedbyn = 2
+dividedbyn = 4
 #y方向をm分割
-dividedbym = 2
+dividedbym = 1
 #z方向をl分割
 dividedbyl = 1
 
