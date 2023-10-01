@@ -203,6 +203,7 @@ void BasicInformation() {
 //===========================================================================//
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ChangeWindowMode(TRUE), DxLib_Init(), SetDrawScreen(DX_SCREEN_BACK);
+	//SetAlwaysRunFlag(TRUE);  // 设置程序在失去焦点时继续运行
 	//ウィンドウモードを非全画面にし、DXライブラリの初期化、裏画面設定
 
 	if (!::AttachConsole(ATTACH_PARENT_PROCESS)) {
