@@ -367,12 +367,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//オブジェクトのインスタンス
 	ObjectD* o;						  
 	
-	particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
+	//particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
 	//Vector3dが原点で、右下奥に直方体ができる。
 	//オブジェクトのインスタンスを生成する
-	//o = new UseBlockObjectDouble(particles, gum);  // モデルを従来のFEMでシミュレーションする
-	o = new UseBlockObjectDouble(particles, gum3);
+	
 
+	particles = Create_STL_ParticlesD(Eigen::Vector3d(0, 0, 0));
+
+	o = new UseBlockObjectDouble(particles, gum3);
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
 	o->CalcMassMatrix();
 

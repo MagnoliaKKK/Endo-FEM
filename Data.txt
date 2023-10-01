@@ -68,9 +68,9 @@ zsize = 3
 sidelength = 3
 
 #x方向をn分割
-dividedbyn = 3
+dividedbyn = 4
 #y方向をm分割
-dividedbym = 3
+dividedbym = 1
 #z方向をl分割
 dividedbyl = 1
 
