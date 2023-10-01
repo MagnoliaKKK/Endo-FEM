@@ -27,12 +27,13 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 	for (auto _g : groups)
 	{
 		_g->ReSet_Fbind_Pos();
-		_g->LHS0();
+		//_g->LHS0();
 	}
-
+	int aa = 1;
 	for (int i = 0; i < loop; i++)
 	{
-		#pragma omp parallel for //作用最大 135 to 30
+		
+		//#pragma omp parallel for //作用最大 135 to 30
 		for (int j = 0; j < static_cast<int>(groups.size()); j++) {
 			auto _g = groups[j];
 
@@ -59,11 +60,14 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 			}
 			feclearexcept(FE_ALL_EXCEPT);
 		}
-		#pragma omp parallel for //没明显作用
+		//#pragma omp parallel for //没明显作用
 		for (int i = 0; i < static_cast<int>(groups.size()); i++) {
 			auto _g = groups[i];
 			_g->Update_Fbind_Pos8();
+			
 		}
+		aa++;
+	
 	}
 	for (auto _g : groups) {
 		for (unsigned int pi = 0; pi < _g->particle_num; pi++) {
@@ -82,8 +86,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 		
 	}
 	
-	std::cout << M_MatrixBody << std::endl;
-	int aaa;
+	
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;
 	}
@@ -588,8 +591,10 @@ void ObjectD::UpdatePos() {
 	for (int i = 0; i < particles.size(); i++) {
 		Deltax.segment<3>(i) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
 		
+		//particles[i]->Update_Grid(x_corrected.segment<3>(i));
 		//该写velocity了
 	}
+
 	x_corrected = x_Local + Deltax;
 
 }
@@ -599,15 +604,23 @@ void ObjectD::UpdateVel() {
 		particles[i]->Set_Velocity_In_Model((x_corrected.segment<3>(i) - particles[i]->Get_Grid())/TIME_STEP);
 	}
 }
+Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid) {
+	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
+	for (unsigned int pi = 0; pi < particles.size(); pi++) {
+		if (particles[pi]->p_id == pid) {
+			temp = x_corrected.segment<3>(pi);
+			return temp;
+		}
+	}
+	std::cout << "ERROR1177 NOT FOUND" << std::endl;
+	return temp;
+}
 
 void ObjectD::PBDCalculation() {
-	CalcMassMatrix();
+	//CalcMassMatrix();
 	CalcPrePos();
-	
-	for (auto _e : tetras) {
-		
-		for (int i = 0; i < 3; i++) {
-		
+	for (int i = 0; i < 5; i++) {
+		for (auto _e : tetras) {
 			_e->CreateDs();
 			_e->CreateDefTensor();
 			_e->CreateStrain();
@@ -615,16 +628,14 @@ void ObjectD::PBDCalculation() {
 			_e->CreateEnegyDensity();
 			_e->CreatePKFirstStress();
 			_e->CreateEnergyGrad();
-			Assemble_EnergyGradGlobal();
-			CreateEnergyBody();
-			CreateLagrangeMulti();
-			UpdatePos();
-			
-			
 		}
-		
-		
+		Assemble_EnergyGradGlobal();
+		CreateEnergyBody();
+		CreateLagrangeMulti();
+		UpdatePos();
 	}
+	
+	
 	UpdateVel();
 	
 		

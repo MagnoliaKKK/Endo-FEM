@@ -34,6 +34,8 @@ void Draw_Mesh();
 void Draw_Rotation(ObjectD* obj,float SinParam, float CosParam, float CameraVAngle, float CameraHAngle,double cameraZoom);
 void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
+void DrawRotationNew(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
+void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 
 // (x,y)の点を(mx,my)を中心にang角回転する
 void rotate(float *x, float *y, const float ang, const float mx, const float my) {
@@ -283,6 +285,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	o = new UseBlockObjectDouble(particles, gum3);
 
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
+	o->CalcMassMatrix();
 
 	//DXライブラリで描画する色(白),随時設定する
 	unsigned int string_color = GetColor(255, 255, 255);
@@ -409,7 +412,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//===========================================================================//
 		for (unsigned int i = 0; i < obj.size(); ++i) {	//現在,オブジェクトの数は一つ
 
-			obj[i]->Timestep_Init(); //1ステップの外力をリセット
+			obj[i]->Timestep_Init();//1ステップの外力をリセット
+			
 
 			if (Mouse & MOUSE_INPUT_LEFT) {	//マウスの左ボタンが押されたら
 				int x, y;
@@ -424,10 +428,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
 			if (countup>50 && countup<100000) {
-				obj[i]->Update();			//オブジェクトの位置更新
+				
+				obj[i]->Update();	
+			
 
 				//obj[i]->PBDCalculation();
 			}
+
 			mtUpdate.endMyTimer();		//１ステップ中の位置更新の計算時間を測るstopwatchを終了
 
 			countup++;						 // 経過したステップ数を記録する
@@ -456,8 +463,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//座標系の表示
 			Draw_Rotation(obj[0],SinParam,CosParam, CameraVAngle,CameraHAngle, cameraZoom);
 			//グループごとに節点を描画
+			
 			Draw_Group_Grid(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			// 描写する時間を測るstopwatchを終了
+			//DrawRotationNew(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+			//Draw_Group_Grid_New(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			mtDraw.endMyTimer();		
 			
 		}
@@ -644,6 +654,56 @@ void Draw_Mesh() {
 
 		SetUseZBufferFlag(FALSE);
 	}
+}
+void DrawRotationNew(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
+	Eigen::VectorXd CentorVector = Eigen::Vector3d::Zero();
+	Eigen::VectorXd PosVector = Eigen::VectorXd::Zero(3 * obj->particles.size());
+	//Calculate Centor of mass of the object and save it in CentorVector
+	for (int i = 0; i < obj->particles.size(); i++)
+	{
+		CentorVector[0] += obj->M_MatrixBody(3 * i, 3 * i) * obj->x_corrected(3 * i);
+		CentorVector[1] += obj->M_MatrixBody(3 * i + 1, 3 * i + 1) * obj->x_corrected(3 * i + 1);
+		CentorVector[2] += obj->M_MatrixBody(3 * i + 2, 3 * i + 2) * obj->x_corrected(3 * i + 2);
+	}
+	Eigen::Vector3d Draw_centor = Eigen::Vector3d::Zero();
+	Draw_centor = Calc_Draw_Grid(CentorVector, SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+	DrawCircle(int(Draw_centor.x()), int(Draw_centor.y()), 3, RED, TRUE);
+	std::ostringstream sstrC;
+	sstrC << std::setprecision(3) << "  " << CentorVector[0] << "," << CentorVector[1] << "," << CentorVector[2];
+	//DrawString(0, 49 + 16 * _g->tetra_group_id, sstrC.str().data(), RED);
+	sstrC.str("");
+	//座標系を出力
+	double Range = 1.0 * cameraZoom;
+	Eigen::Vector3d Xcard(Range, 0, 0);
+	Eigen::Vector3d Ycard(0, Range, 0);
+	Eigen::Vector3d Zcard(0, 0, Range);
+	Xcard = CentorVector + Xcard;
+	Ycard = CentorVector + Ycard;
+	Zcard = CentorVector + Zcard;
+	Eigen::Vector3d Draw_Xcard = Eigen::Vector3d::Zero();
+	Eigen::Vector3d Draw_Ycard = Eigen::Vector3d::Zero();
+	Eigen::Vector3d Draw_Zcard = Eigen::Vector3d::Zero();
+	//回転したあとの座標系を計算
+
+
+	
+	Xcard = CentorVector + (Xcard - CentorVector);
+	Ycard = CentorVector + (Ycard - CentorVector);
+	Zcard = CentorVector + (Zcard - CentorVector);
+	
+	//描画用の座標に変換
+	Draw_Xcard = Calc_Draw_Grid(Xcard, SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+	Draw_Ycard = Calc_Draw_Grid(Ycard, SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+	Draw_Zcard = Calc_Draw_Grid(Zcard, SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+
+	//座標系を出力
+	int color = GetColor(0, 255, 0);
+	MyDrawLine3(Draw_centor, Draw_Xcard, RED);
+	MyDrawLine3(Draw_centor, Draw_Ycard, GREEN);
+	MyDrawLine3(Draw_centor, Draw_Zcard, BLUE);
+
+
+	
 }
 //Draw_coordinate system of each Groups
 void Draw_Rotation(ObjectD* obj,float SinParam, float CosParam, float CameraVAngle, float CameraHAngle,double cameraZoom) {
