@@ -8,7 +8,7 @@
 
 #include "TetraElementD.h"
 #include <algorithm>
-
+extern float extForce;//想用键盘控制的外力
 class TetraGroupD {
 public:
 	TetraGroupD(std::vector< TetraElementD* > elements, ObjectData data, double mass, int tetra_Group_id);
@@ -20,8 +20,10 @@ public:
 	void BuildMatrix();
 	const std::vector< ParticleD* > particles;//groupが持っているparticle
 	const unsigned int particle_num;	     //particle数
+	
 	void TetraGroupD::Set_Size_para(int particle_num);					 //各変数の要素数を決定する
 	void TetraGroupD::Set_Size_para2(std::vector< ParticleD* > particles); //各変数の要素数を決定する
+
 
 																		 //剛性行列を作成するための変数、関数
 	ObjectData data;			      //材料パラメータ

@@ -4,6 +4,7 @@
 #include "UseBlockObjectDouble.h"
 
 #include "UseLinearFEMDouble.h"
+#include "TetraGroupD.h"
 
 #include "InputKey.h"
 #include <windows.h>
@@ -40,7 +41,7 @@ void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraV
 Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 void DrawRotationNew(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
-
+float extForce = 0;//想用键盘控制的外力
 
 //read STL part
 struct Point {
@@ -291,7 +292,7 @@ void BasicInformation() {
 //===========================================================================//
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ChangeWindowMode(TRUE), DxLib_Init(), SetDrawScreen(DX_SCREEN_BACK);
-	//SetAlwaysRunFlag(TRUE);  // 设置程序在失去焦点时继续运行
+	SetAlwaysRunFlag(TRUE);  // 设置程序在失去焦点时继续运行
 	//ウィンドウモードを非全画面にし、DXライブラリの初期化、裏画面設定
 
 	if (!::AttachConsole(ATTACH_PARENT_PROCESS)) {
@@ -367,12 +368,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//オブジェクトのインスタンス
 	ObjectD* o;						  
 	
-	//particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
+	particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
 	//Vector3dが原点で、右下奥に直方体ができる。
 	//オブジェクトのインスタンスを生成する
 	
 
-	particles = Create_STL_ParticlesD(Eigen::Vector3d(0, 0, 0));
+	//particles = Create_STL_ParticlesD(Eigen::Vector3d(0, 0, 0));
 
 	o = new UseBlockObjectDouble(particles, gum3);
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
@@ -392,6 +393,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float  CameraVAngle;
 	float  SinParam;
 	float  CosParam;
+	
 	VECTOR Position = VGet(0.0f, 0.0f, 0.0f);
 	// カメラの向きを初期化
 	CameraHAngle = -0.0f;
@@ -417,7 +419,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//===========================================================================//
 	//実行時処理(run-time processing)
 	//===========================================================================//
-
+	
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && KeyBoard::gpUpdateKey() == 0) {
 		//↑裏画面を表画面に反映   ↑ﾒｯｾｰｼﾞ処理			   ↑画面をｸﾘｱ               ↑keyが押されていない
 
@@ -460,6 +462,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (CameraVAngle >= 360.0f) {
 				CameraVAngle -= 360.0f;
 			}
+		}
+		if (CheckHitKey(KEY_INPUT_Q) == 1) {
+			extForce += 0.1;
+			std::cout << extForce << std::endl;
+		}
+		if (CheckHitKey(KEY_INPUT_E) == 1) {
+			extForce -= 0.1;
+			std::cout << extForce << std::endl;
 		}
 		//===========================================================================//
 		// カメラの位置と向きを設定(Set the position and orientation of the camera.)
