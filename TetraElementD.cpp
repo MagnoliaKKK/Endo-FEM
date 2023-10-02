@@ -231,10 +231,11 @@ void TetraElementD::Create_Stiffness_Matrix2(const Eigen::Vector3d& origin, cons
 	Eigen::MatrixXd ZY = Eigen::MatrixXd::Zero(4, 4);
 
 	Eigen::Vector3d p1, p2, p3, p4;
-	p1 = particles[0]->Get_Grid() - origin;
-	p2 = particles[1]->Get_Grid() - origin;
-	p3 = particles[2]->Get_Grid() - origin;
-	p4 = particles[3]->Get_Grid() - origin;
+	p1 = particles[0]->Get_Grid();
+	p2 = particles[1]->Get_Grid();
+	p3 = particles[2]->Get_Grid();
+	p4 = particles[3]->Get_Grid();
+
 
 	double N_x[4], N_y[4], N_z[4];
 	N_x[0] = (-p3.y()*p4.z() + p3.z()*p4.y() + p2.y()*p4.z()

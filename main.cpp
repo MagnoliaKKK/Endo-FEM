@@ -269,7 +269,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 	else {
-		cameraZoom = 5 * 40.0 / sidelength;
+		cameraZoom = 1 * 40.0 / sidelength;
 	}
 	
 
@@ -310,7 +310,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//particles = Create_Particles_TwoTetraD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
 		//particles = Create_Particles_OneTetraD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
 		//オブジェクトのインスタンスを生成する
-		o = new UseOldFEMDouble(particles, almin);  // モデルを従来のFEMでシミュレーションする
+		o = new UseOldFEMDouble(particles, gum3);  // モデルを従来のFEMでシミュレーションする
 	}
 	else {
 		particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
@@ -469,7 +469,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (countup<50) {				 // 50ステップのときの総計算時間を測定
 				TIMERof50 += mtUpdate.getDt();// 1ステップ中の位置更新の計算時間を取得し加算
 			}
-
+			/*if (countup == 1000) {
+				std::ofstream outputfile("GroupGridOld.txt", std::ios_base::app);
+				outputfile << "GroupGridOld"  << " is " << std::endl;
+				outputfile << std::setprecision(3) << obj[i]->groups[0]->GroupGridVector << std::endl;
+				outputfile.close();
+			}*/
 			//実験用の変数
 			int countup2 = 0;
 			if (countup>50) {

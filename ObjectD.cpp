@@ -751,15 +751,13 @@ void ObjectD::Solve_Constraints12(unsigned int loop) {
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);
 			}
 		}
-		std::ofstream outputfile("Deltax_In_Group.txt", std::ios_base::app);
-		outputfile << "Deltax_In_Group" << _g->tetra_group_id << " is " << std::endl;
-		outputfile << std::setprecision(3) << _g->Deltax_In_Group << std::endl;
-		outputfile.close();
+		mtUpPos.endMyTimer();
+		std::cout << _g->GroupGridVector << std::endl;
 	}
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;
 	}
-	mtUpPos.endMyTimer();
+	
 	//std::cout << "Update Pos is " << mtUpPos.getDt() << std::endl;
 }
 
@@ -820,6 +818,8 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);
 			}
 		}
+		std::cout<< "Group grid" << std::endl << _g->GroupGridVector << std::endl;
+
 		
 	}
 	if (fetestexcept(FE_INVALID)) {

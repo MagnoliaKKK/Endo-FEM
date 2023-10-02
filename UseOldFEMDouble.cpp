@@ -331,9 +331,9 @@ void UseOldFEMDouble::Update() {
 		//剛性行列を更新
 		//タイマーを合成行列の更新用に使う
 		mtUpRotate.startMyTimer();
-		//_g->Create_Center_Grid();
-		//_g->Create_Local_Stiffness_Matrix();
-		//_g->Create_Damping_Matrix();
+		_g->Create_Center_Grid();
+		_g->Create_Local_Stiffness_Matrix();
+		_g->Create_Damping_Matrix();
 
 		//剛性行列を更新するならしたが必要
 		//グループごとの座標の更新
@@ -435,6 +435,7 @@ void UseOldFEMDouble::Update() {
 	DrawString(0, 67, sstr3.str().data(), string_color3);
 	sstr2.str("");
 	sstr3.str("");
+	
 }
 //==========================================================================//
 //	@end		   				ループ設定									//

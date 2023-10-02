@@ -264,8 +264,8 @@ void TetraGroupD::Create_Center_Grid() {
 	}
 	//シミュレーションによって重心の位置は変化するので、変化する重心ベクトルを設定
 	center_grid = origin_center_grid;
-	std::cout << "center_grid is " << std::endl;
-	std::cout << origin_center_grid << std::endl;
+	/*std::cout << "center_grid is " << std::endl;
+	std::cout << origin_center_grid << std::endl;*/
 
 	//各particleにおける初めの重心からの距離(変化しない),
 	//現在の重心からの距離(変化する),各particleのローカル座標初期位置(変化しない)の設定
