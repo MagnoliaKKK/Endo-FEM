@@ -46,6 +46,7 @@ public:
 	int Share_particlenum;                //共有する節点の組み合わせの総和=l
 	std::vector<int>Share_particle_id;  //共有する節点の各座標
 	int AllParticlenum;					//節点の総和=l
+	
 
 	//Debiug用
 	Eigen::VectorXd ConbiteGMRES;//GMRESの収束をみるために20反復を値として格納

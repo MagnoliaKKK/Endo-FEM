@@ -818,9 +818,18 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);
 			}
 		}
-		std::cout<< "Group grid" << std::endl << _g->GroupGridVector << std::endl;
-
-		
+		//std::cout<< "Group grid" << std::endl << _g->GroupGridVector << std::endl;
+		/*for (auto _g : groups) {
+			for (auto _p : particles) {
+				if (!(_p->Is_Fixed())) {
+					_p->Update(_g->Get_Grid_In_Group(_p->p_id));
+				}
+			}
+		}
+		*/
+		if (fetestexcept(FE_INVALID)) {
+			std::cout << "FE_INVALID Posi_set" << std::endl;
+		}
 	}
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;

@@ -461,7 +461,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
 			if (countup>50 && countup<100000) {
-				obj[i]->Update();			//オブジェクトの位置更新
+				obj[i]->Update();	//オブジェクトの位置更新
+				
 			}
 			mtUpdate.endMyTimer();		//１ステップ中の位置更新の計算時間を測るstopwatchを終了
 
@@ -469,12 +470,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (countup<50) {				 // 50ステップのときの総計算時間を測定
 				TIMERof50 += mtUpdate.getDt();// 1ステップ中の位置更新の計算時間を取得し加算
 			}
-			/*if (countup == 1000) {
+			
+			if (countup == 1000) {
 				std::ofstream outputfile("GroupGridOld.txt", std::ios_base::app);
 				outputfile << "GroupGridOld"  << " is " << std::endl;
-				outputfile << std::setprecision(3) << obj[i]->groups[0]->GroupGridVector << std::endl;
+				//outputfile << std::setprecision(3) << obj[i]->particles << std::endl;
 				outputfile.close();
-			}*/
+			}
 			//実験用の変数
 			int countup2 = 0;
 			if (countup>50) {
@@ -782,6 +784,7 @@ void Draw_Rotation(ObjectD* obj,float SinParam, float CosParam, float CameraVAng
 }
 //Draw node position  of each Groups 
 void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
+	std::cout << "122" << std::endl;
 	//グループごとの座標を出力
 	double Volume_i = 0.0;
 	for (auto _g : obj->groups) {
@@ -808,6 +811,15 @@ void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraV
 			MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
 			MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
 			MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
+			
+			/*std::cout << "id" << " " << _e->Get_Particle()[0]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).z() << std::endl;
+
+			std::cout << "id" << " " << _e->Get_Particle()[1]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).z() << std::endl;
+
+			std::cout << "id " << " " << _e->Get_Particle()[2]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).z() << std::endl;*/
+
+			//std::cout <<"id" << " " << _e->Get_Particle()[3]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).z() << std::endl;
+
 
 		}
 
