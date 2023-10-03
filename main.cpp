@@ -269,7 +269,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 	else {
-		cameraZoom = 5 * 40.0 / sidelength;
+		cameraZoom = 1 * 40.0 / sidelength;
 	}
 	
 
@@ -433,6 +433,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				
 
 				obj[i]->PBDCalculation();
+				std::cout << "start print position" << std::endl;
+				for (int i = 0; i < obj[0]->particles.size(); i++) {
+					std::cout << particles[i]->Get_Grid() << std::endl;
+				}
 				
 			}
 
@@ -834,7 +838,7 @@ void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float Cam
 		DrawCircle(int(Draw_particle1.x()), int(Draw_particle1.y()), 3, WHITE, TRUE);
 		DrawCircle(int(Draw_particle2.x()), int(Draw_particle2.y()), 3, WHITE, TRUE);
 		DrawCircle(int(Draw_particle3.x()), int(Draw_particle3.y()), 3, WHITE, TRUE);
-		
+
 
 		DrawString(int(Draw_particle0.x()), int(Draw_particle0.y()), IntToTChar(e->Get_Particle()[0]->p_id), RED);
 		DrawString(int(Draw_particle1.x()), int(Draw_particle1.y()), IntToTChar(e->Get_Particle()[1]->p_id), RED);
@@ -847,6 +851,7 @@ void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float Cam
 		MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
 		MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
 		MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
+
 	}
 }
 

@@ -13,7 +13,7 @@ config = 1.0e-03
 #物理量定数
 PI = 3.14159265358979265358979
 #重力加速度(m/s2)ty  v
-Gravity = 0.01
+Gravity = 10
 #最初に力をかけるか(1)いなか(0)
 UseIniForce = 0
 #ヤコビ(1)かLU(0)か
@@ -59,11 +59,11 @@ useUpBind = 1
 
 #objectsize
 #x方向のサイズ(int)
-xsize =7
+xsize =11
 #y方向のサイズ(int)
-ysize = 3
+ysize = 4
 #z方向のサイズ(int) 
-zsize = 3
+zsize = 5
 #一辺の長さ	(double)
 sidelength = 4
 
