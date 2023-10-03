@@ -5,6 +5,7 @@
 #include "UseBlockObjectDouble.h"
 
 #include "UseLinearFEMDouble.h"
+#include "TetraGroupD.h"
 
 #include "InputKey.h"
 #include <windows.h>
@@ -21,7 +22,10 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include "SocketHandler.h"
 
+#include <set>
+#include <cstdint>
 
 //#pragma fenv_access (on)
 #pragma comment(lib, "winmm.lib")
@@ -38,6 +42,90 @@ void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraV
 Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 void DrawRotationNew(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
 void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom);
+float extForce = 0;//想用键盘控制的外力
+
+//read STL part
+struct Point {
+	float x, y, z;
+	bool operator<(const Point& other) const {
+		if (x != other.x) return x < other.x;
+		if (y != other.y) return y < other.y;
+		return z < other.z;
+	}
+};
+
+std::set<Point> readBinarySTL(const std::string& filename) {
+	std::ifstream file(filename, std::ios::binary);
+	std::set<Point> points;
+
+	if (!file.is_open()) {
+		std::cerr << "Error opening file" << std::endl;
+		return points; // 返回空的 set
+	}
+
+	char header[80];
+	file.read(header, 80);
+
+	uint32_t numTriangles;
+	file.read(reinterpret_cast<char*>(&numTriangles), 4);
+
+	for (uint32_t i = 0; i < numTriangles; i++) {
+		Point normal;
+		file.read(reinterpret_cast<char*>(&normal), sizeof(Point));
+
+		for (int j = 0; j < 3; j++) {
+			Point vertex;
+			file.read(reinterpret_cast<char*>(&vertex), sizeof(Point));
+			points.insert(vertex);
+		}
+
+		uint16_t attribute;
+		file.read(reinterpret_cast<char*>(&attribute), 2);
+	}
+
+	file.close();
+	return points;
+}
+
+//读取STL测试 需要num点总数 和phys pushback进去所有的点坐标Vector3D
+std::vector<ParticleD*> Create_STL_ParticlesD(Eigen::Vector3d origin) { //ObjectSize size_data = { xsize, ysize, zsize ,sidelength };
+	std::vector<ParticleD*> particles;//オブジェクトの頂点群
+	std::string filename = "C:/Users/yunxiu/Desktop/FEM/icoSphere.stl";
+	//std::string filename = "C:/Users/yunxiu/Desktop/FEM/icoSphere.stl";
+	//std::string filename = "C:/Users/yunxiu/Desktop/FEM/square.stl";
+	auto points = readBinarySTL(filename);
+
+	// 输出点的总数和坐标
+
+
+
+	unsigned int num = points.size(); //頂点の数は各軸の要素の積 xyz
+	std::vector<ParticleD*> p(num);//頂点の集合
+	std::vector<Eigen::Vector3d> phys;//頂点の各座標
+
+	for (const auto& point : points) {
+		std::cout << point.x << " " << point.y << " " << point.z << std::endl;
+		float scale = 6;
+		phys.push_back(Eigen::Vector3d(origin.x() + point.x * scale, origin.y() + point.y * scale, origin.z() + point.z * scale));
+	}
+
+	for (unsigned int i = 0; i < num; i++) {
+		p[i] = new ParticleD(phys[i]);
+		p[i]->p_id = i;
+		particles.push_back(p[i]);
+		//if (i >= size_data.x_vertex_num * size_data.y_vertex_num * size_data.z_vertex_num - size_data.y_vertex_num * size_data.z_vertex_num) {
+		//	p[i]->Set_Fixed(fixedion);// 一番端の頂点を固定する
+		//}
+		
+		if (phys[i].x() < -1.5) {
+			p[i]->Set_Fixed(fixedion);// 一番端の頂点を固定する
+		}
+	}
+	std::cout << "success create particle" << ":" << num << std::endl;//頂点の作成に成功したことを出力
+	return particles;
+}
+
+//////////////////////////stop STL part
 
 // (x,y)の点を(mx,my)を中心にang角回転する
 void rotate(float *x, float *y, const float ang, const float mx, const float my) {
@@ -205,6 +293,7 @@ void BasicInformation() {
 //===========================================================================//
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ChangeWindowMode(TRUE), DxLib_Init(), SetDrawScreen(DX_SCREEN_BACK);
+	SetAlwaysRunFlag(TRUE);  // 设置程序在失去焦点时继续运行
 	//ウィンドウモードを非全画面にし、DXライブラリの初期化、裏画面設定
 
 	if (!::AttachConsole(ATTACH_PARENT_PROCESS)) {
@@ -216,7 +305,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// Dataから数値を読む
 	BasicInformation();				
-
+	if (!InitializeSocket(9002)) {
+		return 1;
+	}
 	//	X+が右、Y+が下、Z+が手前
 	std::vector<ObjectD*> obj;									//シミュレーションで生成するオブジェクト群
 	ObjectSize size_data = { xsize, ysize, zsize ,sidelength };	//	モデルの大きさ(x,y,z方向), 1辺の長さ
@@ -281,9 +372,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	particles = Create_ParticlesD(Eigen::Vector3d(0.0, 0.0, 0.0), size_data);
 	//Vector3dが原点で、右下奥に直方体ができる。
 	//オブジェクトのインスタンスを生成する
-	//o = new UseBlockObjectDouble(particles, gum);  // モデルを従来のFEMでシミュレーションする
-	o = new UseBlockObjectDouble(particles, gum3);
+	
 
+	//particles = Create_STL_ParticlesD(Eigen::Vector3d(0, 0, 0));
+
+	o = new UseBlockObjectDouble(particles, gum3);
 	obj.push_back(o);// 生成したオブジェクトをシミュレーションで使うオブジェクト群にpushする
 	o->CalcMassMatrix();
 
@@ -301,6 +394,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	float  CameraVAngle;
 	float  SinParam;
 	float  CosParam;
+	
 	VECTOR Position = VGet(0.0f, 0.0f, 0.0f);
 	// カメラの向きを初期化
 	CameraHAngle = -0.0f;
@@ -326,7 +420,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//===========================================================================//
 	//実行時処理(run-time processing)
 	//===========================================================================//
-
+	
 	while (ScreenFlip() == 0 && ProcessMessage() == 0 && ClearDrawScreen() == 0 && KeyBoard::gpUpdateKey() == 0) {
 		//↑裏画面を表画面に反映   ↑ﾒｯｾｰｼﾞ処理			   ↑画面をｸﾘｱ               ↑keyが押されていない
 
@@ -369,6 +463,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (CameraVAngle >= 360.0f) {
 				CameraVAngle -= 360.0f;
 			}
+		}
+		if (CheckHitKey(KEY_INPUT_Q) == 1) {
+			extForce += 0.1;
+			std::cout << extForce << std::endl;
+		}
+		if (CheckHitKey(KEY_INPUT_E) == 1) {
+			extForce -= 0.1;
+			std::cout << extForce << std::endl;
 		}
 		//===========================================================================//
 		// カメラの位置と向きを設定(Set the position and orientation of the camera.)
@@ -516,7 +618,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 //===========================================================================//
 
 //Nodes for a box model
-std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize size_data) {
+std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize size_data) { //ObjectSize size_data = { xsize, ysize, zsize ,sidelength };
 	std::vector<ParticleD*> particles;//オブジェクトの頂点群
 	unsigned int num = size_data.x_vertex_num * size_data.y_vertex_num * size_data.z_vertex_num; //頂点の数は各軸の要素の積 xyz
 	std::vector<ParticleD*> p(num);//頂点の集合
@@ -527,8 +629,7 @@ std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize siz
 				phys.push_back(Eigen::Vector3d(origin.x() + xi * size_data.size, origin.y() + yi * size_data.size, origin.z() + zi * size_data.size));
 			}
 		}
-	}
-	//各頂点にidと座標を入れる
+	}	//各頂点にidと座標を入れる
 	for (unsigned int i = 0; i < num; i++) {
 		p[i] = new ParticleD(phys[i]);
 		p[i]->p_id = i;
@@ -543,6 +644,10 @@ std::vector<ParticleD*> Create_ParticlesD(Eigen::Vector3d origin, ObjectSize siz
 	std::cout << "success create particle" << ":" << num << std::endl;//頂点の作成に成功したことを出力
 	return particles;
 }
+
+
+
+
 //Nodes for one Tetra model
 std::vector<ParticleD*> Create_Particles_OneTetraD(Eigen::Vector3d origin, ObjectSize size_data) {
 	std::vector<ParticleD*> particles;//オブジェクトの頂点群
@@ -851,8 +956,17 @@ void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float Cam
 		MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
 		MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
 		MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
-
 	}
+}
+// 函数用于将Eigen::Vector3d对象序列化为字符串 socket通信用
+std::string SerializeEigenVectors(const std::vector<Eigen::Vector3d>& vectors) {
+	std::string serializedData;
+	for (const auto& vector : vectors) {
+		serializedData += std::to_string(vector.x()) + "," +
+			std::to_string(vector.y()) + "," +
+			std::to_string(vector.z()) + ";";
+	}
+	return serializedData;
 }
 
 
@@ -860,13 +974,14 @@ void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float Cam
 void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
 	//グループごとの座標を出力
 	double Volume_i = 0.0;
-	Eigen::Vector3d Draw_particle0 = Eigen::Vector3d::Zero();
-	Eigen::Vector3d Draw_particle1 = Eigen::Vector3d::Zero();
-	Eigen::Vector3d Draw_particle2 = Eigen::Vector3d::Zero();
-	Eigen::Vector3d Draw_particle3 = Eigen::Vector3d::Zero();
+	std::vector<Eigen::Vector3d> vectors; //用于Udp传送
+
 	for (auto _g : obj->groups) {
 		for (auto _e : _g->elements) {
-			
+			Eigen::Vector3d Draw_particle0 = Eigen::Vector3d::Zero();
+			Eigen::Vector3d Draw_particle1 = Eigen::Vector3d::Zero();
+			Eigen::Vector3d Draw_particle2 = Eigen::Vector3d::Zero();
+			Eigen::Vector3d Draw_particle3 = Eigen::Vector3d::Zero();
 
 			//Volume_i += _e->Calc_Volume(_g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id), _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id));
 			Draw_particle0 = Calc_Draw_Grid(_g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
@@ -886,37 +1001,18 @@ void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraV
 			MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
 			MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
 
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id));
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id));
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id));
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id));
+			
 		}
-
-		/*
-			Eigen::Vector3d Draw_particle0 = Eigen::Vector3d::Zero();
-			Eigen::Vector3d Draw_particle1 = Eigen::Vector3d::Zero();
-			Eigen::Vector3d Draw_particle2 = Eigen::Vector3d::Zero();
-			Eigen::Vector3d Draw_particle3 = Eigen::Vector3d::Zero();
-			//Draw_particle0 = Calc_Draw_Grid(_g->particles[0]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			//Draw_particle1 = Calc_Draw_Grid(_g->particles[1]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			//Draw_particle2 = Calc_Draw_Grid(_g->particles[2]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			//Draw_particle3 = Calc_Draw_Grid(_g->particles[3]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle0 = Calc_Draw_Grid(_g->GroupGridVector.block(0,0,3,1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle1 = Calc_Draw_Grid(_g->GroupGridVector.block(3, 0, 3, 1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle2 = Calc_Draw_Grid(_g->GroupGridVector.block(6, 0, 3, 1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle3 = Calc_Draw_Grid(_g->GroupGridVector.block(9, 0, 3, 1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-
-			DrawCircle(int(Draw_particle0.x()), int(Draw_particle0.y()), 3, RED, TRUE);
-			DrawCircle(int(Draw_particle1.x()), int(Draw_particle1.y()), 3, RED, TRUE);
-			DrawCircle(int(Draw_particle2.x()), int(Draw_particle2.y()), 3, RED, TRUE);
-			DrawCircle(int(Draw_particle3.x()), int(Draw_particle3.y()), 3, RED, TRUE);
-
-			//線を描画
-			MyDrawLine3(Draw_particle0, Draw_particle1, WHITE);
-			MyDrawLine3(Draw_particle0, Draw_particle2, WHITE);
-			MyDrawLine3(Draw_particle0, Draw_particle3, WHITE);
-			MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
-			MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
-			MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
-		*/
 	}
-	//std::cout << Volume_i << ",";
+	std::string serializedData = SerializeEigenVectors(vectors);
+
+	// 发送序列化的数据到客户端，假设客户端的IP地址是127.0.0.1，端口号是9003
+	SendData(serializedData, "127.0.0.1", 9003);
+
 }
 //Calc drawing node position  of each Groups using Camera parameters
 Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
@@ -944,3 +1040,5 @@ Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam
 
 	return temp;
 }
+
+

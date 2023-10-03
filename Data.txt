@@ -65,7 +65,7 @@ ysize = 4
 #z方向のサイズ(int) 
 zsize = 5
 #一辺の長さ	(double)
-sidelength = 4
+sidelength = 3
 
 #x方向をn分割
 dividedbyn = 2

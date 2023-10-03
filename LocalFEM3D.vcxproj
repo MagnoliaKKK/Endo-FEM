@@ -194,6 +194,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectD.cpp" />
     <ClCompile Include="ParticleD.cpp" />
+    <ClCompile Include="SocketHandler.cpp" />
     <ClCompile Include="TetraElementD.cpp" />
     <ClCompile Include="TetraGroupD.cpp" />
     <ClCompile Include="TriangleD.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Eigen\src\IterativeLinearSolvers\GMRES.h" />
     <ClInclude Include="ObjectD.h" />
     <ClInclude Include="ParticleD.h" />
+    <ClInclude Include="SocketHandler.h" />
     <ClInclude Include="TetraElementD.h" />
     <ClInclude Include="TetraGroupD.h" />
     <ClInclude Include="TriangleD.h" />

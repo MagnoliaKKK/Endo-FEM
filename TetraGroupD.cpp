@@ -391,9 +391,9 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 		//If you want to apply a force early on, do the following (but don't know what happens when you apply the force)
 		if (UseIniForce) {
 			//particles[pi]->Set_Force(Eigen::Vector3d::Zero());
-			if (tetra_group_id==1 && particles[pi]->p_id == 61&& countup<1000) {
-				f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0, 1.0e+4, 0);
-			}
+			//if (tetra_group_id==1 && particles[pi]->p_id == 61&& countup<1000) {
+				f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0, extForce, 0);
+			//}
 		}
 
 		/*feclearexcept(FE_ALL_EXCEPT);
