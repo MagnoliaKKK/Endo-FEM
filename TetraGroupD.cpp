@@ -2136,11 +2136,11 @@ void TetraGroupD::Update_Fbind_Pos8() {
 			//std::cout << "Bind" << particles[pi]->p_id << "of " << tetra_group_id << " is " << std::endl;
 			//std::cout << bind_force_iterative.block(3 * pi, 0, 3, 1) << std::endl;
 		}
-		if (((particles[pi]->p_belong_TetraGroup_ids.size()) > 1)) {
+		/*if (((particles[pi]->p_belong_TetraGroup_ids.size()) > 1)) {
 			if (Conv.squaredNorm() < 10e-3) {
 				std::cout << Conv.squaredNorm()  << std::endl;
 			}
-		}
+		}*/
 	}
 }
 Eigen::Vector3d TetraGroupD::Calc_Distance() {

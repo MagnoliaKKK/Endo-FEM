@@ -752,7 +752,7 @@ void ObjectD::Solve_Constraints12(unsigned int loop) {
 			}
 		}
 		mtUpPos.endMyTimer();
-		std::cout << _g->GroupGridVector << std::endl;
+		//std::cout << _g->GroupGridVector << std::endl;
 	}
 	if (fetestexcept(FE_INVALID)) {
 		std::cout << "FE_INVALID Posi_set" << std::endl;
