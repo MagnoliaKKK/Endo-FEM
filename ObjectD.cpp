@@ -675,7 +675,10 @@ void ObjectD::PBDCalculation() {
 	//std::cout << std::setprecision(4) << mtEnergyConstraint.getDt() << std::endl;
 	
 	UpdateVel();
-	
+	for (int i = 0; i < particles.size(); i++)
+	{
+		std::cout << "id" << " " << particles[i]->p_id << " " << particles[i]->Get_Grid().x() << " " << particles[i]->Get_Grid().y() << " " << particles[i]->Get_Grid().z() << std::endl;
+	}
 		
 }
 void ObjectD::UpdateOldFEM() {

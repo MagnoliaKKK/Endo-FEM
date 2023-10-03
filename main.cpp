@@ -536,9 +536,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				obj[i]->PBDCalculation();
 				std::cout << "start print position" << std::endl;
-				for (int i = 0; i < obj[0]->particles.size(); i++) {
+				/*for (int i = 0; i < obj[0]->particles.size(); i++) {
 					std::cout << particles[i]->Get_Grid() << std::endl;
-				}
+				}*/
 				
 			}
 
@@ -956,6 +956,7 @@ void Draw_Group_Grid_New(ObjectD* obj, float SinParam, float CosParam, float Cam
 		MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
 		MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
 		MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
+
 	}
 }
 // 函数用于将Eigen::Vector3d对象序列化为字符串 socket通信用
