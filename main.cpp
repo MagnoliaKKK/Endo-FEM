@@ -531,10 +531,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
 			if (countup>=0 && countup<100000) {
 				//obj[i]->UpdateOldFEM();
-				//obj[i]->Update();	
+				obj[i]->Update();	
 				
 
-				obj[i]->PBDCalculation();
+				//obj[i]->PBDCalculation();
 				std::cout << "start print position" << std::endl;
 				/*for (int i = 0; i < obj[0]->particles.size(); i++) {
 					std::cout << particles[i]->Get_Grid() << std::endl;
@@ -568,15 +568,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			mtDraw.startMyTimer();		// 描写する時間を測るstopwatchをスタート
 
 			//座標系の表示
-			//Draw_Rotation(obj[0],SinParam,CosParam, CameraVAngle,CameraHAngle, cameraZoom);
+			Draw_Rotation(obj[0],SinParam,CosParam, CameraVAngle,CameraHAngle, cameraZoom);
 			//グループごとに節点を描画
 		
-			//Draw_Group_Grid(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
+			Draw_Group_Grid(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 			// 描写する時間を測るstopwatchを終了
-			if (countup >=0 && countup < 100000) {
+			/*if (countup >=0 && countup < 100000) {
 				DrawRotationNew(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
 				Draw_Group_Grid_New(obj[0], SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			}
+			}*/
 			
 			mtDraw.endMyTimer();		
 			
