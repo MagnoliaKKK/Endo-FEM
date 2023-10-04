@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -193,6 +193,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectD.cpp" />
     <ClCompile Include="ParticleD.cpp" />
+    <ClCompile Include="SocketHandler.cpp" />
     <ClCompile Include="TetraElementD.cpp" />
     <ClCompile Include="TetraGroupD.cpp" />
     <ClCompile Include="TriangleD.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Eigen\src\IterativeLinearSolvers\GMRES.h" />
     <ClInclude Include="ObjectD.h" />
     <ClInclude Include="ParticleD.h" />
+    <ClInclude Include="SocketHandler.h" />
     <ClInclude Include="TetraElementD.h" />
     <ClInclude Include="TetraGroupD.h" />
     <ClInclude Include="TriangleD.h" />

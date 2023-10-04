@@ -5,7 +5,7 @@ TIME_STEP = 1.0e-2
 #1.0e+8;  double 
 THRESHHOLD = 0.00000
 #制約条件における更新式(int)
-PBD_LOOP = 5
+PBD_LOOP = 10
 #修正値和による閾値の設定(double)
 config = 1.0e-03
 
@@ -13,7 +13,7 @@ config = 1.0e-03
 #物理量定数
 PI = 3.14159265358979265358979
 #重力加速度(m/s2)
-Gravity = 10.0
+Gravity = 40.0
 #最初に力をかけるか(1)いなか(0)
 UseIniForce = 0
 #ヤコビ(1)かLU(0)か

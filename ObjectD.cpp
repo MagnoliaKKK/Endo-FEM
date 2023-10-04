@@ -812,7 +812,7 @@ void ObjectD::Solve_Constraints13(unsigned int loop) {
 				std::cout << "FE_INVALID Calc_Exp6" << std::endl;
 			}
 			feclearexcept(FE_ALL_EXCEPT);
-			_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->PrimeVector.block(3 * pi, 0, 3, 1) + _g->DeltaxNew.block(3 * pi, 0, 3, 1);
+			_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->PrimeVector.block(3 * pi, 0, 3, 1); //+ _g->DeltaxNew.block(3 * pi, 0, 3, 1);
 			if (_g->particles[pi]->Is_Fixed()) {
 				_g->GroupVelVector.block(3 * pi, 0, 3, 1) = Eigen::Vector3d::Zero();
 				_g->GroupGridVector.block(3 * pi, 0, 3, 1) = _g->InitialVector.block(3 * pi, 0, 3, 1);

@@ -23,6 +23,8 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include "SocketHandler.h"
+
 
 //#pragma fenv_access (on)
 #pragma comment(lib, "winmm.lib")
@@ -204,7 +206,7 @@ void BasicInformation() {
 //===========================================================================//
 //===========================================================================//
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-	SetAlwaysRunFlag(TRUE);
+	//SetAlwaysRunFlag(TRUE);
 	ChangeWindowMode(TRUE), DxLib_Init(), SetDrawScreen(DX_SCREEN_BACK);
 	//ウィンドウモードを非全画面にし、DXライブラリの初期化、裏画面設定
 
@@ -217,7 +219,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// Dataから数値を読む
 	BasicInformation();				
-
+	if (!InitializeSocket(9002)) {
+		return 1;
+	}
 	//	X+が右、Y+が下、Z+が手前
 	std::vector<ObjectD*> obj;									//シミュレーションで生成するオブジェクト群
 	ObjectSize size_data = { xsize, ysize, zsize ,sidelength };	//	モデルの大きさ(x,y,z方向), 1辺の長さ
@@ -785,11 +789,24 @@ void Draw_Rotation(ObjectD* obj,float SinParam, float CosParam, float CameraVAng
 	}
 	*/
 }
+
+// 函数用于将Eigen::Vector3d对象序列化为字符串 socket通信用
+std::string SerializeEigenVectors(const std::vector<Eigen::Vector3d>& vectors) {
+	std::string serializedData;
+	for (const auto& vector : vectors) {
+		serializedData += std::to_string(vector.x()) + "," +
+			std::to_string(vector.y()) + "," +
+			std::to_string(vector.z()) + ";";
+	}
+	return serializedData;
+}
+
 //Draw node position  of each Groups 
 void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
 	std::cout << "122" << std::endl;
 	//グループごとの座標を出力
 	double Volume_i = 0.0;
+	std::vector<Eigen::Vector3d> vectors; //用于Udp传送
 	for (auto _g : obj->groups) {
 		for (auto _e : _g->elements) {
 			Eigen::Vector3d Draw_particle0 = Eigen::Vector3d::Zero();
@@ -815,46 +832,17 @@ void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraV
 			MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
 			MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
 			
-			/*std::cout << "id" << " " << _e->Get_Particle()[0]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).z() << std::endl;
-
-			std::cout << "id" << " " << _e->Get_Particle()[1]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).z() << std::endl;
-
-			std::cout << "id " << " " << _e->Get_Particle()[2]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).z() << std::endl;
-
-			std::cout <<"id" << " " << _e->Get_Particle()[3]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).z() << std::endl;*/
-
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id));
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id));
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id));
+			vectors.push_back(_g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id));
 
 		}
-
-		/*
-			Eigen::Vector3d Draw_particle0 = Eigen::Vector3d::Zero();
-			Eigen::Vector3d Draw_particle1 = Eigen::Vector3d::Zero();
-			Eigen::Vector3d Draw_particle2 = Eigen::Vector3d::Zero();
-			Eigen::Vector3d Draw_particle3 = Eigen::Vector3d::Zero();
-			//Draw_particle0 = Calc_Draw_Grid(_g->particles[0]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			//Draw_particle1 = Calc_Draw_Grid(_g->particles[1]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			//Draw_particle2 = Calc_Draw_Grid(_g->particles[2]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			//Draw_particle3 = Calc_Draw_Grid(_g->particles[3]->Get_Grid(), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle0 = Calc_Draw_Grid(_g->GroupGridVector.block(0,0,3,1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle1 = Calc_Draw_Grid(_g->GroupGridVector.block(3, 0, 3, 1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle2 = Calc_Draw_Grid(_g->GroupGridVector.block(6, 0, 3, 1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-			Draw_particle3 = Calc_Draw_Grid(_g->GroupGridVector.block(9, 0, 3, 1), SinParam, CosParam, CameraVAngle, CameraHAngle, cameraZoom);
-
-			DrawCircle(int(Draw_particle0.x()), int(Draw_particle0.y()), 3, RED, TRUE);
-			DrawCircle(int(Draw_particle1.x()), int(Draw_particle1.y()), 3, RED, TRUE);
-			DrawCircle(int(Draw_particle2.x()), int(Draw_particle2.y()), 3, RED, TRUE);
-			DrawCircle(int(Draw_particle3.x()), int(Draw_particle3.y()), 3, RED, TRUE);
-
-			//線を描画
-			MyDrawLine3(Draw_particle0, Draw_particle1, WHITE);
-			MyDrawLine3(Draw_particle0, Draw_particle2, WHITE);
-			MyDrawLine3(Draw_particle0, Draw_particle3, WHITE);
-			MyDrawLine3(Draw_particle1, Draw_particle2, WHITE);
-			MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
-			MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
-		*/
 	}
-	//std::cout << Volume_i << ",";
+	std::string serializedData = SerializeEigenVectors(vectors);
+
+	// 发送序列化的数据到客户端，假设客户端的IP地址是127.0.0.1，端口号是9003
+	SendData(serializedData, "127.0.0.1", 9003);
 }
 //Calc drawing node position  of each Groups using Camera parameters
 Eigen::Vector3d Calc_Draw_Grid(Eigen::Vector3d a, float SinParam, float CosParam, float CameraVAngle, float CameraHAngle, double cameraZoom) {
