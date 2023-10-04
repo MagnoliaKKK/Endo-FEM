@@ -198,10 +198,10 @@ void UseBlockObjectDouble::Create_Groups() {
 			//質量行列の代入
 			_g->M_Matrix_C = Eigen::MatrixXd::Zero(3 * _g->particles.size(), 3 * _g->particles.size());
 			_g->M_Matrix_C = _g->M_Matrix;
-			std::ofstream outputfile("Mass_Matrix.txt", std::ios_base::app);
-			outputfile << "Mass_Matrix "<< _g->tetra_group_id<<" is " << std::endl;
-			outputfile << std::setprecision(3) << _g->M_Matrix_C << std::endl;
-			outputfile.close();
+			//std::ofstream outputfile("Mass_Matrix.txt", std::ios_base::app);
+			//outputfile << "Mass_Matrix "<< _g->tetra_group_id<<" is " << std::endl;
+			//outputfile << std::setprecision(3) << _g->M_Matrix_C << std::endl;
+			//outputfile.close();
 			
 			//グループの質量
 			double tempM = 0.0;
@@ -313,29 +313,29 @@ void UseBlockObjectDouble::Create_Groups() {
 	GMREScount = 0;
 	ConbiteGMRES = Eigen::VectorXd::Zero(20);
 	//Debug出力
-	std::ofstream outputfile("MinvK.txt");
+	//std::ofstream outputfile("MinvK.txt");
 	for (auto _g : groups) {
 		Eigen::MatrixXd Define = Eigen::MatrixXd::Zero(_g->particle_num, _g->particle_num);
 		Define = _g->M_Matrix_C.inverse() *_g->stiffness_matrix;
-		outputfile << "np.array([";
+		//outputfile << "np.array([";
 		for (unsigned int pi = 0; pi < 3 * _g->particle_num - 1; pi++) {
 			//値
-			outputfile << "[";
+			//outputfile << "[";
 			for (unsigned int pj = 0; pj < 3 * _g->particle_num - 1; pj++) {
 				//値
-				outputfile << Define.block(pi, pj, 1, 1) << ",";
+				//outputfile << Define.block(pi, pj, 1, 1) << ",";
 			}
-			outputfile << Define.block(pi, 3 * _g->particle_num - 1, 1, 1) << "]," << "\n";
+			//outputfile << Define.block(pi, 3 * _g->particle_num - 1, 1, 1) << "]," << "\n";
 		}
-		outputfile << "[";
+		//outputfile << "[";
 		for (unsigned int pj = 0; pj < 3 * _g->particle_num - 1; pj++) {
 			//値
-			outputfile << Define.block(3 * _g->particle_num - 1, pj, 1, 1) << ",";
+			//outputfile << Define.block(3 * _g->particle_num - 1, pj, 1, 1) << ",";
 		}
-		outputfile << Define.block(3 * _g->particle_num - 1, 3 * _g->particle_num - 1, 1, 1) << "]])" << "\n";
-		outputfile << "\n" << "\n" << "\n" << "\n" << "\n";
+		//outputfile << Define.block(3 * _g->particle_num - 1, 3 * _g->particle_num - 1, 1, 1) << "]])" << "\n";
+		//outputfile << "\n" << "\n" << "\n" << "\n" << "\n";
 	}
-	outputfile.close();
+	//outputfile.close();
 	std::cout << "OutPut Define" << std::endl;
 }
 //==========================================================================//
