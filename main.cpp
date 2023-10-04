@@ -462,7 +462,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 			mtUpdate.startMyTimer();	//１ステップ中の位置更新の計算時間を測るstopwatchをスタート
 			if (countup>50 && countup<100000) {
+				
 				obj[i]->Update();	//オブジェクトの位置更新
+				std::cout << "start position print" << std::endl;
 				
 			}
 			mtUpdate.endMyTimer();		//１ステップ中の位置更新の計算時間を測るstopwatchを終了
@@ -813,13 +815,13 @@ void Draw_Group_Grid(ObjectD* obj, float SinParam, float CosParam, float CameraV
 			MyDrawLine3(Draw_particle1, Draw_particle3, WHITE);
 			MyDrawLine3(Draw_particle2, Draw_particle3, WHITE);
 			
-			std::cout << "id" << " " << _e->Get_Particle()[0]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).z() << std::endl;
+			/*std::cout << "id" << " " << _e->Get_Particle()[0]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[0]->p_id).z() << std::endl;
 
 			std::cout << "id" << " " << _e->Get_Particle()[1]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[1]->p_id).z() << std::endl;
 
 			std::cout << "id " << " " << _e->Get_Particle()[2]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[2]->p_id).z() << std::endl;
 
-			std::cout <<"id" << " " << _e->Get_Particle()[3]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).z() << std::endl;
+			std::cout <<"id" << " " << _e->Get_Particle()[3]->p_id << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).x() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).y() << " " << _g->Get_Grid_In_Group((_e->Get_Particle())[3]->p_id).z() << std::endl;*/
 
 
 		}
