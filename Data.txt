@@ -35,7 +35,7 @@ M_damping = 10
 #バネダンパ係数(剛性比例減衰)
 K_damping = 1
 #拘束力の係数
-F_bind_coeff = -1e+03
+F_bind_coeff = 0
 #拘束力のダンパー係数
 F_bind_damping = 0
 #拘束力か(1)全体係数行列か(0)
