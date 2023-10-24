@@ -985,7 +985,7 @@ void TetraGroupD::CalcDeltax()
 }
 
 
-void TetraGroupD::Update_Fbind_Pos8() {
+void TetraGroupD::Update_Fbind_Pos8(int looptime) {
 	
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
 		Eigen::Vector3d Conv = Eigen::Vector3d::Zero();
@@ -1004,7 +1004,8 @@ void TetraGroupD::Update_Fbind_Pos8() {
 				Conv = Conv - (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				Conv1 = Conv1 - particles[pi]->Get_Mean_Vel();
 				//Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
-				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
+				//bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
+				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * (pow(2,looptime*0.8)) * Conv;
 				//bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_damping * Conv1;
 
 				if (fetestexcept(FE_INVALID)) {

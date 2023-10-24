@@ -92,7 +92,7 @@ public:
 	void Update_Fbind_Pos5();//予測位置が同じとき
 	void Update_Fbind_Pos6();//予測位置が異なる(節点でも同じ計算)
 	void Update_Fbind_Pos7();//予測位置が同じとき(節点は別の計算)
-	void Update_Fbind_Pos8();
+	void Update_Fbind_Pos8(int looptime);
 	Eigen::Vector3d Calc_Distance();
 	double Add_convergence_iteration(double convite);//収束するかどうか値(前回と今回のDeltax)を計算する
 
