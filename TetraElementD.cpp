@@ -120,6 +120,8 @@ Eigen::Matrix<double, 6, 12> TetraElementD::Create_B_Martix(const Eigen::Vector3
 	double V = Get_Volume();
 	Eigen::Matrix<double, 6, 12> B_Matrix = Eigen::Matrix<double, 6, 12>::Zero();
 	Eigen::Vector3d p1, p2, p3, p4;
+	auto naniani = particles[0]->Get_Grid();
+	auto naniani2 = naniani;
 	p1 = particles[0]->Get_Grid() - origin;
 	p2 = particles[1]->Get_Grid() - origin;
 	p3 = particles[2]->Get_Grid() - origin;
@@ -209,10 +211,10 @@ void TetraElementD::Create_Stiffness_Matrix(const Eigen::Vector3d& origin, const
 
 	local_stiffness_matrix = B.transpose()*D*B*V;//ここのVはBと打ち消すことができる
 
-	std::cout << "local" << std::endl;
-	std::cout << std::setprecision(10) << local_stiffness_matrix << std::endl;
-	std::cout << "localtt" << std::endl;
-	std::cout << std::setprecision(10) << local_stiffness_matrix- local_stiffness_matrix.transpose() << std::endl;
+	//std::cout << "local" << std::endl;
+	//std::cout << std::setprecision(10) << local_stiffness_matrix << std::endl;
+	//std::cout << "localtt" << std::endl;
+	//std::cout << std::setprecision(10) << local_stiffness_matrix- local_stiffness_matrix.transpose() << std::endl;
 }
 //異なる方法で作った剛性行列(originはグループの重心)
 void TetraElementD::Create_Stiffness_Matrix2(const Eigen::Vector3d& origin, const double& young, const double& poisson) {
@@ -345,6 +347,117 @@ void TetraElementD::Create_Stiffness_Matrix2(const Eigen::Vector3d& origin, cons
 	*/
 	
 }
+void TetraElementD::Calc_Center_Element() {
+	Eigen::Vector3d Center_Element = Eigen::Vector3d::Zero();
+	Eigen::Vector3d p1, p2, p3, p4;
+	p1 = particles[0]->Get_Grid();
+	p2 = particles[1]->Get_Grid();
+	p3 = particles[2]->Get_Grid();
+	p4 = particles[3]->Get_Grid();
+	Center_Element = (p1 + p2 + p3 + p4) / 4.0;
+}
+void TetraElementD::Create_Stiffness_Matrix3(const Eigen::Vector3d& origin, const double& young, const double& poisson) {
+	double lambda = (young * poisson) / ((1 + poisson) * (1 - 2 * poisson));
+	double G = young / (2 * (1 + poisson));
+
+	Eigen::MatrixXd XX = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd YY = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd ZZ = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd XY = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd XZ = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd YX = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd YZ = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd ZX = Eigen::MatrixXd::Zero(4, 4);
+	Eigen::MatrixXd ZY = Eigen::MatrixXd::Zero(4, 4);
+	
+	Eigen::Vector3d p1, p2, p3, p4;
+	p1 = particles[0]->Get_Grid();
+	p2 = particles[1]->Get_Grid();
+	p3 = particles[2]->Get_Grid();
+	p4 = particles[3]->Get_Grid();
+
+	double N_x[4], N_y[4], N_z[4];
+	N_x[0] = (-p3.y() * p4.z() + p3.z() * p4.y() + p2.y() * p4.z()
+		- p2.y() * p3.z() - p2.z() * p4.y() + p2.z() * p3.y());
+	N_y[0] = (p3.x() * p4.z() - p3.z() * p4.x() - p2.x() * p4.z()
+		+ p2.x() * p3.z() + p2.z() * p4.x() - p2.z() * p3.x());
+	N_z[0] = (-p3.x() * p4.y() + p3.y() * p4.x() + p2.x() * p4.y()
+		- p2.x() * p3.y() - p2.y() * p4.x() + p2.y() * p3.x());
+
+	N_x[1] = (p3.y() * p4.z() - p3.z() * p4.y() - p1.y() * p4.z()
+		+ p1.y() * p3.z() + p1.z() * p4.y() - p1.z() * p3.y());
+	N_y[1] = (-p3.x() * p4.z() + p3.z() * p4.x() + p1.x() * p4.z()
+		- p1.x() * p3.z() - p1.z() * p4.x() + p1.z() * p3.x());
+	N_z[1] = (p3.x() * p4.y() - p3.y() * p4.x() - p1.x() * p4.y()
+		+ p1.x() * p3.y() + p1.y() * p4.x() - p1.y() * p3.x());
+
+	N_x[2] = (-p2.y() * p4.z() + p2.z() * p4.y() + p1.y() * p4.z()
+		- p1.y() * p2.z() - p1.z() * p4.y() + p1.z() * p2.y());
+	N_y[2] = (p2.x() * p4.z() - p2.z() * p4.x() - p1.x() * p4.z()
+		+ p1.x() * p2.z() + p1.z() * p4.x() - p1.z() * p2.x());
+	N_z[2] = (-p2.x() * p4.y() + p2.y() * p4.x() + p1.x() * p4.y()
+		- p1.x() * p2.y() - p1.y() * p4.x() + p1.y() * p2.x());
+
+	N_x[3] = (p2.y() * p3.z() - p2.z() * p3.y() - p1.y() * p3.z()
+		+ p1.y() * p2.z() + p1.z() * p3.y() - p1.z() * p2.y());
+	N_y[3] = (-p2.x() * p3.z() + p2.z() * p3.x() + p1.x() * p3.z()
+		- p1.x() * p2.z() - p1.z() * p3.x() + p1.z() * p2.x());
+	N_z[3] = (p2.x() * p3.y() - p2.y() * p3.x() - p1.x() * p3.y()
+		+ p1.x() * p2.y() + p1.y() * p3.x() - p1.y() * p2.x());
+	//本当は上の値は6Vでわらないといけないけど、あとで積分してVをかけるからあとで計算
+	for (int ki = 0; ki < 4; ki++) {
+		for (int kj = 0; kj < 4; kj++) {
+			XX(ki, kj) = N_x[ki] * N_x[kj];
+			YY(ki, kj) = N_y[ki] * N_y[kj];
+			ZZ(ki, kj) = N_z[ki] * N_z[kj];
+
+			XY(ki, kj) = N_x[ki] * N_y[kj];
+			XZ(ki, kj) = N_x[ki] * N_z[kj];
+
+			YX(ki, kj) = N_y[ki] * N_x[kj];
+			YZ(ki, kj) = N_y[ki] * N_z[kj];
+
+			ZX(ki, kj) = N_z[ki] * N_x[kj];
+			ZY(ki, kj) = N_z[ki] * N_y[kj];
+		}
+	}
+
+	Eigen::MatrixXd ONE = Eigen::MatrixXd::Zero(12, 12);
+	Eigen::MatrixXd TWO = Eigen::MatrixXd::Zero(12, 12);
+	Eigen::MatrixXd THREE = Eigen::MatrixXd::Zero(12, 12);
+	Eigen::MatrixXd FOUR = Eigen::MatrixXd::Zero(12, 12);
+
+	//一つ目の行列作成
+	ONE.block(0, 0, 4, 4) = XX;
+	ONE.block(4, 4, 4, 4) = YY;
+	ONE.block(8, 8, 4, 4) = ZZ;
+	ONE = 2 * G * ONE;
+	//二つ目の行列作成
+	TWO.block(0, 0, 4, 4) = XX; TWO.block(0, 4, 4, 4) = XY; TWO.block(0, 8, 4, 4) = XZ;
+	TWO.block(4, 0, 4, 4) = YX; TWO.block(4, 4, 4, 4) = YY; TWO.block(4, 8, 4, 4) = YZ;
+	TWO.block(8, 0, 4, 4) = ZX; TWO.block(8, 4, 4, 4) = ZY; TWO.block(8, 8, 4, 4) = ZZ;
+	TWO = lambda * TWO;
+
+	//三つ目の行列作成
+	THREE.block(0, 0, 4, 4) = ZZ; THREE.block(0, 4, 4, 4) = YX;
+	THREE.block(4, 0, 4, 4) = XY; THREE.block(4, 4, 4, 4) = XX; THREE.block(4, 8, 4, 4) = ZY;
+	THREE.block(8, 4, 4, 4) = YZ; THREE.block(8, 8, 4, 4) = YY;
+	THREE = G * THREE;
+
+	//四つ目の行列作成
+	FOUR.block(0, 0, 4, 4) = YY;							  FOUR.block(0, 8, 4, 4) = ZX;
+	FOUR.block(4, 4, 4, 4) = ZZ;
+	FOUR.block(8, 0, 4, 4) = XZ;							  FOUR.block(8, 8, 4, 4) = XX;
+	FOUR = G * FOUR;
+
+	//四つの行列の合成
+	local_stiffness_matrix = Eigen::MatrixXd::Zero(12, 12);
+	local_stiffness_matrix = ONE + TWO + THREE + FOUR;
+	//微分した時に6Vで割ってなくて(2乗する)、そのあと積分してVをかけるから、総じて36Vで割る
+	local_stiffness_matrix = local_stiffness_matrix / (36.0 * this->Get_Volume());
+
+	//Ini_volume = this->Get_Volume();
+}
 void TetraElementD::CreateDm() {
 	Eigen::Vector3d p1, p2, p3, p4;
 	Dm = Eigen::Matrix<double, 3, 3>::Zero();
@@ -365,6 +478,8 @@ void TetraElementD::CreateDs() {
 	p2 = particles[1]->Get_Exp_Pos();
 	p3 = particles[2]->Get_Exp_Pos();
 	p4 = particles[3]->Get_Exp_Pos();
+	auto bbb = p1.x() - p4.x();
+	auto aaa = p1.y() - p4.y();
 	Ds << p1.x() - p4.x(), p2.x() - p4.x(), p3.x() - p4.x(),
 		p1.y() - p4.y(), p2.y() - p4.y(), p3.y() - p4.y(),
 		p1.z() - p4.z(), p2.z() - p4.z(), p3.z() - p4.z();
@@ -372,8 +487,11 @@ void TetraElementD::CreateDs() {
 }
 void TetraElementD::CreateDefTensor() {
 	DefTensor = Eigen::Matrix<double, 3, 3>::Zero();
+	//Eigen::Matrix3d tmp = Eigen::Matrix<double, 3, 3>::Zero();
+	//tmp = Dm.inverse();
 	DefTensor = Ds * Dm.inverse();
-	
+	double det;
+	det = DefTensor.determinant();
 }
 void TetraElementD::CreateStrain() {
 	Strain = Eigen::Matrix<double, 3, 3>::Zero();
@@ -385,7 +503,7 @@ void TetraElementD::CreateStress(const double& young, const double& poisson) {
 	Dmatrix = Create_D_Martix(young, poisson);
 
 	Eigen::VectorXd E_voigt(6);
-	E_voigt << Strain(0, 0), Strain(1, 1), Strain(2, 2), 2 * Strain(1, 2), 2 * Strain(0, 2), 2 * Strain(0, 1);
+	E_voigt << Strain(0, 0), Strain(1, 1), Strain(2, 2), 2*Strain(1, 2), 2*Strain(0, 2), 2*Strain(0, 1);
 	Eigen::VectorXd S_voigt = Dmatrix * E_voigt;
 
 	// Convert S from Voigt notation back to 3x3 form
@@ -402,11 +520,26 @@ void TetraElementD::CreateStress(const double& young, const double& poisson) {
 	Stress(1,0) = S_voigt(5);
 
 }
-void TetraElementD::CreateEnegyDensity() {
-	EnergyDensity = 0.5 * (Strain.transpose() * Stress).trace();
+void TetraElementD::CreateEnegyDensity(const double& young, const double& poisson) {
+	//EnergyDensity = 0.5 * (Strain.transpose() * Stress).trace();
+	double I1, I3;
+	double miu, lambda;
+	I1 = (DefTensor.transpose() * DefTensor).trace();
+	I3 = (DefTensor.transpose() * DefTensor).determinant();
+	miu = young / (2 * (1 + poisson));
+	lambda = young * poisson / ((1 + poisson) * (1 - 2 * poisson));
+	EnergyDensity = miu / 2 * (I1 - log10(I3) - 3) + miu / 8 * (log10(I3)) * (log10(I3));
+
 }
-void TetraElementD::CreatePKFirstStress() {
-	PKFirstStress = DefTensor * Stress;
+void TetraElementD::CreatePKFirstStress(const double& young, const double& poisson) {
+	//PKFirstStress = DefTensor * Stress;
+	double I3;
+	double miu, lambda;
+	I3 = (DefTensor.transpose() * DefTensor).determinant();
+	miu = young / (2 * (1 + poisson));
+	lambda = young * poisson / ((1 + poisson) * (1 - 2 * poisson));
+	PKFirstStress = miu * DefTensor - miu * DefTensor.transpose() + lambda * log10(I3) / 2 * DefTensor.inverse().transpose();
+
 }
 void TetraElementD::CreatePotentialEnergy() {
 	PotentialEnergy = EnergyDensity * Ini_volume;
@@ -415,7 +548,7 @@ void TetraElementD::CreateEnergyGrad() {
 	EnergyGrad = Eigen::Matrix<double, 3, 4>::Zero();
 	//EnergyGrad = Ini_volume * PKFirstStress * Dm.inverse().transpose()
 	
-	Eigen::Matrix<double, 3, 3> tempResult = Ini_volume * PKFirstStress * Dm.inverse().transpose();
+	Eigen::Matrix<double, 3, 3> tempResult = Ini_volume * PKFirstStress * Dm.transpose().inverse();
 	// 设置前三列
 	EnergyGrad.block<3, 3>(0, 0) = tempResult;
 	// 计算前三列的和

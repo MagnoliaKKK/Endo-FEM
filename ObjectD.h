@@ -25,6 +25,7 @@ public:
 	int Get_ezolg();		//制約条件による更新回数を取得
 	double convite;			//反復においてどれだけ値が変化しているかを記録する(前回と今の佐野ノルムの2乗)
 	const std::string& Get_Name()const;//オブジェクトの名前を取得
+	void Initialization();//Initialize position and velocity
 	void CalcMassMatrix();
 	void CalcPrePos();//New prediction position
 	void Assemble_EnergyGradGlobal();//エネルギー勾配の作成
@@ -32,6 +33,7 @@ public:
 	void CreateLagrangeMulti();//ラグランジュ乗数の作成
 	void UpdatePos();//位置の更新
 	void UpdateVel();//速度の更新
+	void UpdateOldFEM();
 	Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid);
 	void PBDCalculation();//PBDの計算
 
@@ -41,6 +43,7 @@ public:
 	MicroSecondTimer mtCEPos;	 // 弾性力以外の力による位置更新の計算時間
 	MicroSecondTimer mtCFEM;	 // 一回目の有限要素法による位置更新の計算時間
 	MicroSecondTimer mtCconstr;	 // 制約条件による位置の修正にかかる時間
+	MicroSecondTimer mtEnergyConstraint;	 // 制約条件による位置の修正にかかる時間(PBD)
 	MicroSecondTimer mtCP_1;     //省略法の反復計算にかかる時間
 	MicroSecondTimer mtCP_2;     //省略法の局所剛性行列のFEMによる制約での計算時間
 	MicroSecondTimer mtCP_3;     //省略法の位置の更新にかかる時間
@@ -72,7 +75,9 @@ public:
 	double EnergyBody;
 	Eigen::VectorXd Deltax;//position correction
 	double Bottom;
-	Eigen::MatrixXd temp;
+	Eigen::MatrixXd EnergyGradMatrix;
+	Eigen::VectorXd InitialPos;//object vertices initial position 
+	Eigen::VectorXd InitialVel;
 
 
 protected:

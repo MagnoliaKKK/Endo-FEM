@@ -391,9 +391,9 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 		//If you want to apply a force early on, do the following (but don't know what happens when you apply the force)
 		if (UseIniForce) {
 			//particles[pi]->Set_Force(Eigen::Vector3d::Zero());
-			if (tetra_group_id==1 && particles[pi]->p_id == 61&& countup<1000) {
-				f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0, 1.0e+4, 0);
-			}
+			//if (tetra_group_id==1 && particles[pi]->p_id == 61&& countup<1000) {
+				f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0, extForce, 0);
+			//}
 		}
 
 		/*feclearexcept(FE_ALL_EXCEPT);
@@ -404,7 +404,8 @@ void TetraGroupD::Calc_Exp_Pos_Group() {
 	//重力を加え速度を更新する
 	//Apply gravity and update velocity
 	for (unsigned int pi = 0; pi < particle_num; pi++) {
-		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + (f_Local.block(3 * pi, 0, 3, 1) / M_Matrix_C(3 * pi, 3 * pi)) * TIME_STEP + gravity.block(3 * pi, 0, 3, 1) * TIME_STEP;
+		/// M_Matrix_C(3 * pi, 3 * pi))
+		v_Local.block(3 * pi, 0, 3, 1) = v_Local.block(3 * pi, 0, 3, 1) + (f_Local.block(3 * pi, 0, 3, 1) / M_Matrix_C(3 * pi, 3 * pi) + gravity.block(3 * pi, 0, 3, 1)) * TIME_STEP;
 		Eigen::VectorXd tempA = Eigen::VectorXd::Zero(3 * particles.size());
 		Eigen::VectorXd tempB = Eigen::VectorXd::Zero(3 * particles.size());
 		Eigen::VectorXd tempC = Eigen::VectorXd::Zero(3 * particles.size());
@@ -978,9 +979,12 @@ void TetraGroupD::CalcDeltax()
 
 	Eigen::SparseLU<Eigen::SparseMatrix<double>> solver;
 
-	solver.compute(Jacobi_Matrix_Sparse);
-	DeltaxNew = solver.solve(Constant_term_iteration);
+	/*solver.compute(Jacobi_Matrix_Sparse);
+	DeltaxNew = solver.solve(Constant_term_iteration);*/
+	DeltaxNew = Jacobi_Matrix_Inv * Constant_term_iteration;
 	DeltaxNew = Rn_MatrixTR_Sparse * DeltaxNew;
+
+
 
 }
 
@@ -1059,8 +1063,10 @@ void TetraGroupD::LHS0() {
 
 	//Jacobi_Matrix = M_Matrix_C + Damping_Matrix + rotate_matrix3N * stiffness_matrix * rotate_matrix3N.transpose() * (Ident - SUM_M_Matrix) * TIME_STEP * TIME_STEP;
 	//Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix - TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * SUM_M_Matrix;
-	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse * MassCondi_Sparse;
-	Jacobi_Matrix_Sparse = Jacobi_Matrix.sparseView();
+	//Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInvSparse * StiffnessSparse * MassCondi_Sparse;
+	Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
+	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse().sparseView();
+	
 	/*Jacobi_Matrix = Ident + TIME_STEP * TIME_STEP * MassDamInv_Matrix * stiffness_matrix * (Ident - SUM_M_Matrix);
 	Jacobi_Matrix_Inv = Jacobi_Matrix.inverse();*/
 	//std::ofstream file("Jacobi_Matrix.txt");
@@ -1119,4 +1125,55 @@ void TetraGroupD::RHS0() {
 void TetraGroupD::Set_Deltax_In_Group(Eigen::VectorXd a) {
 	Deltax_In_Group = Eigen::VectorXd::Zero(3 * particles.size());
 	Deltax_In_Group = a;
+}
+void TetraGroupD::Calc_Jacobi_Matrix_iteration_Old() 
+{
+	Jacobi_Matrix = Eigen::MatrixXd::Zero(3 * particle_num, 3 * particle_num);
+	Jacobi_Matrix = M_Matrix/(TIME_STEP * TIME_STEP) + Damping_Matrix / TIME_STEP + stiffness_matrix;
+}
+
+void TetraGroupD::Calc_Constant_term_iteration_Old() {
+	//Constant_term_iteration = Eigen::VectorXd::Zero(3 * particle_num);
+	Constant_term_iteration = gravity + (M_Matrix / (TIME_STEP * TIME_STEP) + Damping_Matrix / TIME_STEP) * GroupGridVector + M_Matrix * GroupVelVector / TIME_STEP;
+}
+void TetraGroupD::CalcDeltax2() {
+	GroupPosition = Eigen::VectorXd::Zero(3 * particle_num);
+	GroupPosition = Jacobi_Matrix.lu().solve(Constant_term_iteration);
+}
+
+void TetraGroupD::OldFEM() {
+	for (unsigned int pi = 0; pi < particle_num; pi++) {
+		center_grid[0] += SUM_M_Matrix(0, 3 * pi) * GroupPosition[3 * pi];
+		center_grid[1] += SUM_M_Matrix(1, 3 * pi) * GroupPosition[3 * pi + 1];
+		center_grid[2] += SUM_M_Matrix(2, 3 * pi) * GroupPosition[3 * pi + 2];
+	}
+	for (auto e : elements) {
+		//e->Calc_Center_Element();
+		e->Create_Stiffness_Matrix3(center_grid, data.young, data.poisson);
+	}
+	Create_Local_Stiffness_Matrix();
+	Calc_Jacobi_Matrix_iteration_Old();
+	Calc_Constant_term_iteration_Old();
+	CalcDeltax2();
+	for (int i = 0; i < particle_num; i++) {
+		GroupGridVector.block(3* i, 0, 3, 1) = GroupPosition.block(3 * i, 0, 3, 1);
+
+		particles[i]->Update(GroupPosition.block(3 * i, 0, 3, 1));
+	}
+	for (unsigned int pi = 0; pi < particle_num; pi++) {
+		//速度をいれてみた
+		GroupVelVector.block(3 * pi, 0, 3, 1) = GroupPosition.block(3 * pi, 0, 3, 1) - GroupGridVector.block(3 * pi, 0, 3, 1) / TIME_STEP;
+		if (fetestexcept(FE_INVALID)) {
+			std::cout << "FE_INVALID Calc_Exp6" << std::endl;
+		}
+		feclearexcept(FE_ALL_EXCEPT);
+		GroupGridVector.block(3 * pi, 0, 3, 1) = GroupPosition.block(3 * pi, 0, 3, 1);
+		if (particles[pi]->Is_Fixed()) {
+			GroupVelVector.block(3 * pi, 0, 3, 1) = Eigen::Vector3d::Zero();
+			GroupGridVector.block(3 * pi, 0, 3, 1) = InitialVector.block(3 * pi, 0, 3, 1);
+		}
+	}
+	
+
+
 }

@@ -11,7 +11,7 @@ ObjectD::ObjectD(std::vector<ParticleD*> p, ObjectData data)
 	: particles(p), data(data)//変数の初期化
 	 ,Outofforce(Eigen::Vector3d::Zero())
 {
-	mtUpRotate.setid(4), mtCEPos.setid(5), mtCFEM.setid(6), mtCconstr.setid(7), mtCP_1.setid(8), mtCP_2.setid(9), mtCP_3.setid(10);
+	mtUpRotate.setid(4), mtCEPos.setid(5), mtCFEM.setid(6), mtCconstr.setid(7), mtCP_1.setid(8), mtCP_2.setid(9), mtCP_3.setid(10), mtEnergyConstraint.setid(11);
 }	//stopwatchのidをセット
 ObjectD::~ObjectD() {
 }
@@ -527,8 +527,17 @@ void ObjectD::CalcMassMatrix() {
 	}
 
 }
-
-
+void ObjectD::Initialization()
+{
+	InitialPos = Eigen::VectorXd::Zero(3 * particles.size());
+	InitialVel = Eigen::VectorXd::Zero(3 * particles.size());
+	for (int i = 0; i < particles.size(); i++)
+	{
+		InitialPos.segment(3 * i, 3) = particles[i]->Get_Initial_Pos();
+		InitialVel.segment(3 * i, 3).setZero();
+		//x_corrected.segment(3 * i, 3).setZero();
+	}
+}
 void ObjectD::CalcPrePos() {
 	
 		//初期化
@@ -536,44 +545,50 @@ void ObjectD::CalcPrePos() {
 	x_Local = Eigen::VectorXd::Zero(3 * particles.size());
 	v_Local = Eigen::VectorXd::Zero(3 * particles.size());
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
-		f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0.0, Gravity, 0.0);;
+		f_Local.block(3 * pi, 0, 3, 1) = Eigen::Vector3d(0.0, Gravity, 0.0);
 		x_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Grid();
 		v_Local.block(3 * pi, 0, 3, 1) = particles[pi]->Get_Vel();
 
 	}
 	
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
-		v_Local.segment<3>(pi) = v_Local.segment<3>(pi) + f_Local * TIME_STEP / M_MatrixBody(3 * pi, 3 * pi);
-		x_Local.segment<3>(pi) = x_Local.segment<3>(pi) + v_Local.segment<3>(pi) * TIME_STEP;
-		particles[pi]->Set_Exp_Pos(x_Local.segment<3>(pi));
+		auto aaa = M_MatrixBody(3 * pi, 3 * pi);
+		v_Local.segment(3 * pi, 3) = v_Local.segment(3 * pi, 3) + f_Local.segment(3 * pi, 3) * TIME_STEP;
+		x_Local.segment(3 * pi, 3) = x_Local.segment(3 * pi, 3) + v_Local.segment(3 * pi, 3) * TIME_STEP;
+		particles[pi]->Set_Exp_Pos(x_Local.segment(3 * pi, 3));
 	}
 
 }
 
 void ObjectD::Assemble_EnergyGradGlobal() {
 	EnergyGradGlobal = Eigen::VectorXd::Zero(3* particles.size());
-	temp = Eigen::MatrixXd::Zero(3 , 3 * particles.size());
-	for (auto _e : tetras) {
-		for (auto p_it = particles.begin(); p_it != particles.end(); ++p_it) {
-			size_t p_index = std::distance(particles.begin(), p_it);
+	EnergyGradMatrix = Eigen::MatrixXd::Zero(3 , particles.size());//组装好的能量梯度  
+	//for (auto _e : tetras) {
+	//	for (auto p_it = particles.begin(); p_it != particles.end(); ++p_it) {
+	//		size_t p_index = std::distance(particles.begin(), p_it);
 
-			// 从当前元素获取此粒子的能量梯度。
-			Eigen::Vector3d local_gradient = _e->Get_SubEnergyGrad(*p_it);
+	//		// 从当前元素获取此粒子的能量梯度。
+	//		Eigen::Vector3d local_gradient = _e->Get_SubEnergyGrad(*p_it);
 
-			// 将局部梯度加到全局梯度的适当位置。
-			temp.col(p_index) += local_gradient;
+	//		// 将局部梯度加到全局梯度的适当位置。
+	//		temp.col(p_index) += local_gradient;
 
+	//	}
+	//}
+	for (auto e : tetras) {
+		for (int i = 0; i < 4; i++) {
+			EnergyGradMatrix.col(e->Get_Particle()[i]->p_id) += e->EnergyGrad.block(0, i, 3, 1);	
 		}
 	}
 	for (int i = 0; i < 3 * particles.size(); ++i) {
 		int row = i % 3;
 		int col = i / 3;
-		EnergyGradGlobal(i) = temp(row, col);
+		EnergyGradGlobal(i) = EnergyGradMatrix(row, col);
 	}
 }
 void ObjectD::CreateEnergyBody() {
 	for (auto _e : tetras) {
-		_e->CreateEnegyDensity();
+		_e->CreateEnegyDensity(data.young, data.poisson);
 		_e->CreatePotentialEnergy();
 		EnergyBody += _e->PotentialEnergy;
 	}
@@ -582,34 +597,55 @@ void ObjectD::CreateLagrangeMulti() {
 	Bottom = 0;
 	int c = 0;
 	for (int i = 0; i < particles.size(); i++) {
-		Bottom = Bottom + (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment<3>(i).squaredNorm();
+		auto tmpa = (1 / M_MatrixBody(3 * i, 3 * i));
+		auto tmpb = EnergyGradGlobal.segment(3 * i, 3).squaredNorm();
+		Bottom = Bottom + (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment(3 * i, 3).squaredNorm();
 		c += 1;
 	}
 	LagrangeMulti = (-1) * EnergyBody / Bottom;
 }
 void ObjectD::UpdatePos() {
+	x_corrected = Eigen::VectorXd::Zero(3 * particles.size());
 	Deltax = Eigen::VectorXd::Zero(3 * particles.size());
+
 	for (int i = 0; i < particles.size(); i++) {
-		Deltax.segment<3>(i) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment<3>(i) * LagrangeMulti;
+		Deltax.segment(3 * i, 3) = (1 / M_MatrixBody(3 * i, 3 * i)) * EnergyGradGlobal.segment(3 * i, 3) * LagrangeMulti;
+		if (!(particles[i]->Is_Fixed()))
+		{
+			x_corrected.segment(3 * i, 3) = x_Local.segment(3 * i, 3)+Deltax.segment(3 * i, 3);
+
+			particles[i]->Update_Grid(x_corrected.segment(3 * i, 3));
+		}
+		else {
+			x_corrected.segment(3 * i, 3) = InitialPos.segment(3 * i, 3);
+			//particles[i]->Update_Grid(x_corrected.segment(3 * i, 3));
+		}
 		
 		//particles[i]->Update_Grid(x_corrected.segment<3>(i));
 		//该写velocity了
 	}
-
-	x_corrected = x_Local + Deltax;
+	
+	//x_corrected = x_Local + Deltax;
 
 }
 
 void ObjectD::UpdateVel() {
 	for (int i = 0; i < particles.size(); i++) {
-		particles[i]->Set_Velocity_In_Model((x_corrected.segment<3>(i) - particles[i]->Get_Grid())/TIME_STEP);
+		if (!(particles[i]->Is_Fixed()))
+		{
+			particles[i]->Set_Velocity_In_Model((x_corrected.segment(3 * i, 3) - particles[i]->Get_Grid()) / TIME_STEP);
+		}
+		else {
+			particles[i]->Set_Velocity_In_Model(Eigen::Vector3d::Zero(3));
+		}
+		
 	}
 }
 Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid) {
 	Eigen::Vector3d temp = Eigen::Vector3d::Zero();
 	for (unsigned int pi = 0; pi < particles.size(); pi++) {
 		if (particles[pi]->p_id == pid) {
-			temp = x_corrected.segment<3>(pi);
+			temp = x_corrected.segment(3 * pi, 3);
 			return temp;
 		}
 	}
@@ -620,24 +656,34 @@ Eigen::Vector3d ObjectD::Get_Grid_In_Object(int pid) {
 void ObjectD::PBDCalculation() {
 	//CalcMassMatrix();
 	CalcPrePos();
-	for (int i = 0; i < 5; i++) {
+	mtEnergyConstraint.startMyTimer();
+	for (int i = 0; i < 2; i++) {
 		for (auto _e : tetras) {
 			_e->CreateDs();
 			_e->CreateDefTensor();
-			_e->CreateStrain();
-			_e->CreateStress(data.young, data.poisson);
-			_e->CreateEnegyDensity();
-			_e->CreatePKFirstStress();
+			//_e->CreateStrain();
+			//_e->CreateStress(data.young, data.poisson);
+			_e->CreateEnegyDensity(data.young, data.poisson);
+			_e->CreatePKFirstStress(data.young, data.poisson);
 			_e->CreateEnergyGrad();
 		}
 		Assemble_EnergyGradGlobal();
 		CreateEnergyBody();
 		CreateLagrangeMulti();
-		UpdatePos();
+		UpdatePos(); //e->Get_Particle()[0]->p_id
 	}
-	
+	mtEnergyConstraint.endMyTimer();
+	//std::cout << std::setprecision(4) << mtEnergyConstraint.getDt() << std::endl;
 	
 	UpdateVel();
-	
+	for (int i = 0; i < particles.size(); i++)
+	{
+		std::cout << "id" << " " << particles[i]->p_id << " " << particles[i]->Get_Grid().x() << " " << particles[i]->Get_Grid().y() << " " << particles[i]->Get_Grid().z() << std::endl;
+	}
 		
+}
+void ObjectD::UpdateOldFEM() {
+	for (auto g : groups) {
+		g->OldFEM();
+	}
 }

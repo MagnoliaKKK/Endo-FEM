@@ -32,7 +32,7 @@ void ParticleD::Update(const Eigen::Vector3d &next_grid) {
 	acceleration = (((next_grid - this->grid) / TIME_STEP)- velocity) / TIME_STEP;
 	velocity = (next_grid - this->grid) / TIME_STEP;
 	this->grid = next_grid;
-}
+}//可以用在traditional FEM
 void ParticleD::Update_Grid(const Eigen::Vector3d &next_grid) {
 	this->grid = next_grid;
 }
@@ -83,6 +83,11 @@ void ParticleD::Set_IM_Grid(int a) {
 void ParticleD::Set_Mass(double a) {
 	this->p_mass = a;
 }
+void ParticleD::Set_x_correctedPBD(const Eigen::Vector3d& pos) {
+	this->x_correctedPBD = pos;
+}
+
+
 //==========================================================================//
 //==========================================================================//
 void ParticleD::Add_Force(const Eigen::Vector3d &f) {
@@ -179,6 +184,9 @@ const Eigen::Vector3d& ParticleD::Get_IM_Grid()const {
 }
 const double& ParticleD::Get_Mass()const {
 	return this->p_mass;
+}
+const Eigen::Vector3d& ParticleD::Get_x_correctedPBD()const {
+	return this->x_correctedPBD;
 }
 //==========================================================================//
 //==========================================================================//

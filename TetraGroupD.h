@@ -8,7 +8,7 @@
 
 #include "TetraElementD.h"
 #include <algorithm>
-
+extern float extForce;//想用键盘控制的外力
 class TetraGroupD {
 public:
 	TetraGroupD(std::vector< TetraElementD* > elements, ObjectData data, double mass, int tetra_Group_id);
@@ -20,8 +20,10 @@ public:
 	void BuildMatrix();
 	const std::vector< ParticleD* > particles;//groupが持っているparticle
 	const unsigned int particle_num;	     //particle数
+	
 	void TetraGroupD::Set_Size_para(int particle_num);					 //各変数の要素数を決定する
 	void TetraGroupD::Set_Size_para2(std::vector< ParticleD* > particles); //各変数の要素数を決定する
+
 
 																		 //剛性行列を作成するための変数、関数
 	ObjectData data;			      //材料パラメータ
@@ -58,6 +60,7 @@ public:
 	Eigen::VectorXd InitialVector;  // constanttermを計算するときに使う初期座標のベクトル(OldFEM用)
 	Eigen::VectorXd GroupGridVector;  // グループにおける位置
 	Eigen::VectorXd GroupVelVector;  // グループにおける速度
+	Eigen::Vector3d GroupPosition;//Old FEM 解出计算group位置
 
 	Eigen::VectorXd iterativeVector; //反復法のGMRES用の初期値
 
@@ -183,6 +186,7 @@ public:
 	void Calc_GMRES_Pre();//debug用(前処理)
 	void Calc_GMRES_FEM();//debug用(前処理済)
 	void CalcDeltax();
+	void CalcDeltax2();//OldFEM用
 
 	void Calc_Jacobi_Matrix_iteration();//反復法、ヤコビで使う行列の更新(1ステップで一回)
 	void Calc_Jacobi_Matrix_iteration_Sparse();//反復法、ヤコビで使う行列の更新(1ステップで一回)(Sparse)
@@ -195,6 +199,8 @@ public:
 	void RHS0();
 	void Calc_Jacobi_Matrix_iteration_Old();//OldFEMの係数行列作成
 	void Calc_Constant_term_iteration_Old ();//OldFEMの定数値作成
+
+	void OldFEM();//OldFEMの計算
 
 	void Draw()const;
 

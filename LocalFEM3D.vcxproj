@@ -93,7 +93,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\DC\Endo-FEM\subsorce\dependency\src\boost\preprocessor\debug;.\DXLib;%(AdditionalIncludeDirectories);.\subsorce\dependency\lib;.\subsorce\dependency\src</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -194,6 +194,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ObjectD.cpp" />
     <ClCompile Include="ParticleD.cpp" />
+    <ClCompile Include="SocketHandler.cpp" />
     <ClCompile Include="TetraElementD.cpp" />
     <ClCompile Include="TetraGroupD.cpp" />
     <ClCompile Include="TriangleD.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Eigen\src\IterativeLinearSolvers\GMRES.h" />
     <ClInclude Include="ObjectD.h" />
     <ClInclude Include="ParticleD.h" />
+    <ClInclude Include="SocketHandler.h" />
     <ClInclude Include="TetraElementD.h" />
     <ClInclude Include="TetraGroupD.h" />
     <ClInclude Include="TriangleD.h" />
