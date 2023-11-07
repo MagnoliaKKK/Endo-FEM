@@ -315,7 +315,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ObjectData almin = { 2.7e+03, 1.0e+7, 0.49, size_data };	//	ゴムの（密度、ヤング率、ポアソン比）
 	ObjectData gum = { 0.91e+03, 1.0e+15, 0, size_data };	//	ゴムの（密度、ヤング率、ポアソン比）
 	ObjectData gum2 = { 0.91e+03, 1.0e+07, 0.49, size_data };	//	堅いゴムの（密度、ヤング率、ポアソン比）
-	ObjectData gum3 = { 0.91e+03, 1.0e+10,0.49, size_data };	//	堅いゴムの（密度、ヤング率、ポアソン比）
+	ObjectData gum3 = { 0.91e+03, 1.0e+8,0.4, size_data };	//	堅いゴムの（密度、ヤング率、ポアソン比）
 	ObjectData orihar = { 2.7e-03, 6.9e+12, 0.3, size_data };	//	幻想物体オリハルコンの（密度、ヤング率、ポアソン比）
     
     //スケールが変わっても、分割と描画ができるように係数を求める

@@ -1007,9 +1007,8 @@ void TetraGroupD::Update_Fbind_Pos8(int looptime) {
 				//std::cout << particles[pi]->p_belong_TetraGroup_ids.size() << std::endl;
 				Conv = Conv - (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
 				Conv1 = Conv1 - particles[pi]->Get_Mean_Vel();
-				//Conv = Conv -  (particles[pi]->Get_Exp_Pos() + particles[pi]->Get_Deltax_In_Model());
-				//bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
-				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * (pow(2,looptime*0.8)) * Conv;
+				bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * Conv;
+				//bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_coeff * (pow(1.1,looptime * 2)) * Conv;
 				//bind_force_iterative.block(3 * pi, 0, 3, 1) += F_bind_damping * Conv1;
 
 				if (fetestexcept(FE_INVALID)) {
